@@ -1,0 +1,121 @@
+name: Deploy to PROD
+
+on:
+  pull_request:
+    branches:
+      - master
+  push:
+    branches:
+      - master
+
+jobs:
+  validation:
+    name: Validation on PROD
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    environment: Production
+    env:
+      GIT_DEPTH: 0
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install SF CLI
+        run: |
+          npm install -g @salesforce/cli
+          sf version
+
+      - name: Install sfdx-git-delta plugin
+        run: sf plugins install sfdx-git-delta
+
+      - name: Authenticate to Salesforce (PROD)
+        run: |
+          echo "${{ secrets.AUTH_URL_PROD }}" > auth_url.txt
+          sf auth sfdxurl store --sfdx-url-file auth_url.txt --set-default
+          rm auth_url.txt
+
+      - name: Generate delta
+        run: |
+          sf sgd source delta --api-version 66.0 --to "HEAD" --from "origin/master" --output-dir .
+
+      - name: Show package.xml
+        run: cat package/package.xml || true
+
+      - name: Show destructiveChanges.xml
+        run: cat destructiveChanges/destructiveChanges.xml || true
+
+      - name: Dry-run deploy (validation)
+        run: |
+          if grep -q "<types>" package/package.xml destructiveChanges/destructiveChanges.xml 2>/dev/null; then
+            echo "Delta detected – running DRY-RUN deploy"
+            sf project deploy start \
+              --manifest package/package.xml \
+              --post-destructive-changes destructiveChanges/destructiveChanges.xml \
+              --test-level RunLocalTests \
+              --api-version 66.0 \
+              --wait 300 \
+              --verbose \
+              --ignore-warnings \
+              --ignore-conflicts \
+              --dry-run
+          else
+            echo "No metadata changes detected – skipping validation deploy"
+          fi
+
+  deployment:
+    name: Deploy to PROD
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    environment: Production
+    env:
+      GIT_DEPTH: 0
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install SF CLI
+        run: |
+          npm install -g @salesforce/cli
+          sf version
+
+      - name: Install sfdx-git-delta plugin
+        run: sf plugins install sfdx-git-delta
+
+      - name: Authenticate to Salesforce (PROD)
+        run: |
+          echo "${{ secrets.AUTH_URL_PROD }}" > auth_url.txt
+          sf auth sfdxurl store --sfdx-url-file auth_url.txt --set-default
+          rm auth_url.txt
+
+      - name: Generate delta
+        run: |
+          sf sgd source delta --api-version 66.0 --to HEAD --from HEAD~1 --output-dir .
+
+      - name: Show package.xml
+        run: cat package/package.xml || true
+
+      - name: Show destructiveChanges.xml
+        run: cat destructiveChanges/destructiveChanges.xml || true
+
+      - name: Deploy to PROD
+        run: |
+          if grep -q "<types>" package/package.xml destructiveChanges/destructiveChanges.xml 2>/dev/null; then
+            echo "Delta detected – deploying to PROD"
+            sf project deploy start \
+              --manifest package/package.xml \
+              --post-destructive-changes destructiveChanges/destructiveChanges.xml \
+              --test-level RunLocalTests \
+              --api-version 66.0 \
+              --wait 300 \
+              --verbose \
+              --ignore-warnings \
+              --ignore-conflicts
+          else
+            echo "No metadata changes detected – skipping deploy"
+          fi
