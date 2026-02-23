@@ -29,7 +29,7 @@ jobs:
           sf version
 
       - name: Install sfdx-git-delta plugin
-        run: sf plugins install sfdx-git-delta
+        run: echo y | sf plugins install sfdx-git-delta
 
       - name: Authenticate to Salesforce (UAT)
         run: |
@@ -85,7 +85,7 @@ jobs:
           sf version
 
       - name: Install sfdx-git-delta plugin
-        run: sf plugins install sfdx-git-delta
+        run: echo y | sf plugins install sfdx-git-delta
 
       - name: Authenticate to Salesforce (UAT)
         run: |
