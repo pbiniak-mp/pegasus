@@ -1,15 +1,15 @@
-name: Deploy to UAT
+name: Validate on PROD
 
 on:
-  push:
+  pull_request:
     branches:
-      - uat
+      - master
 
 jobs:
-  deployment:
-    name: Deploy to UAT
+  validation:
+    name: Validation on PROD
     runs-on: ubuntu-latest
-    environment: UAT
+    environment: Production
     env:
       GIT_DEPTH: 0
 
@@ -27,15 +27,15 @@ jobs:
       - name: Install sfdx-git-delta plugin
         run: echo y | sf plugins install sfdx-git-delta
 
-      - name: Authenticate to Salesforce (UAT)
+      - name: Authenticate to Salesforce (PROD)
         run: |
-          echo "${{ secrets.AUTH_URL_UAT }}" > auth_url.txt
+          echo "${{ secrets.AUTH_URL_PROD }}" > auth_url.txt
           sf auth sfdxurl store --sfdx-url-file auth_url.txt --set-default
           rm auth_url.txt
 
       - name: Generate delta
         run: |
-          sf sgd source delta --api-version 66.0 --to HEAD --from HEAD~1 --output-dir .
+          sf sgd source delta --api-version 66.0 --to "HEAD" --from "origin/master" --output-dir .
 
       - name: Show package.xml
         run: cat package/package.xml || true
@@ -43,10 +43,10 @@ jobs:
       - name: Show destructiveChanges.xml
         run: cat destructiveChanges/destructiveChanges.xml || true
 
-      - name: Deploy to UAT
+      - name: Dry-run deploy (validation)
         run: |
           if grep -q "<types>" package/package.xml destructiveChanges/destructiveChanges.xml 2>/dev/null; then
-            echo "Delta detected – deploying to UAT"
+            echo "Delta detected – running DRY-RUN deploy"
             sf project deploy start \
               --manifest package/package.xml \
               --post-destructive-changes destructiveChanges/destructiveChanges.xml \
@@ -55,7 +55,8 @@ jobs:
               --wait 300 \
               --verbose \
               --ignore-warnings \
-              --ignore-conflicts
+              --ignore-conflicts \
+              --dry-run
           else
-            echo "No metadata changes detected – skipping deploy"
+            echo "No metadata changes detected – skipping validation deploy"
           fi

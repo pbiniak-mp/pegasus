@@ -1,13 +1,13 @@
-name: Deploy to UAT
+name: Validate on UAT
 
 on:
-  push:
+  pull_request:
     branches:
       - uat
 
 jobs:
-  deployment:
-    name: Deploy to UAT
+  validation:
+    name: Validation on UAT
     runs-on: ubuntu-latest
     environment: UAT
     env:
@@ -35,7 +35,7 @@ jobs:
 
       - name: Generate delta
         run: |
-          sf sgd source delta --api-version 66.0 --to HEAD --from HEAD~1 --output-dir .
+          sf sgd source delta --api-version 66.0 --to "HEAD" --from "origin/uat" --output-dir .
 
       - name: Show package.xml
         run: cat package/package.xml || true
@@ -43,10 +43,10 @@ jobs:
       - name: Show destructiveChanges.xml
         run: cat destructiveChanges/destructiveChanges.xml || true
 
-      - name: Deploy to UAT
+      - name: Dry-run deploy (validation)
         run: |
           if grep -q "<types>" package/package.xml destructiveChanges/destructiveChanges.xml 2>/dev/null; then
-            echo "Delta detected – deploying to UAT"
+            echo "Delta detected – running DRY-RUN deploy"
             sf project deploy start \
               --manifest package/package.xml \
               --post-destructive-changes destructiveChanges/destructiveChanges.xml \
@@ -55,7 +55,8 @@ jobs:
               --wait 300 \
               --verbose \
               --ignore-warnings \
-              --ignore-conflicts
+              --ignore-conflicts \
+              --dry-run
           else
-            echo "No metadata changes detected – skipping deploy"
+            echo "No metadata changes detected – skipping validation deploy"
           fi
