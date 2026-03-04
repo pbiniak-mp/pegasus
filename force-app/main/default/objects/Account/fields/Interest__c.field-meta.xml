@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Interest__c</fullName>
+    <label>Interest</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>MultiselectPicklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Needs informations / contact</fullName>
+                <default>false</default>
+                <label>Needs informations / contact</label>
+            </value>
+            <value>
+                <fullName>Allg. Interesse Produkte</fullName>
+                <default>false</default>
+                <label>Allg. Interesse Produkte</label>
+            </value>
+            <value>
+                <fullName>Allg. Interesse Partnerschaft</fullName>
+                <default>false</default>
+                <label>Allg. Interesse Partnerschaft</label>
+            </value>
+            <value>
+                <fullName>Technische Frage</fullName>
+                <default>false</default>
+                <label>Technische Frage</label>
+            </value>
+            <value>
+                <fullName>US - AeroTOOL</fullName>
+                <default>false</default>
+                <label>US - AeroTOOL</label>
+            </value>
+            <value>
+                <fullName>US - CompactFLAT</fullName>
+                <default>false</default>
+                <label>US - CompactFLAT</label>
+            </value>
+            <value>
+                <fullName>US - CompactFLAT S</fullName>
+                <default>false</default>
+                <label>US - CompactFLAT S</label>
+            </value>
+            <value>
+                <fullName>US - CompactFLAT SN2</fullName>
+                <default>false</default>
+                <label>US - CompactFLAT SN2</label>
+            </value>
+            <value>
+                <fullName>US - CompactGROUND</fullName>
+                <default>false</default>
+                <label>US - CompactGROUND</label>
+            </value>
+            <value>
+                <fullName>US - CompactGROUND G</fullName>
+                <default>false</default>
+                <label>US - CompactGROUND G</label>
+            </value>
+            <value>
+                <fullName>US - CompactMETAL</fullName>
+                <default>false</default>
+                <label>US - CompactMETAL</label>
+            </value>
+            <value>
+                <fullName>US - Residential Ground Mount</fullName>
+                <default>false</default>
+                <label>US - Residential Ground Mount</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+    <visibleLines>4</visibleLines>
+</CustomField>
