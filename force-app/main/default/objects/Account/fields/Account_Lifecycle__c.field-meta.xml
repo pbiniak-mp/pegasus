@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Account_Lifecycle__c</fullName>
+    <label>Account Lifecycle</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>New</fullName>
+                <default>true</default>
+                <label>New</label>
+            </value>
+            <value>
+                <fullName>Initial phase</fullName>
+                <default>false</default>
+                <label>Initial phase</label>
+            </value>
+            <value>
+                <fullName>Onboarding</fullName>
+                <default>false</default>
+                <label>Onboarding</label>
+            </value>
+            <value>
+                <fullName>In Business</fullName>
+                <default>false</default>
+                <label>In Business</label>
+            </value>
+            <value>
+                <fullName>Indirect Sales</fullName>
+                <default>false</default>
+                <label>Indirect Sales</label>
+            </value>
+            <value>
+                <fullName>Not relevant</fullName>
+                <default>false</default>
+                <label>Not relevant</label>
+            </value>
+            <value>
+                <fullName>Blocked</fullName>
+                <default>false</default>
+                <label>Blocked</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>
