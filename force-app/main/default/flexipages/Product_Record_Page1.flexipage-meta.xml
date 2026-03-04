@@ -105,8 +105,8 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.NetSuite_Id__c</fieldItem>
-                <identifier>RecordNetSuite_Id_cField</identifier>
+                <fieldItem>Record.Type__c</fieldItem>
+                <identifier>RecordType_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -115,8 +115,8 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.Type__c</fieldItem>
-                <identifier>RecordType_cField</identifier>
+                <fieldItem>Record.External_Source__c</fieldItem>
+                <identifier>RecordExternal_Source__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-498c691c-8f74-4106-8f8e-1cbf58fdde41</name>
