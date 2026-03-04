@@ -109,16 +109,6 @@
                 <identifier>RecordType_cField</identifier>
             </fieldInstance>
         </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.External_Source__c</fieldItem>
-                <identifier>RecordExternal_Source__cField</identifier>
-            </fieldInstance>
-        </itemInstances>
         <name>Facet-498c691c-8f74-4106-8f8e-1cbf58fdde41</name>
         <type>Facet</type>
     </flexiPageRegions>
@@ -151,16 +141,6 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.StockKeepingUnit</fieldItem>
                 <identifier>RecordStockKeepingUnitField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.ExternalId</fieldItem>
-                <identifier>RecordExternalIdField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-f0aad33a-243f-48e2-86d3-29d6677358c8</name>
@@ -383,6 +363,26 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.CreatedById</fieldItem>
                 <identifier>RecordCreatedByIdField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.External_Source__c</fieldItem>
+                <identifier>RecordExternal_Source__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.External_Id__c</fieldItem>
+                <identifier>RecordExternal_Id_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-cf74b01b-c53e-4094-b0c3-0b40e528e831</name>
