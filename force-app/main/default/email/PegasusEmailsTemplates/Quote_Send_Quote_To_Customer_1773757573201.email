@@ -1,8 +1,22 @@
 <html>
- <head>
-  <title></title>
- </head>
- <body style="height: auto; min-height: auto;">
-  Hi {{{Quote.Contact_First_Name__c}}},<br /> <br /> Thank you for speaking with us. I have attached your quote for {{{Quote.Name}}} for {{{Quote.BillingName}}}. It reflects the products and pricing we discussed.<br /> <br /> What's Included:<br /> <br /> 1. Products &amp; Services<br /> 2. Estimated Total:&nbsp;{{{Quote.TotalPrice}}}<br /> 3. Valid Through: {{{Quote.ExpirationDate}}}<br /> <br /> If everything looks good, please reply with Approved and we will move forward. If you'd like changes (quantities, terms or options), just let me know and I can turn around an updated version quickly.<br /> <br /> Best Regards,<br /> <br /> {{{Sender.Name}}},<br /> {{{Sender.Email}}}<br /> {{{Sender.Phone}}}<br /> <br /> <img alt="pegasus (1)" src="{[devName:pegasus_1]}" style="max-width: 1088.640625px" title="pegasus (1)" />
- </body>
+<head>
+	<title></title>
+</head>
+<body style="height: auto; min-height: auto;">Hi {{{Quote.Contact_First_Name__c}}},<br />
+<br />
+Thank you for speaking with us. I have attached your quote for {{{Quote.Name}}} for {{{Quote.BillingName}}}. It reflects the products and pricing we discussed.<br />
+<br />
+What's Included:<br />
+<br />
+1. Products &amp; Services<br />
+2. Estimated Total:&nbsp;{{{Quote.TotalPrice}}}<br />
+3. Valid Through: {{{Quote.ExpirationDate}}}<br />
+<br />
+If everything looks good, please reply with Approved and we will move forward. If you'd like changes (quantities, terms or options), just let me know and I can turn around an updated version quickly.<br />
+<br />
+Best Regards,<br />
+<br />
+{{{Sender.Name}}},<br />
+{{{Sender.Email}}}<br />
+{{{Sender.Phone}}}</body>
 </html>
