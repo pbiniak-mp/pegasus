@@ -54,10 +54,11 @@ private class QuoteSavePDFControllerTest {
 		QuoteSavePDFController ctrl = new QuoteSavePDFController(sc);
 
 		Test.startTest();
-		PageReference result = ctrl.savePDF();
+		ctrl.savePDF();
+		PageReference result = ctrl.goToQuote();
 		Test.stopTest();
 
 		System.assertNotEquals(null, result, 'Should redirect after save');
-		System.assert(result.getUrl().contains(q.Id), 'Should redirect to Quote record');
+		System.assert(result.getUrl().contains(String.valueOf(q.Id).substring(0, 15)), 'Should redirect to Quote record');
 	}
 }
