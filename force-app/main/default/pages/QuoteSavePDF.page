@@ -1,0 +1,72 @@
+<apex:page standardController="Quote"
+		   extensions="QuoteSavePDFController"
+		   action="{!savePDF}"
+		   showHeader="true"
+		   sidebar="false">
+
+	<apex:sectionHeader title="Quote PDF" subtitle="Generating PDF..."/>
+
+	<apex:outputPanel rendered="{!showSuccess}">
+		<div style="
+			position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+			background: rgba(0,0,0,0.5); display: flex;
+			align-items: center; justify-content: center; z-index: 9000;">
+			<div style="
+				background: #fff; border-radius: 8px; padding: 32px 40px;
+				max-width: 480px; width: 100%; text-align: center;
+				box-shadow: 0 8px 32px rgba(0,0,0,0.2);">
+
+				<div style="font-size: 48px; margin-bottom: 16px; color: #2e7d32;">&#10003;</div>
+				<h2 style="font-size: 20px; font-weight: bold; margin-bottom: 8px; color: #2e7d32;">
+					PDF Generated Successfully
+				</h2>
+				<p style="color: #555; margin-bottom: 24px;">
+					File <strong><apex:outputText value="{!savedFileName}"/></strong>
+					has been saved to the Quote Files.
+				</p>
+
+				<apex:form>
+					<apex:commandButton
+						value="View Quote"
+						action="{!goToQuote}"
+						style="
+							background: #0070d2; color: #fff; border: none;
+							padding: 10px 28px; border-radius: 4px;
+							font-size: 14px; cursor: pointer; font-weight: bold;"/>
+				</apex:form>
+			</div>
+		</div>
+	</apex:outputPanel>
+
+	<apex:outputPanel rendered="{!showError}">
+		<div style="
+			position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+			background: rgba(0,0,0,0.5); display: flex;
+			align-items: center; justify-content: center; z-index: 9000;">
+			<div style="
+				background: #fff; border-radius: 8px; padding: 32px 40px;
+				max-width: 480px; width: 100%; text-align: center;
+				box-shadow: 0 8px 32px rgba(0,0,0,0.2);">
+
+				<div style="font-size: 48px; margin-bottom: 16px; color: #c62828;">&#10007;</div>
+				<h2 style="font-size: 20px; font-weight: bold; margin-bottom: 8px; color: #c62828;">
+					PDF Generation Failed
+				</h2>
+				<p style="color: #555; margin-bottom: 24px;">
+					<apex:outputText value="{!errorMessage}"/>
+				</p>
+
+				<apex:form>
+					<apex:commandButton
+						value="Go Back"
+						action="{!goToQuote}"
+						style="
+							background: #c62828; color: #fff; border: none;
+							padding: 10px 28px; border-radius: 4px;
+							font-size: 14px; cursor: pointer; font-weight: bold;"/>
+				</apex:form>
+			</div>
+		</div>
+	</apex:outputPanel>
+
+</apex:page>
