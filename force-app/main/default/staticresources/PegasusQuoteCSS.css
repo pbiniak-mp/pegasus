@@ -1,0 +1,208 @@
+/* ── Global ── */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  font-size: 9pt;
+  color: #000000;
+  padding: 24px 28px;
+}
+
+/* ── Logo ── */
+.logo-wrap {
+  margin-bottom: 16px;
+}
+.logo {
+  width: 160px;
+}
+
+/* ── Top two-column layout ── */
+.top-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 16px;
+}
+.top-left {
+  width: 48%;
+  vertical-align: top;
+  padding-right: 16px;
+}
+.top-right {
+  width: 48%;
+  vertical-align: top;
+  padding-left: 16px;
+}
+
+/* ── Section title ── */
+.section-title {
+  color: #1f4e79;
+  font-weight: bold;
+  font-size: 9pt;
+  margin-bottom: 4px;
+}
+
+/* ── Info table (project info, summary) ── */
+.info-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.info-label {
+  width: 45%;
+  font-size: 8.5pt;
+  font-weight: bold;
+  padding: 1px 0;
+  vertical-align: top;
+}
+.info-label-plain {
+  width: 45%;
+  font-size: 8.5pt;
+  padding: 1px 0;
+  vertical-align: top;
+}
+.info-value {
+  width: 55%;
+  font-size: 8.5pt;
+  padding: 1px 4px;
+  vertical-align: top;
+}
+.blue {
+  color: #1f4e79;
+}
+.italic {
+  font-style: italic;
+}
+
+/* ── Products table ── */
+.products-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 6px;
+  margin-bottom: 40px;
+}
+.products-table th {
+  font-size: 8.5pt;
+  font-weight: bold;
+  text-align: left;
+  border-bottom: 1px solid #000000;
+  padding: 2px 4px 2px 0;
+}
+.col-pn {
+  width: 12%;
+}
+.col-desc {
+  width: 44%;
+}
+.col-num {
+  width: 14%;
+  text-align: right;
+}
+
+.prod-pn {
+  font-size: 8.5pt;
+  padding: 1px 4px 1px 0;
+  vertical-align: top;
+}
+.prod-desc {
+  font-size: 8.5pt;
+  padding: 1px 4px 1px 0;
+  vertical-align: top;
+}
+.prod-num {
+  font-size: 8.5pt;
+  text-align: right;
+  padding: 1px 0;
+  vertical-align: top;
+}
+
+/* ── Totals block ── */
+.totals-table {
+  width: 40%;
+  margin-left: 60%;
+  border-collapse: collapse;
+  margin-top: 8px;
+  margin-bottom: 12px;
+  border-top: 1px solid #000000;
+}
+.totals-label {
+  font-size: 8.5pt;
+  font-weight: bold;
+  padding: 2px 8px 2px 0;
+  text-align: left;
+}
+.totals-value {
+  font-size: 8.5pt;
+  text-align: right;
+  padding: 2px 0;
+}
+
+/* ── Disclaimer ── */
+.disclaimer {
+  font-size: 7.5pt;
+  color: #000000;
+  margin-top: 12px;
+  margin-bottom: 42px;
+  line-height: 1.4;
+}
+.disclaimer .bold {
+  font-weight: bold;
+}
+
+/* ── Signature ── */
+.signature-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 60px;
+}
+.sig-line-cell {
+  width: 38%;
+  vertical-align: bottom;
+  padding-right: 0;
+  padding-bottom: 0;
+}
+.sig-line-div {
+  border-bottom: 1px solid #000000;
+  height: 22px;
+}
+.sig-date-cell {
+  width: 38%;
+  vertical-align: bottom;
+  padding-bottom: 0;
+}
+.sig-spacer {
+  width: 24%;
+}
+.sig-label {
+  font-size: 8.5pt;
+  font-weight: bold;
+  padding-top: 2px;
+  vertical-align: top;
+}
+.sig-text-cell {
+  font-size: 7.5pt;
+  padding-top: 6px;
+  color: #000000;
+}
+
+/* ── Confidentiality ── */
+.confidential {
+  font-size: 7pt;
+  color: #555555;
+  line-height: 1.4;
+  margin-bottom: 40px;
+}
+
+/* ── Company footer ── */
+.company-footer-table {
+  border-collapse: collapse;
+  margin-top: 28px;
+}
+.company-footer-cell {
+  font-size: 8.5pt;
+  line-height: 1.6;
+  border-top: 2px solid #000000;
+  padding-top: 4px;
+}

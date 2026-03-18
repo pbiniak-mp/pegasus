@@ -13,7 +13,7 @@
                             <value>SyncQuote</value>
                         </valueListItems>
                         <valueListItems>
-                            <value>CreatePdf</value>
+                            <value>CustomButton.Quote.Save_Quote_PDF</value>
                         </valueListItems>
                         <valueListItems>
                             <value>EmailQuote</value>
