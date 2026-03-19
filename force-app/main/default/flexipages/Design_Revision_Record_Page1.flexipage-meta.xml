@@ -76,16 +76,6 @@
                 <identifier>RecordNameField</identifier>
             </fieldInstance>
         </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.Quote__c</fieldItem>
-                <identifier>RecordQuote_cField</identifier>
-            </fieldInstance>
-        </itemInstances>
         <name>Facet-b9924f47-ec89-4e9a-bc77-a4e9a49fba02</name>
         <type>Facet</type>
     </flexiPageRegions>
