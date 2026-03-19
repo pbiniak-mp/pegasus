@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GlobalValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customValue>
+        <fullName>Flat Roof</fullName>
+        <default>false</default>
+        <label>Flat Roof</label>
+    </customValue>
+    <customValue>
+        <fullName>Pitched Roof</fullName>
+        <default>false</default>
+        <label>Pitched Roof</label>
+    </customValue>
+    <customValue>
+        <fullName>Ground Mount</fullName>
+        <default>false</default>
+        <label>Ground Mount</label>
+    </customValue>
+    <description>Application case for product line.</description>
+    <masterLabel>System Type</masterLabel>
+    <sorted>false</sorted>
+</GlobalValueSet>

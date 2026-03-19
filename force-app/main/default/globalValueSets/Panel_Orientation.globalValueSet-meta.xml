@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GlobalValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customValue>
+        <fullName>Landscape</fullName>
+        <default>false</default>
+        <label>Landscape</label>
+    </customValue>
+    <customValue>
+        <fullName>Portrait</fullName>
+        <default>false</default>
+        <label>Portrait</label>
+    </customValue>
+    <description>PV Module arrangement in reference to product selection.</description>
+    <masterLabel>Panel Orientation</masterLabel>
+    <sorted>false</sorted>
+</GlobalValueSet>

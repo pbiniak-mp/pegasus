@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GlobalValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customValue>
+        <fullName>S-Base</fullName>
+        <default>false</default>
+        <label>S-Base</label>
+    </customValue>
+    <customValue>
+        <fullName>SN2</fullName>
+        <default>false</default>
+        <label>SN2</label>
+    </customValue>
+    <customValue>
+        <fullName>Flat S</fullName>
+        <default>false</default>
+        <label>Flat S</label>
+    </customValue>
+    <customValue>
+        <fullName>Flat FX</fullName>
+        <default>false</default>
+        <label>Flat FX</label>
+    </customValue>
+    <customValue>
+        <fullName>G-Base</fullName>
+        <default>false</default>
+        <label>G-Base</label>
+    </customValue>
+    <customValue>
+        <fullName>Scale</fullName>
+        <default>false</default>
+        <label>Scale</label>
+    </customValue>
+    <description>All Commercial Product configuration categories</description>
+    <masterLabel>Product Line</masterLabel>
+    <sorted>false</sorted>
+</GlobalValueSet>
