@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Quote_Grand_Total_for_Email_Template__c</fullName>
+    <externalId>false</externalId>
+    <formula>IF(Quote_Grand_Total__c &lt; 0, &quot;(&quot;, &quot;&quot;) &amp; &quot;$&quot; &amp;
+IF(ABS(Quote_Grand_Total__c ) &gt;= 1000000000, TEXT(FLOOR(ABS(Quote_Grand_Total__c ) / 1000000000)) &amp; &quot;,&quot;, &quot;&quot;) &amp; 
+IF(ABS(Quote_Grand_Total__c ) &gt;= 1000000, RIGHT(TEXT(FLOOR(ABS(Quote_Grand_Total__c ) / 1000000)), 3) &amp; &apos;,&apos;, &quot;&quot;) &amp; 
+RIGHT(TEXT(FLOOR(ABS(Quote_Grand_Total__c ))), 3) &amp; &quot;.&quot; &amp; 
+IF(MOD(ABS(Quote_Grand_Total__c ) , 1) * 100 &lt; 10, &quot;0&quot; &amp; TEXT(ROUND(MOD(ABS(Quote_Grand_Total__c ) , 1), 2) * 100), TEXT(MIN(ROUND(MOD(ABS(Quote_Grand_Total__c ) , 1), 2) * 100, 99))) &amp; 
+IF(Quote_Grand_Total__c &lt; 0, &quot;)&quot;, &quot;&quot;)</formula>
+    <inlineHelpText>This allows us to show the Quote Grand Total in email templates with the correct currency formatting.</inlineHelpText>
+    <label>Quote Grand Total for Email Template</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>
