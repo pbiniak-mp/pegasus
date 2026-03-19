@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GlobalValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customValue>
+        <fullName>Membrane</fullName>
+        <default>false</default>
+        <label>Membrane</label>
+    </customValue>
+    <customValue>
+        <fullName>Built Up/Mod Bit</fullName>
+        <default>false</default>
+        <label>Built Up/Mod Bit</label>
+    </customValue>
+    <customValue>
+        <fullName>Concrete</fullName>
+        <default>false</default>
+        <label>Concrete</label>
+    </customValue>
+    <customValue>
+        <fullName>Gravel</fullName>
+        <default>false</default>
+        <label>Gravel</label>
+    </customValue>
+    <customValue>
+        <fullName>Shingle</fullName>
+        <default>false</default>
+        <label>Shingle</label>
+    </customValue>
+    <customValue>
+        <fullName>Clay Tile</fullName>
+        <default>false</default>
+        <label>Clay Tile</label>
+    </customValue>
+    <customValue>
+        <fullName>Corrugated Metal</fullName>
+        <default>false</default>
+        <label>Corrugated Metal</label>
+    </customValue>
+    <customValue>
+        <fullName>Trapezoidal Metal</fullName>
+        <default>false</default>
+        <label>Trapezoidal Metal</label>
+    </customValue>
+    <customValue>
+        <fullName>Standing Metal Seam</fullName>
+        <default>false</default>
+        <label>Standing Metal Seam</label>
+    </customValue>
+    <customValue>
+        <fullName>TBD</fullName>
+        <default>false</default>
+        <label>TBD</label>
+    </customValue>
+    <description>Roof surface</description>
+    <masterLabel>Roof Surface</masterLabel>
+    <sorted>false</sorted>
+</GlobalValueSet>

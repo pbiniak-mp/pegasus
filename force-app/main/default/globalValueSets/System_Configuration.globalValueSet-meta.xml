@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GlobalValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customValue>
+        <fullName>Flush Mount</fullName>
+        <default>false</default>
+        <label>Flush Mount</label>
+    </customValue>
+    <customValue>
+        <fullName>South Facing</fullName>
+        <default>false</default>
+        <label>South Facing</label>
+    </customValue>
+    <customValue>
+        <fullName>East/West Facing</fullName>
+        <default>false</default>
+        <label>East/West Facing</label>
+    </customValue>
+    <description>Primary panel direction option for product line</description>
+    <masterLabel>System Configuration</masterLabel>
+    <sorted>false</sorted>
+</GlobalValueSet>
