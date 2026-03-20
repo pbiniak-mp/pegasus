@@ -435,6 +435,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>Design_Revision__c.Is_Active__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>Design_Revision__c.Maximum_System_Weight_Limit_lbs__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -711,6 +716,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Opportunity.Description_of_Needs__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Opportunity.Design_Revision__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
