@@ -242,6 +242,31 @@ private class DesignRevisionTriggerTest {
 		Assert.areEqual(20, oppMap.get(opps[1].Id).Module_Quantity__c, 'Opp2 qty should be copied');
 	}
 
+	@IsTest
+	static void testActivation_alreadyActive_noRedundantProcessing() {
+		// Insert revision as active → activates on insert, copies Module_Quantity__c = 25
+		Opportunity opp = getOpp();
+		Design_Revision__c rev = buildRevision(opp.Id, 25, 10.0);
+		rev.Is_Active__c = true;
+		insert rev;
+
+		Opportunity afterInsert = [SELECT Module_Quantity__c FROM Opportunity WHERE Id = :opp.Id];
+		Assert.areEqual(25, afterInsert.Module_Quantity__c, 'Fields should be copied on initial activation');
+
+		Test.startTest();
+		// Update a non-activation field — Is_Active__c stays true (wasActive = true → not re-activated)
+		rev.Module_Quantity__c = REV_UPDATED_MODULE_QTY;
+		update rev;
+		Test.stopTest();
+
+		Opportunity afterUpdate = [SELECT Module_Quantity__c FROM Opportunity WHERE Id = :opp.Id];
+		Assert.areEqual(
+			25,
+			afterUpdate.Module_Quantity__c,
+			'Opportunity fields should not be overwritten when revision was already active'
+		);
+	}
+
 	private static Set<Id> getLinkedDocIds(Id recordId) {
 		Set<Id> result = new Set<Id>();
 		for (ContentDocumentLink cdl : [SELECT ContentDocumentId FROM ContentDocumentLink WHERE LinkedEntityId = :recordId]) {

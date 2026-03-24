@@ -61,4 +61,48 @@ private class QuoteSavePDFControllerTest {
 		System.assertNotEquals(null, result, 'Should redirect after save');
 		System.assert(result.getUrl().contains(String.valueOf(q.Id).substring(0, 15)), 'Should redirect to Quote record');
 	}
+
+	@IsTest
+	static void testInitialState_showFlagsAreFalse() {
+		Quote q = getTestQuote();
+		ApexPages.StandardController sc = new ApexPages.StandardController(q);
+		QuoteSavePDFController ctrl = new QuoteSavePDFController(sc);
+
+		Assert.isFalse(ctrl.showSuccess, 'showSuccess should be false on init');
+		Assert.isFalse(ctrl.showError, 'showError should be false on init');
+	}
+
+	@IsTest
+	static void testSavePDF_setsShowSuccessAndSavedFileName() {
+		Quote q = getTestQuote();
+		ApexPages.StandardController sc = new ApexPages.StandardController(q);
+		QuoteSavePDFController ctrl = new QuoteSavePDFController(sc);
+
+		Test.startTest();
+		ctrl.savePDF();
+		Test.stopTest();
+
+		Assert.isTrue(ctrl.showSuccess, 'showSuccess should be true after successful save');
+		Assert.isFalse(ctrl.showError, 'showError should remain false on success');
+		Assert.isNotNull(ctrl.savedFileName, 'savedFileName should be set after successful save');
+		Assert.isTrue(
+			ctrl.savedFileName.endsWith(QuoteSavePDFController.PDF_EXTENSION),
+			'savedFileName should have .pdf extension'
+		);
+	}
+
+	@IsTest
+	static void testSavePDF_withMissingQuote_setsShowError() {
+		// No id → QuoteSelector returns null → savePDF throws NullPointerException → caught
+		ApexPages.StandardController sc = new ApexPages.StandardController(new Quote());
+		QuoteSavePDFController ctrl = new QuoteSavePDFController(sc);
+
+		Test.startTest();
+		ctrl.savePDF();
+		Test.stopTest();
+
+		Assert.isTrue(ctrl.showError, 'showError should be true when an exception occurs');
+		Assert.isNotNull(ctrl.errorMessage, 'errorMessage should be populated on error');
+		Assert.isFalse(ctrl.showSuccess, 'showSuccess should remain false on error');
+	}
 }
