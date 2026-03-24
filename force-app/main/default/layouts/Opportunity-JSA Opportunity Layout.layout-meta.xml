@@ -352,7 +352,11 @@
     </relatedLists>
     <relatedLists>
         <fields>NAME</fields>
+        <fields>Revision_Number__c</fields>
+        <fields>Revision_Reason__c</fields>
+        <fields>Project_Notes__c</fields>
         <fields>Status__c</fields>
+        <fields>Is_Active__c</fields>
         <fields>CREATED_DATE</fields>
         <relatedList>Design_Revision__c.Opportunity__c</relatedList>
     </relatedLists>
@@ -385,6 +389,9 @@
         <relatedList>RelatedContactRoleList</relatedList>
     </relatedLists>
     <relatedLists>
+        <relatedList>RelatedFileList</relatedList>
+    </relatedLists>
+    <relatedLists>
         <fields>TASK.SUBJECT</fields>
         <fields>TASK.WHO_NAME</fields>
         <fields>ACTIVITY.TASK</fields>
@@ -402,9 +409,6 @@
         <fields>CORE.USERS.FULL_NAME</fields>
         <fields>TASK.LAST_UPDATE</fields>
         <relatedList>RelatedHistoryList</relatedList>
-    </relatedLists>
-    <relatedLists>
-        <relatedList>RelatedFileList</relatedList>
     </relatedLists>
     <relatedLists>
         <relatedList>RelatedContentNoteList</relatedList>

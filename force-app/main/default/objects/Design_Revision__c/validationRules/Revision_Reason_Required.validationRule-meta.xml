@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Revision_Reason_Required</fullName>
+    <active>true</active>
+    <description>Revision Reason is required for all revisions beyond REV 00. Designer cannot save a revision without specifying the reason for the change.</description>
+    <errorConditionFormula>AND(
+    NOT(ISPICKVAL(Revision_Number__c, &quot;00&quot;)),
+    OR(
+        ISPICKVAL(Revision_Reason__c, &quot;--&quot;),
+        ISBLANK(TEXT(Revision_Reason__c))
+    )
+)</errorConditionFormula>
+    <errorMessage>Revision Reason is required for all revisions beyond REV 00.</errorMessage>
+</ValidationRule>
