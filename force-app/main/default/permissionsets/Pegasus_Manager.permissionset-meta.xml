@@ -5,6 +5,26 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>DesignRevisionSelector</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>DesignRevisionService</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>DesignRevisionTriggerHandler</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>DesignRevisionTriggerTest</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>OpportunitySelector</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>QuoteLineItemSelector</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -26,6 +46,10 @@
     </classAccesses>
     <classAccesses>
         <apexClass>QuoteSelector</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>TriggerHandler</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <fieldPermissions>
@@ -496,6 +520,16 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Design_Revision__c.Project_Wattage_kW__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Design_Revision__c.Revision_Number__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Design_Revision__c.Revision_Reason__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1580,6 +1614,14 @@
         <viewAllFields>false</viewAllFields>
         <viewAllRecords>false</viewAllRecords>
     </objectPermissions>
+    <pageAccesses>
+        <apexPage>QuotePDF</apexPage>
+        <enabled>true</enabled>
+    </pageAccesses>
+    <pageAccesses>
+        <apexPage>QuoteSavePDF</apexPage>
+        <enabled>true</enabled>
+    </pageAccesses>
     <tabSettings>
         <tab>Design_Revision__c</tab>
         <visibility>Visible</visibility>

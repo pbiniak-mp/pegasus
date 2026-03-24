@@ -25,11 +25,11 @@
 					</tr>
 					<tr>
 						<td class="info-label">Quote #</td>
-						<td class="info-value">{!quote.QuoteNumber}</td>
+						<td class="info-value">{!quote.Name}</td>
 					</tr>
 					<tr>
 						<td class="info-label">REV Number</td>
-<!--						<td class="info-value italic blue">{!quote.Rev_Number__c}</td>-->
+						<td class="info-value">REV-{!quote.Design_Revision__r.Revision_Number__c}</td>
 					</tr>
 					<tr>
 						<td class="info-label">Customer Name</td>
@@ -67,9 +67,9 @@
 					<tr>
 						<td class="info-label-plain">Planned install Date:</td>
 						<td class="info-value">
-							<apex:outputPanel rendered="{!NOT(ISNULL(opp.Planned_Install_Date__c))}">
+							<apex:outputPanel rendered="{!NOT(ISNULL(quote.Design_Revision__r.Planned_Install_Date__c))}">
 								<apex:outputText value="{0,date,MMMM dd, yyyy}">
-									<apex:param value="{!opp.Planned_Install_Date__c}"/>
+									<apex:param value="{!quote.Design_Revision__r.Planned_Install_Date__c}"/>
 								</apex:outputText>
 							</apex:outputPanel>
 						</td>
@@ -83,16 +83,19 @@
 				<table class="info-table">
 					<tr>
 						<td class="info-label">Total Modules</td>
-						<td class="info-value">{!opp.Module_Quantity__c}</td>
+						<td class="info-value">{!quote.Design_Revision__r.Module_Quantity__c}</td>
 					</tr>
 					<tr>
 						<td class="info-label">Total Watts</td>
-						<td class="info-value">{!opp.Project_Wattage_kW__c}</td>
+						<td class="info-value">{!quote.Design_Revision__r.Project_Wattage_kW__c}&nbsp;kW</td>
 					</tr>
 					<tr>
-						<!-- TODO: Total Attachments — confirm source field with Ryan -->
 						<td class="info-label">Total Attachments</td>
-						<td class="info-value"></td>
+						<td class="info-value">
+							<apex:outputText value="{0, number, #,##0}">
+								<apex:param value="{!totalAttachments}"/>
+							</apex:outputText>
+						</td>
 					</tr>
 				</table>
 				<br/>
@@ -110,15 +113,15 @@
 					</tr>
 					<tr>
 						<td class="info-label">Module Watts</td>
-						<td class="info-value">{!opp.Module_Wattage_W__c}</td>
+						<td class="info-value">{!quote.Design_Revision__r.Module_Wattage_W__c}</td>
 					</tr>
 					<tr>
 						<td class="info-label">System</td>
-						<td class="info-value">{!opp.System_Type__c}</td>
+						<td class="info-value">{!quote.Design_Revision__r.System_Type__c}</td>
 					</tr>
 					<tr>
 						<td class="info-label">Tilt</td>
-						<td class="info-value">{!opp.Panel_Tilt__c}</td>
+						<td class="info-value">{!quote.Design_Revision__r.Panel_Tilt__c}</td>
 					</tr>
 				</table>
 			</td>

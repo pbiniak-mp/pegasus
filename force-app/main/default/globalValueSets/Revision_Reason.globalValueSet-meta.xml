@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GlobalValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customValue>
+        <fullName>--</fullName>
+        <default>true</default>
+        <label>--</label>
+    </customValue>
+    <customValue>
+        <fullName>Customer Revision</fullName>
+        <default>false</default>
+        <label>Customer Revision</label>
+    </customValue>
+    <customValue>
+        <fullName>Pegasus Revision</fullName>
+        <default>false</default>
+        <label>Pegasus Revision</label>
+    </customValue>
+    <customValue>
+        <fullName>Redline Revision</fullName>
+        <default>false</default>
+        <label>Redline Revision</label>
+    </customValue>
+    <customValue>
+        <fullName>As-Built Revision</fullName>
+        <default>false</default>
+        <label>As-Built Revision</label>
+    </customValue>
+    <description>What party drove a design change?</description>
+    <masterLabel>Revision Reason</masterLabel>
+    <sorted>false</sorted>
+</GlobalValueSet>

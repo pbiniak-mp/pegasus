@@ -45,4 +45,13 @@ public with sharing class QuotePDFController {
 		return total;
 	}
 
+	public Decimal getTotalAttachments() {
+		Decimal total = 0;
+		if (lineItems == null) return total;
+		for (QuoteLineItem li : lineItems) {
+			total += (li.Quantity != null ? li.Quantity : 0);
+		}
+		return total;
+	}
+
 }

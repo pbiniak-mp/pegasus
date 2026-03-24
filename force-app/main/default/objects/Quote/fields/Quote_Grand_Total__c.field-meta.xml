@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Quote_Grand_Total__c</fullName>
-    <formula>TotalPrice + ShippingHandling + Tax</formula>
+    <formula>BLANKVALUE(TotalPrice, 0) + BLANKVALUE(ShippingHandling, 0) + BLANKVALUE(Tax, 0)</formula>
     <inlineHelpText>This sums the following fields: Total Price + Shipping &amp; Handling + Tax. This field is needed because the Grand Total is a derived field and is not available for use in formula fields on the Quote object.</inlineHelpText>
     <label>Quote Grand Total</label>
     <precision>18</precision>

@@ -222,4 +222,53 @@ private class QuotePDFControllerTest {
 		System.assertEquals(400, ctrl.opp.Module_Wattage_W__c, 'Module wattage should match');
 		System.assertEquals(4, ctrl.opp.Project_Wattage_kW__c, 'Project wattage should match');
 	}
+
+	@IsTest
+	static void testGetTotalAttachments() {
+		Quote q = getTestQuote();
+		QuotePDFController ctrl = buildController(q.Id);
+
+		Decimal total = ctrl.getTotalAttachments();
+
+		System.assertEquals(2, total, 'Total attachments should be 2 (1 line item with qty=2)');
+	}
+
+	@IsTest
+	static void testGetTotalAttachments_withNoLineItems() {
+		Account acc = [SELECT Id FROM Account LIMIT 1];
+		Opportunity opp = [SELECT Id FROM Opportunity LIMIT 1];
+
+		Quote emptyQuote = new Quote(
+			Name           = 'Empty Attachments Quote',
+			OpportunityId  = opp.Id,
+			Pricebook2Id   = Test.getStandardPricebookId()
+		);
+		insert emptyQuote;
+
+		QuotePDFController ctrl = buildController(emptyQuote.Id);
+
+		System.assertEquals(0, ctrl.getTotalAttachments(), 'Total attachments should be 0 with no line items');
+	}
+
+	@IsTest
+	static void testControllerWithMissingQuote_handlesNullGracefully() {
+		// Passing an unsaved Quote (no Id) causes getQuoteById to return null → early return
+		ApexPages.StandardController sc = new ApexPages.StandardController(new Quote());
+		QuotePDFController ctrl = new QuotePDFController(sc);
+
+		Assert.isNull(ctrl.quote, 'Quote should be null when not found');
+		Assert.isNull(ctrl.opp, 'Opp should be null when quote not found');
+		Assert.areEqual(
+			QuotePDFController.EMPTY_STRING,
+			ctrl.getFormattedDate(),
+			'getFormattedDate should return empty string when quote is null'
+		);
+		Assert.areEqual(
+			QuotePDFController.EMPTY_STRING,
+			ctrl.getFormattedExpirationDate(),
+			'getFormattedExpirationDate should return empty string when quote is null'
+		);
+		Assert.areEqual(0, ctrl.getTotalPrice(), 'getTotalPrice should return 0 when quote is null');
+		Assert.areEqual(0, ctrl.getTotalAttachments(), 'getTotalAttachments should return 0 when quote is null');
+	}
 }
