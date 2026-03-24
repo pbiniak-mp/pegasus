@@ -1,0 +1,50 @@
+public with sharing class DesignRevisionTriggerHandler extends TriggerHandler {
+
+	private static final String CLASS_NAME = 'DesignRevisionTriggerHandler';
+	private static final String SOURCE_TYPE_APEX = 'Apex';
+	private static final String SEVERITY_ERROR = 'ERROR';
+	private static final String ERR_AFTER_INSERT = 'Unhandled error during afterInsert on Design_Revision__c';
+	private static final String ERR_AFTER_UPDATE = 'Unhandled error during afterUpdate on Design_Revision__c';
+
+	public override void afterInsert() {
+		try {
+			List<Design_Revision__c> activated = DesignRevisionService.filterActivated(Trigger.new, null);
+			if (!activated.isEmpty()) {
+				DesignRevisionService.handleActivation(activated);
+			}
+		} catch (Exception e) {
+			BoltErrorLogger.logError(
+				CLASS_NAME,
+				'afterInsert',
+				ERR_AFTER_INSERT + ': ' + e.getMessage(),
+				e.getStackTraceString(),
+				SOURCE_TYPE_APEX,
+				SEVERITY_ERROR,
+				UserInfo.getUserId(),
+				null
+			);
+			throw e;
+		}
+	}
+
+	public override void afterUpdate() {
+		try {
+			List<Design_Revision__c> activated = DesignRevisionService.filterActivated(Trigger.new, (Map<Id, Design_Revision__c>) Trigger.oldMap);
+			if (!activated.isEmpty()) {
+				DesignRevisionService.handleActivation(activated);
+			}
+		} catch (Exception e) {
+			BoltErrorLogger.logError(
+				CLASS_NAME,
+				'afterUpdate',
+				ERR_AFTER_UPDATE + ': ' + e.getMessage(),
+				e.getStackTraceString(),
+				SOURCE_TYPE_APEX,
+				SEVERITY_ERROR,
+				UserInfo.getUserId(),
+				null
+			);
+			throw e;
+		}
+	}
+}

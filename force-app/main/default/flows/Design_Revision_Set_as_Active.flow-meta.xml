@@ -58,216 +58,23 @@
         <locationX>0</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>Update_Opportunity</targetReference>
-        </connector>
-        <faultConnector>
-            <isGoTo>true</isGoTo>
-            <targetReference>Error_Display</targetReference>
-        </faultConnector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>Id</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>recordId</elementReference>
-            </value>
-        </filters>
-        <inputAssignments>
-            <field>Is_Active__c</field>
-            <value>
-                <booleanValue>true</booleanValue>
-            </value>
-        </inputAssignments>
-        <object>Design_Revision__c</object>
-    </recordUpdates>
-    <recordUpdates>
-        <name>Deactivate_Other_Revisions</name>
-        <label>Deactivate Other Revisions</label>
-        <locationX>0</locationX>
-        <locationY>0</locationY>
-        <connector>
-            <targetReference>Activate_Design_Revision</targetReference>
-        </connector>
-        <faultConnector>
-            <isGoTo>true</isGoTo>
-            <targetReference>Error_Display</targetReference>
-        </faultConnector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>Opportunity__c</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>Get_Design_Revision.Opportunity__c</elementReference>
-            </value>
-        </filters>
-        <filters>
-            <field>Id</field>
-            <operator>NotEqualTo</operator>
-            <value>
-                <elementReference>recordId</elementReference>
-            </value>
-        </filters>
-        <filters>
-            <field>Is_Active__c</field>
-            <operator>EqualTo</operator>
-            <value>
-                <booleanValue>true</booleanValue>
-            </value>
-        </filters>
-        <inputAssignments>
-            <field>Is_Active__c</field>
-            <value>
-                <booleanValue>false</booleanValue>
-            </value>
-        </inputAssignments>
-        <object>Design_Revision__c</object>
-    </recordUpdates>
-    <recordUpdates>
-        <name>Update_Opportunity</name>
-        <label>Update Opportunity</label>
-        <locationX>0</locationX>
-        <locationY>0</locationY>
-        <connector>
             <targetReference>Display_Success</targetReference>
         </connector>
-        <faultConnector>
-            <targetReference>Error_Display</targetReference>
-        </faultConnector>
         <filterLogic>and</filterLogic>
         <filters>
             <field>Id</field>
             <operator>EqualTo</operator>
             <value>
-                <elementReference>Get_Design_Revision.Opportunity__r.Id</elementReference>
+                <elementReference>recordId</elementReference>
             </value>
         </filters>
         <inputAssignments>
-            <field>Building_Height_ft__c</field>
+            <field>Is_Active__c</field>
             <value>
-                <elementReference>Get_Design_Revision.Building_Height_ft__c</elementReference>
+                <booleanValue>true</booleanValue>
             </value>
         </inputAssignments>
-        <inputAssignments>
-            <field>Design_Revision__c</field>
-            <value>
-                <elementReference>recordId</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>Existing_or_new_construction__c</field>
-            <value>
-                <elementReference>Get_Design_Revision.Existing_or_new_construction__c</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>Maximum_System_Weight_Limit_lbs__c</field>
-            <value>
-                <elementReference>Get_Design_Revision.Maximum_System_Weight_Limit_lbs__c</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>Module_Quantity__c</field>
-            <value>
-                <elementReference>Get_Design_Revision.Module_Quantity__c</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>Module_Wattage_W__c</field>
-            <value>
-                <elementReference>Get_Design_Revision.Module_Wattage_W__c</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>Panel_Orientation__c</field>
-            <value>
-                <elementReference>Get_Design_Revision.Panel_Orientation__c</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>Panel_Tilt__c</field>
-            <value>
-                <elementReference>Get_Design_Revision.Panel_Tilt__c</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>Parapet_Height_in__c</field>
-            <value>
-                <elementReference>Get_Design_Revision.Parapet_Height_in__c</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>Parapet_Width_in__c</field>
-            <value>
-                <elementReference>Get_Design_Revision.Parapet_Width_in__c</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>Planned_Install_Date__c</field>
-            <value>
-                <elementReference>Get_Design_Revision.Planned_Install_Date__c</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>Point_Load_Limit_psf__c</field>
-            <value>
-                <elementReference>Get_Design_Revision.Point_Load_Limit_psf__c</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>Product_Line__c</field>
-            <value>
-                <elementReference>Get_Design_Revision.Product_Line__c</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>Project_Notes__c</field>
-            <value>
-                <elementReference>Get_Design_Revision.Project_Notes__c</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>Project_Wattage_kW__c</field>
-            <value>
-                <elementReference>Get_Design_Revision.Project_Wattage_kW__c</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>Roof_Pitch__c</field>
-            <value>
-                <elementReference>Get_Design_Revision.Roof_Pitch__c</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>Roof_Surface__c</field>
-            <value>
-                <elementReference>Get_Design_Revision.Roof_Surface__c</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>Setback_Distance_ft__c</field>
-            <value>
-                <elementReference>Get_Design_Revision.Setback_Distance_ft__c</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>Structural_Load_Limit_psf__c</field>
-            <value>
-                <elementReference>Get_Design_Revision.Structural_Load_Limit_psf__c</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>System_Configuration__c</field>
-            <value>
-                <elementReference>Get_Design_Revision.System_Configuration__c</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>System_Type__c</field>
-            <value>
-                <elementReference>Get_Design_Revision.System_Type__c</elementReference>
-            </value>
-        </inputAssignments>
-        <object>Opportunity</object>
+        <object>Design_Revision__c</object>
     </recordUpdates>
     <screens>
         <name>Confirm_Activation</name>
@@ -278,7 +85,7 @@
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
         <connector>
-            <targetReference>Deactivate_Other_Revisions</targetReference>
+            <targetReference>Activate_Design_Revision</targetReference>
         </connector>
         <fields>
             <name>Text_Are_You_Sure</name>
@@ -307,30 +114,6 @@
         <fields>
             <name>Display_Text_Success</name>
             <fieldText>&lt;p&gt;Design Revision {!Get_Design_Revision.Name} has been set as active.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;The Opportunity has been updated with the latest technical parameters from this revision.&lt;/p&gt;</fieldText>
-            <fieldType>DisplayText</fieldType>
-            <styleProperties>
-                <verticalAlignment>
-                    <stringValue>top</stringValue>
-                </verticalAlignment>
-                <width>
-                    <stringValue>12</stringValue>
-                </width>
-            </styleProperties>
-        </fields>
-        <showFooter>true</showFooter>
-        <showHeader>true</showHeader>
-    </screens>
-    <screens>
-        <name>Error_Display</name>
-        <label>Error Display</label>
-        <locationX>0</locationX>
-        <locationY>0</locationY>
-        <allowBack>false</allowBack>
-        <allowFinish>true</allowFinish>
-        <allowPause>false</allowPause>
-        <fields>
-            <name>Error_Display_Text</name>
-            <fieldText>&lt;p&gt;An error occurred while updating the records.&amp;nbsp;&lt;/p&gt;&lt;p&gt;Please contact your administrator.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Error: {!$Flow.FaultMessage}&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
             <styleProperties>
                 <verticalAlignment>

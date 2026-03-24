@@ -83,16 +83,46 @@
             <fieldInstance>
                 <fieldInstanceProperties>
                     <name>uiBehavior</name>
+                    <value>required</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Opportunity__c</fieldItem>
+                <identifier>RecordOpportunity_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.Is_Active__c</fieldItem>
-                <identifier>RecordIs_Active__cField</identifier>
+                <fieldItem>Record.Revision_Number__c</fieldItem>
+                <identifier>RecordRevision_Number__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Revision_Reason__c</fieldItem>
+                <identifier>RecordRevision_Reason__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-b9924f47-ec89-4e9a-bc77-a4e9a49fba02</name>
         <type>Facet</type>
     </flexiPageRegions>
     <flexiPageRegions>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Is_Active__c</fieldItem>
+                <identifier>RecordIs_Active__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
         <itemInstances>
             <fieldInstance>
                 <fieldInstanceProperties>
@@ -107,10 +137,10 @@
             <fieldInstance>
                 <fieldInstanceProperties>
                     <name>uiBehavior</name>
-                    <value>required</value>
+                    <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.Opportunity__c</fieldItem>
-                <identifier>RecordOpportunity_cField</identifier>
+                <fieldItem>Record.Project_Notes__c</fieldItem>
+                <identifier>RecordProject_Notes_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-8a59ea9e-2fd7-4c2c-ad10-fe9c5b01ccd5</name>
@@ -333,16 +363,6 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.Planned_Install_Date__c</fieldItem>
                 <identifier>RecordPlanned_Install_Date_cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.Project_Notes__c</fieldItem>
-                <identifier>RecordProject_Notes_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-86e0d706-687b-496a-818a-1e29cf02d3d1</name>
