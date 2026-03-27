@@ -10,7 +10,13 @@
                             <value>Edit</value>
                         </valueListItems>
                         <valueListItems>
+                            <value>Clone</value>
+                        </valueListItems>
+                        <valueListItems>
                             <value>Delete</value>
+                        </valueListItems>
+                        <valueListItems>
+                            <value>Design_Revision__c.New_Revision</value>
                         </valueListItems>
                         <valueListItems>
                             <value>Design_Revision__c.Set_as_Active</value>
@@ -35,7 +41,7 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>numVisibleActions</name>
-                    <value>3</value>
+                    <value>5</value>
                 </componentInstanceProperties>
                 <componentName>force:highlightsPanel</componentName>
                 <identifier>force_highlightsPanel</identifier>
@@ -107,6 +113,16 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.Revision_Reason__c</fieldItem>
                 <identifier>RecordRevision_Reason__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Parent_Revision__c</fieldItem>
+                <identifier>RecordParent_Revision__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-b9924f47-ec89-4e9a-bc77-a4e9a49fba02</name>
@@ -584,6 +600,32 @@
                 </componentInstanceProperties>
                 <componentName>force:relatedListSingleContainer</componentName>
                 <identifier>force_relatedListSingleContainer</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>parentFieldApiName</name>
+                    <value>Design_Revision__c.Id</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>relatedListApiName</name>
+                    <value>Design_Revisions__r</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>relatedListComponentOverride</name>
+                    <value>NONE</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>rowsToDisplay</name>
+                    <value>10</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>showActionBar</name>
+                    <value>true</value>
+                </componentInstanceProperties>
+                <componentName>force:relatedListSingleContainer</componentName>
+                <identifier>force_relatedListSingleContainer2</identifier>
             </componentInstance>
         </itemInstances>
         <mode>Replace</mode>
