@@ -63,3 +63,6 @@ target/
 *.iml
 .idea/
 IlluminatedCloud/
+
+CLAUDE.md
+.claude

@@ -1,0 +1,243 @@
+<apex:page standardController="Quote"
+		   extensions="QuotePDFController"
+		   renderAs="pdf"
+		   applyBodyTag="false"
+		   showHeader="false"
+		   sidebar="false">
+
+	<apex:stylesheet value="{!$Resource.PegasusQuoteCSS}"/>
+
+	<!-- LOGO -->
+	<div class="logo-wrap">
+		<apex:image value="{!$Resource.PegasusLogo}" alt="Pegasus Logo" styleClass="logo"/>
+	</div>
+
+	<!-- TOP TWO COLUMNS: Project Information | Summary + Equipment Type -->
+	<table class="top-table">
+		<tr>
+			<!-- LEFT: Project Information -->
+			<td class="top-left">
+				<p class="section-title">Project Information</p>
+				<table class="info-table">
+					<tr>
+						<td class="info-label">Project Name</td>
+						<td class="info-value">{!opp.Name}</td>
+					</tr>
+					<tr>
+						<td class="info-label">Quote #</td>
+						<td class="info-value">{!quote.Name}</td>
+					</tr>
+					<tr>
+						<td class="info-label">REV Number</td>
+						<td class="info-value">REV-{!quote.Design_Revision__r.Revision_Number__c}</td>
+					</tr>
+					<tr>
+						<td class="info-label">Customer Name</td>
+						<td class="info-value">
+							<apex:outputPanel rendered="{!NOT(ISNULL(contact))}">{!contact.Name}</apex:outputPanel>
+						</td>
+					</tr>
+					<tr>
+						<td class="info-label">Project Street</td>
+						<td class="info-value">{!quote.BillingStreet}</td>
+					</tr>
+					<tr>
+						<td class="info-label">City</td>
+						<td class="info-value">{!quote.BillingCity}</td>
+					</tr>
+					<tr>
+						<td class="info-label">State</td>
+						<td class="info-value">{!quote.BillingState}</td>
+					</tr>
+					<tr>
+						<td class="info-label">Zip code</td>
+						<td class="info-value">{!quote.BillingPostalCode}</td>
+					</tr>
+				</table>
+				<br/>
+				<table class="info-table">
+					<tr>
+						<td class="info-label-plain">Date:</td>
+						<td class="info-value">{!formattedDate}</td>
+					</tr>
+					<tr>
+						<td class="info-label-plain">Valid To:</td>
+						<td class="info-value">{!formattedExpirationDate}</td>
+					</tr>
+					<tr>
+						<td class="info-label-plain">Planned install Date:</td>
+						<td class="info-value">
+							<apex:outputPanel rendered="{!NOT(ISNULL(quote.Design_Revision__r.Planned_Install_Date__c))}">
+								<apex:outputText value="{0,date,MMMM dd, yyyy}">
+									<apex:param value="{!quote.Design_Revision__r.Planned_Install_Date__c}"/>
+								</apex:outputText>
+							</apex:outputPanel>
+						</td>
+					</tr>
+				</table>
+			</td>
+
+			<!-- RIGHT: Summary + Equipment Type -->
+			<td class="top-right">
+				<p class="section-title">Summary</p>
+				<table class="info-table">
+					<tr>
+						<td class="info-label">Total Modules</td>
+						<td class="info-value">{!quote.Design_Revision__r.Module_Quantity__c}</td>
+					</tr>
+					<tr>
+						<td class="info-label">Total Watts</td>
+						<td class="info-value">{!quote.Design_Revision__r.Project_Wattage_kW__c}&nbsp;kW</td>
+					</tr>
+					<tr>
+						<td class="info-label">Total Attachments</td>
+						<td class="info-value">
+							<apex:outputText value="{0, number, #,##0}">
+								<apex:param value="{!totalAttachments}"/>
+							</apex:outputText>
+						</td>
+					</tr>
+				</table>
+				<br/>
+				<p class="section-title">Equipments Type</p>
+				<table class="info-table">
+					<tr>
+						<!-- TODO: Module Manufacturer — confirm with Ryan -->
+						<td class="info-label">Module Manufacturer</td>
+						<td class="info-value"></td>
+					</tr>
+					<tr>
+						<!-- TODO: Module Number — confirm with Ryan -->
+						<td class="info-label">Module Number</td>
+						<td class="info-value"></td>
+					</tr>
+					<tr>
+						<td class="info-label">Module Watts</td>
+						<td class="info-value">{!quote.Design_Revision__r.Module_Wattage_W__c}</td>
+					</tr>
+					<tr>
+						<td class="info-label">System</td>
+						<td class="info-value">{!quote.Design_Revision__r.System_Type__c}</td>
+					</tr>
+					<tr>
+						<td class="info-label">Tilt</td>
+						<td class="info-value">{!quote.Design_Revision__r.Panel_Tilt__c}</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+
+	<!-- RACKING COMPONENTS -->
+	<br/>
+	<p class="section-title">Racking Components</p>
+	<table class="products-table">
+		<tr>
+			<th class="col-pn">P/N</th>
+			<th class="col-desc">Description</th>
+			<th class="col-num">Price</th>
+			<th class="col-num">QTY</th>
+			<th class="col-num">Cost Total</th>
+		</tr>
+		<apex:repeat value="{!lineItems}" var="li">
+			<tr>
+				<td class="prod-pn">{!li.Product2.Name}</td>
+				<td class="prod-desc">
+					<apex:outputPanel rendered="{!NOT(ISBLANK(li.Description))}">{!li.Description}</apex:outputPanel>
+					<apex:outputPanel rendered="{!ISBLANK(li.Description)}">{!li.Product2.Name}</apex:outputPanel>
+				</td>
+				<td class="prod-num">
+					$&nbsp;<apex:outputText value="{0, number, #,##0.00}">
+						<apex:param value="{!li.UnitPrice}"/>
+					</apex:outputText>
+				</td>
+				<td class="prod-num">
+					<apex:outputText value="{0, number, #,##0}">
+						<apex:param value="{!li.Quantity}"/>
+					</apex:outputText>
+				</td>
+				<td class="prod-num">
+					$&nbsp;<apex:outputText value="{0, number, #,##0.00}">
+						<apex:param value="{!li.TotalPrice}"/>
+					</apex:outputText>
+				</td>
+			</tr>
+		</apex:repeat>
+	</table>
+
+	<!-- TOTALS -->
+	<table class="totals-table">
+		<tr>
+			<td class="totals-label">Freight:</td>
+			<td class="totals-value">TBD</td>
+		</tr>
+		<tr>
+			<td class="totals-label">Sub Total:</td>
+			<td class="totals-value">
+				$<apex:outputText value="{0, number, #,##0.00}">
+					<apex:param value="{!totalPrice}"/>
+				</apex:outputText>
+			</td>
+		</tr>
+		<tr>
+			<td class="totals-label">Racking Total:</td>
+			<td class="totals-value">
+				$<apex:outputText value="{0, number, #,##0.00}">
+					<apex:param value="{!totalPrice}"/>
+				</apex:outputText>
+			</td>
+		</tr>
+		<tr>
+			<!-- TODO: $/Watt — confirm formula with Ryan -->
+			<td class="totals-label">$/Watt:</td>
+			<td class="totals-value"></td>
+		</tr>
+	</table>
+
+	<!-- DISCLAIMER -->
+	<div class="disclaimer">
+		<p>The above prices do not include taxes and duties.</p>
+		<p class="bold">Any above freight costs may change at the time of shipping.</p>
+		<p>Credit card transactions incur a convenience fee.</p>
+	</div>
+
+	<!-- SIGNATURE — dwie linie rozdzielone spacją -->
+	<table class="signature-table">
+		<tr>
+			<td class="sig-line-cell"><div class="sig-line-div"></div></td>
+			<td class="sig-spacer"></td>
+			<td class="sig-date-cell"><div class="sig-line-div"></div></td>
+		</tr>
+		<tr>
+			<td class="sig-label">Signature</td>
+			<td class="sig-spacer"></td>
+			<td class="sig-label">Date</td>
+		</tr>
+		<tr>
+			<td class="sig-text-cell" colspan="3">
+				Hereby I order the items listed in this quote and accept general terms and
+				conditions, warranty conditions and usage agreement.
+			</td>
+		</tr>
+	</table>
+
+	<!-- CONFIDENTIALITY -->
+	<div class="confidential">
+		This document contains confidential and proprietary information of Pegasus Solar Inc.
+		It is submitted solely for the purpose of evaluating a potential business relationship
+		and must not be disclosed, copied, or used for any other purpose without express
+		written consent.
+	</div>
+
+	<!-- COMPANY ADDRESS — linia na całej szerokości -->
+	<table class="company-footer-table">
+		<tr>
+			<td class="company-footer-cell">
+				<strong>Pegasus Solar Inc.</strong><br/>
+				506 W Ohio Ave.<br/>
+				Richmond, CA 94804
+			</td>
+		</tr>
+	</table>
+
+</apex:page>
