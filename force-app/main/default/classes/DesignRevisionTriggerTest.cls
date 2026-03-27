@@ -10,6 +10,7 @@ private class DesignRevisionTriggerTest {
 	private static final Integer REV_BUILDING_HEIGHT = 20;
 	private static final Integer REV_MODULE_WATTAGE = 400;
 	private static final String REV_REASON = '--';
+	private static final String REV_REASON_PEGASUS = 'Pegasus Revision';
 	private static final String REV_NUMBER = '00';
 
 	private static final String REV_SYSTEM_TYPE = 'Pitched Roof';
@@ -265,6 +266,107 @@ private class DesignRevisionTriggerTest {
 			afterUpdate.Module_Quantity__c,
 			'Opportunity fields should not be overwritten when revision was already active'
 		);
+	}
+
+	@IsTest
+	static void testBuildNames_setsNameOnInsertAndRevisionNumberChange() {
+		Opportunity opp = getOpp();
+
+		Test.startTest();
+		Design_Revision__c rev = buildRevision(opp.Id, 10, 4.0);
+		insert rev;
+		Test.stopTest();
+
+		Design_Revision__c afterInsert = [SELECT Id, Name FROM Design_Revision__c WHERE Id = :rev.Id];
+		Assert.isTrue(
+			afterInsert.Name.contains('00'),
+			'Name should contain revision number after insert: ' + afterInsert.Name
+		);
+
+		rev.Revision_Number__c = '01';
+		rev.Revision_Reason__c = REV_REASON_PEGASUS;
+		update rev;
+
+		Design_Revision__c afterUpdate = [SELECT Id, Name FROM Design_Revision__c WHERE Id = :rev.Id];
+		Assert.isTrue(
+			afterUpdate.Name.contains('REV01'),
+			'Name should update when Revision_Number__c changes: ' + afterUpdate.Name
+		);
+	}
+
+	@IsTest
+	static void testCreateNewRevision_clonesFieldsAndSetsParent() {
+		Opportunity opp = getOpp();
+		Design_Revision__c rev = buildRevision(opp.Id, 20, 8.0);
+		rev.System_Type__c = REV_SYSTEM_TYPE;
+		rev.Panel_Tilt__c = REV_PANEL_TILT;
+		rev.Roof_Surface__c = REV_ROOF_SURFACE;
+		insert rev;
+
+		Test.startTest();
+		Id newRevId = DesignRevisionService.createNewRevision(rev.Id, REV_REASON_PEGASUS, 'Some notes');
+		Test.stopTest();
+
+		Design_Revision__c newRev = [
+			SELECT
+				Id,
+				Name,
+				Opportunity__c,
+				Parent_Revision__c,
+				Revision_Number__c,
+				Revision_Reason__c,
+				Project_Notes__c,
+				Is_Active__c,
+				Status__c,
+				Module_Quantity__c,
+				System_Type__c,
+				Panel_Tilt__c,
+				Roof_Surface__c
+			FROM Design_Revision__c
+			WHERE Id = :newRevId
+		];
+
+		Assert.areEqual(opp.Id, newRev.Opportunity__c, 'Should be linked to same Opportunity');
+		Assert.areEqual(rev.Id, newRev.Parent_Revision__c, 'Parent should be original revision');
+		Assert.areEqual('01', newRev.Revision_Number__c, 'Next revision number should be 01');
+		Assert.areEqual(REV_REASON_PEGASUS, newRev.Revision_Reason__c, 'Revision reason should be set');
+		Assert.areEqual('Some notes', newRev.Project_Notes__c, 'Project notes should be set');
+		Assert.isFalse(newRev.Is_Active__c, 'New revision should not be active');
+		Assert.areEqual('Not Started', newRev.Status__c, 'Status should be Not Started');
+		Assert.areEqual(20, newRev.Module_Quantity__c, 'Module_Quantity__c should be cloned');
+		Assert.areEqual(REV_SYSTEM_TYPE, newRev.System_Type__c, 'System_Type__c should be cloned');
+		Assert.areEqual(REV_PANEL_TILT, newRev.Panel_Tilt__c, 'Panel_Tilt__c should be cloned');
+		Assert.areEqual(REV_ROOF_SURFACE, newRev.Roof_Surface__c, 'Roof_Surface__c should be cloned');
+		Assert.isTrue(newRev.Name.contains('REV01'), 'Name should contain REV01');
+	}
+
+	@IsTest
+	static void testCreateNewRevision_invocable_returnsNewRevisionId() {
+		Opportunity opp = getOpp();
+		Design_Revision__c rev = buildRevision(opp.Id, 10, 4.0);
+		insert rev;
+
+		CreateDesignRevisionInvocable.Request req = new CreateDesignRevisionInvocable.Request();
+		req.revisionId = rev.Id;
+		req.revisionReason = REV_REASON_PEGASUS;
+		req.projectNotes = null;
+
+		Test.startTest();
+		List<CreateDesignRevisionInvocable.Result> results = CreateDesignRevisionInvocable.createNewRevision(
+			new List<CreateDesignRevisionInvocable.Request>{ req }
+		);
+		Test.stopTest();
+
+		Assert.areEqual(1, results.size(), 'Should return one result');
+		Assert.isNotNull(results[0].newRevisionId, 'New revision Id should not be null');
+
+		Design_Revision__c newRev = [
+			SELECT Revision_Number__c, Parent_Revision__c
+			FROM Design_Revision__c
+			WHERE Id = :results[0].newRevisionId
+		];
+		Assert.areEqual('01', newRev.Revision_Number__c, 'Revision number should be 01');
+		Assert.areEqual(rev.Id, newRev.Parent_Revision__c, 'Parent should be set');
 	}
 
 	private static Set<Id> getLinkedDocIds(Id recordId) {

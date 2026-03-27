@@ -162,10 +162,9 @@
     <externalSharingModel>ControlledByParent</externalSharingModel>
     <label>Design Revision</label>
     <nameField>
-        <displayFormat>REV-{000000}</displayFormat>
         <label>Revision Number</label>
         <trackHistory>false</trackHistory>
-        <type>AutoNumber</type>
+        <type>Text</type>
     </nameField>
     <pluralLabel>Design Revisions</pluralLabel>
     <searchLayouts></searchLayouts>

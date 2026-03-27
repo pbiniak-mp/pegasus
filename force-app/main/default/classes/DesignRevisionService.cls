@@ -8,6 +8,7 @@ public with sharing class DesignRevisionService {
 	private static final String ERR_DELETE_CONTENT_LINKS = 'Failed to delete ContentDocumentLinks from Opportunity';
 	private static final String ERR_INSERT_CONTENT_LINKS = 'Failed to insert ContentDocumentLinks to Opportunity';
 	private static final String ERR_UPDATE_OPPORTUNITIES = 'Failed to update Opportunities after Design Revision activation';
+	private static final String ERR_CREATE_NEW_REVISION = 'Unhandled error during createNewRevision';
 
 	public static List<Design_Revision__c> filterActivated(
 		List<Design_Revision__c> newList,
@@ -207,5 +208,91 @@ public with sharing class DesignRevisionService {
 			System_Configuration__c = dr.System_Configuration__c,
 			System_Type__c = dr.System_Type__c
 		);
+	}
+
+	public static void buildNames(List<Design_Revision__c> revisions, Map<Id, Design_Revision__c> oldMap) {
+		Set<Id> oppIds = new Set<Id>();
+		for (Design_Revision__c rev : revisions) {
+			Boolean isInsert = oldMap == null;
+			Boolean revNumChanged = !isInsert && oldMap.get(rev.Id).Revision_Number__c != rev.Revision_Number__c;
+			if (isInsert || revNumChanged) {
+				oppIds.add(rev.Opportunity__c);
+			}
+		}
+
+		if (oppIds.isEmpty()) return;
+
+		Map<Id, Opportunity> oppMap = new Map<Id, Opportunity>(
+			OpportunitySelector.getOpportunitiesByIds(oppIds)
+		);
+
+		for (Design_Revision__c rev : revisions) {
+			Boolean isInsert = oldMap == null;
+			Boolean revNumChanged = !isInsert && oldMap.get(rev.Id).Revision_Number__c != rev.Revision_Number__c;
+			if (isInsert || revNumChanged) {
+				Opportunity opp = oppMap.get(rev.Opportunity__c);
+				String accountName = (opp != null && opp.Account != null) ? opp.Account.Name : 'Unknown';
+				String revNum = String.isNotBlank(rev.Revision_Number__c) ? rev.Revision_Number__c : 'REV00';
+				rev.Name = accountName + ' (REV' + revNum + ')';
+			}
+		}
+	}
+
+	public static Id createNewRevision(Id currentRevisionId, String revisionReason, String projectNotes) {
+		try {
+			Design_Revision__c current = DesignRevisionSelector.getDesignRevisionById(currentRevisionId);
+
+			Integer count = [
+				SELECT COUNT()
+				FROM Design_Revision__c
+				WHERE Opportunity__c = :current.Opportunity__c
+			];
+			String nextNumber = count < 10 ? '0' + String.valueOf(count) : String.valueOf(count);
+
+			Design_Revision__c newRev = new Design_Revision__c(
+				Opportunity__c = current.Opportunity__c,
+				Parent_Revision__c = currentRevisionId,
+				Revision_Number__c = nextNumber,
+				Revision_Reason__c = revisionReason,
+				Project_Notes__c = projectNotes,
+				Is_Active__c = false,
+				Status__c = 'Not Started',
+				Module_Quantity__c = current.Module_Quantity__c,
+				Module_Wattage_W__c = current.Module_Wattage_W__c,
+				Project_Wattage_kW__c = current.Project_Wattage_kW__c,
+				System_Type__c = current.System_Type__c,
+				Panel_Tilt__c = current.Panel_Tilt__c,
+				Panel_Orientation__c = current.Panel_Orientation__c,
+				Product_Line__c = current.Product_Line__c,
+				System_Configuration__c = current.System_Configuration__c,
+				Roof_Surface__c = current.Roof_Surface__c,
+				Roof_Pitch__c = current.Roof_Pitch__c,
+				Setback_Distance_ft__c = current.Setback_Distance_ft__c,
+				Structural_Load_Limit_psf__c = current.Structural_Load_Limit_psf__c,
+				Point_Load_Limit_psf__c = current.Point_Load_Limit_psf__c,
+				Maximum_System_Weight_Limit_lbs__c = current.Maximum_System_Weight_Limit_lbs__c,
+				Building_Height_ft__c = current.Building_Height_ft__c,
+				Parapet_Height_in__c = current.Parapet_Height_in__c,
+				Parapet_Width_in__c = current.Parapet_Width_in__c,
+				Existing_or_new_construction__c = current.Existing_or_new_construction__c,
+				Planned_Install_Date__c = current.Planned_Install_Date__c
+			);
+
+			insert newRev;
+			return newRev.Id;
+
+		} catch (Exception e) {
+			BoltErrorLogger.logError(
+				CLASS_NAME,
+				'createNewRevision',
+				ERR_CREATE_NEW_REVISION + ': ' + e.getMessage(),
+				e.getStackTraceString(),
+				SOURCE_TYPE_APEX,
+				SEVERITY_ERROR,
+				UserInfo.getUserId(),
+				currentRevisionId
+			);
+			throw e;
+		}
 	}
 }

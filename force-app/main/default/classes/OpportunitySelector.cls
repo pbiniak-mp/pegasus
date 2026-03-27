@@ -4,6 +4,7 @@ public inherited sharing class OpportunitySelector {
 		return [
 			SELECT
 				Id,
+				Account.Name,
 				Building_Height_ft__c,
 				CloseDate,
 				Design_Revision__c,
