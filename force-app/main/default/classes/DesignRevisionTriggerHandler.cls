@@ -5,6 +5,44 @@ public with sharing class DesignRevisionTriggerHandler extends TriggerHandler {
 	private static final String SEVERITY_ERROR = 'ERROR';
 	private static final String ERR_AFTER_INSERT = 'Unhandled error during afterInsert on Design_Revision__c';
 	private static final String ERR_AFTER_UPDATE = 'Unhandled error during afterUpdate on Design_Revision__c';
+	private static final String ERR_BEFORE_INSERT = 'Unhandled error during beforeInsert on Design_Revision__c';
+	private static final String ERR_BEFORE_UPDATE = 'Unhandled error during beforeUpdate on Design_Revision__c';
+
+	public override void beforeInsert() {
+		try {
+			DesignRevisionService.buildNames(Trigger.new, null);
+		} catch (Exception e) {
+			BoltErrorLogger.logError(
+				CLASS_NAME,
+				'beforeInsert',
+				ERR_BEFORE_INSERT + ': ' + e.getMessage(),
+				e.getStackTraceString(),
+				SOURCE_TYPE_APEX,
+				SEVERITY_ERROR,
+				UserInfo.getUserId(),
+				null
+			);
+			throw e;
+		}
+	}
+
+	public override void beforeUpdate() {
+		try {
+			DesignRevisionService.buildNames(Trigger.new, (Map<Id, Design_Revision__c>) Trigger.oldMap);
+		} catch (Exception e) {
+			BoltErrorLogger.logError(
+				CLASS_NAME,
+				'beforeUpdate',
+				ERR_BEFORE_UPDATE + ': ' + e.getMessage(),
+				e.getStackTraceString(),
+				SOURCE_TYPE_APEX,
+				SEVERITY_ERROR,
+				UserInfo.getUserId(),
+				null
+			);
+			throw e;
+		}
+	}
 
 	public override void afterInsert() {
 		try {

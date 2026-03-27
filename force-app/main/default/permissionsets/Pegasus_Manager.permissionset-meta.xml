@@ -5,6 +5,10 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>CreateDesignRevisionInvocable</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>DesignRevisionSelector</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -495,6 +499,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Design_Revision__c.Parapet_Width_in__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Design_Revision__c.Parent_Revision__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
