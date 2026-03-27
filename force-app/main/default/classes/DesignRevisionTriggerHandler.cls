@@ -1,8 +1,6 @@
 public with sharing class DesignRevisionTriggerHandler extends TriggerHandler {
 
 	private static final String CLASS_NAME = 'DesignRevisionTriggerHandler';
-	private static final String SOURCE_TYPE_APEX = 'Apex';
-	private static final String SEVERITY_ERROR = 'ERROR';
 	private static final String ERR_AFTER_INSERT = 'Unhandled error during afterInsert on Design_Revision__c';
 	private static final String ERR_AFTER_UPDATE = 'Unhandled error during afterUpdate on Design_Revision__c';
 	private static final String ERR_BEFORE_INSERT = 'Unhandled error during beforeInsert on Design_Revision__c';
@@ -17,8 +15,8 @@ public with sharing class DesignRevisionTriggerHandler extends TriggerHandler {
 				'beforeInsert',
 				ERR_BEFORE_INSERT + ': ' + e.getMessage(),
 				e.getStackTraceString(),
-				SOURCE_TYPE_APEX,
-				SEVERITY_ERROR,
+				Constants.SOURCE_TYPE_APEX,
+				Constants.SEVERITY_ERROR,
 				UserInfo.getUserId(),
 				null
 			);
@@ -35,8 +33,8 @@ public with sharing class DesignRevisionTriggerHandler extends TriggerHandler {
 				'beforeUpdate',
 				ERR_BEFORE_UPDATE + ': ' + e.getMessage(),
 				e.getStackTraceString(),
-				SOURCE_TYPE_APEX,
-				SEVERITY_ERROR,
+				Constants.SOURCE_TYPE_APEX,
+				Constants.SEVERITY_ERROR,
 				UserInfo.getUserId(),
 				null
 			);
@@ -56,8 +54,8 @@ public with sharing class DesignRevisionTriggerHandler extends TriggerHandler {
 				'afterInsert',
 				ERR_AFTER_INSERT + ': ' + e.getMessage(),
 				e.getStackTraceString(),
-				SOURCE_TYPE_APEX,
-				SEVERITY_ERROR,
+				Constants.SOURCE_TYPE_APEX,
+				Constants.SEVERITY_ERROR,
 				UserInfo.getUserId(),
 				null
 			);
@@ -77,8 +75,8 @@ public with sharing class DesignRevisionTriggerHandler extends TriggerHandler {
 				'afterUpdate',
 				ERR_AFTER_UPDATE + ': ' + e.getMessage(),
 				e.getStackTraceString(),
-				SOURCE_TYPE_APEX,
-				SEVERITY_ERROR,
+				Constants.SOURCE_TYPE_APEX,
+				Constants.SEVERITY_ERROR,
 				UserInfo.getUserId(),
 				null
 			);

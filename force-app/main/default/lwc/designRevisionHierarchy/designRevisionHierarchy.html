@@ -1,0 +1,15 @@
+<template>
+    <lightning-card title="Design Revisions" icon-name="standard:drafts">
+        <template if:true={error}>
+            <p class="slds-p-around_medium slds-text-color_error">{error}</p>
+        </template>
+        <template if:true={data}>
+            <lightning-tree-grid
+                data={data}
+                columns={columns}
+                key-field="id"
+                expanded-rows={expandedRows}
+            ></lightning-tree-grid>
+        </template>
+    </lightning-card>
+</template>
