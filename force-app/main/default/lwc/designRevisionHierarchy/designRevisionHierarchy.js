@@ -8,7 +8,7 @@ const COLUMNS = [
         fieldName: 'recordUrl',
         typeAttributes: { label: { fieldName: 'name' }, target: '_self' }
     },
-    { label: 'Revision Number', fieldName: 'revisionNumber', type: 'number' },
+    { label: 'Revision Number', fieldName: 'revisionNumber', type: 'text' },
     { label: 'Revision Reason', fieldName: 'revisionReason', type: 'text' },
     { label: 'Project Notes', fieldName: 'projectNotes', type: 'text' }
 ];
