@@ -3,7 +3,7 @@ private class DesignRevisionHierarchyControllerTest {
 	private static final String OPP_NAME = 'Test Hierarchy Opp';
 	private static final String OPP_STAGE = 'Prospecting';
 	private static final Integer OPP_CLOSE_DAYS = 30;
-	private static final String REV_REASON = '--';
+	private static final String REV_REASON = 'Pegasus Revision';
 	private static final String REV_NUMBER = '00';
 
 	@TestSetup
@@ -54,7 +54,7 @@ private class DesignRevisionHierarchyControllerTest {
 	static void testGetRevisionHierarchy_mapsNodeFieldsCorrectly() {
 		Opportunity opp = getOpp();
 		Design_Revision__c rev = buildRevision(opp.Id, '00', null);
-		rev.Revision_Reason__c = 'Client Request';
+		rev.Revision_Reason__c = 'Pegasus Revision';
 		rev.Project_Notes__c = 'Some notes';
 		insert rev;
 
@@ -69,7 +69,7 @@ private class DesignRevisionHierarchyControllerTest {
 		Assert.areEqual(inserted.Id, node.id, 'Id should match');
 		Assert.areEqual(inserted.Name, node.name, 'Name should match');
 		Assert.areEqual(Constants.DESIGN_REVISION_RECORD_URL_BASE + inserted.Id + Constants.RECORD_URL_VIEW_SUFFIX, node.recordUrl, 'recordUrl should be correct');
-		Assert.areEqual('Client Request', node.revisionReason, 'revisionReason should match');
+		Assert.areEqual('Pegasus Revision', node.revisionReason, 'revisionReason should match');
 		Assert.areEqual('Some notes', node.projectNotes, 'projectNotes should match');
 	}
 
