@@ -1,9 +1,5 @@
 public with sharing class DesignRevisionService {
-	public static final String DESIGN_REVISION_HANDLER_NAME = 'DesignRevisionTriggerHandler';
-
 	private static final String CLASS_NAME = 'DesignRevisionService';
-	private static final String SOURCE_TYPE_APEX = 'Apex';
-	private static final String SEVERITY_ERROR = 'ERROR';
 	private static final String ERR_DEACTIVATE_REVISIONS = 'Failed to deactivate other Design Revisions';
 	private static final String ERR_DELETE_CONTENT_LINKS = 'Failed to delete ContentDocumentLinks from Opportunity';
 	private static final String ERR_INSERT_CONTENT_LINKS = 'Failed to insert ContentDocumentLinks to Opportunity';
@@ -63,7 +59,7 @@ public with sharing class DesignRevisionService {
 			}
 		}
 		if (!toDeactivate.isEmpty()) {
-			TriggerHandler.bypass(DESIGN_REVISION_HANDLER_NAME);
+			TriggerHandler.bypass(Constants.DESIGN_REVISION_HANDLER_NAME);
 			try {
 				update toDeactivate;
 			} catch (Exception e) {
@@ -72,14 +68,14 @@ public with sharing class DesignRevisionService {
 					'deactivateOtherRevisions',
 					ERR_DEACTIVATE_REVISIONS + ': ' + e.getMessage(),
 					e.getStackTraceString(),
-					SOURCE_TYPE_APEX,
-					SEVERITY_ERROR,
+					Constants.SOURCE_TYPE_APEX,
+					Constants.SEVERITY_ERROR,
 					UserInfo.getUserId(),
 					null
 				);
 				throw e;
 			} finally {
-				TriggerHandler.clearBypass(DESIGN_REVISION_HANDLER_NAME);
+				TriggerHandler.clearBypass(Constants.DESIGN_REVISION_HANDLER_NAME);
 			}
 		}
 	}
@@ -113,8 +109,8 @@ public with sharing class DesignRevisionService {
 					'relinkFiles',
 					ERR_DELETE_CONTENT_LINKS + ': ' + e.getMessage(),
 					e.getStackTraceString(),
-					SOURCE_TYPE_APEX,
-					SEVERITY_ERROR,
+					Constants.SOURCE_TYPE_APEX,
+					Constants.SEVERITY_ERROR,
 					UserInfo.getUserId(),
 					null
 				);
@@ -149,8 +145,8 @@ public with sharing class DesignRevisionService {
 					'relinkFiles',
 					ERR_INSERT_CONTENT_LINKS + ': ' + e.getMessage(),
 					e.getStackTraceString(),
-					SOURCE_TYPE_APEX,
-					SEVERITY_ERROR,
+					Constants.SOURCE_TYPE_APEX,
+					Constants.SEVERITY_ERROR,
 					UserInfo.getUserId(),
 					null
 				);
@@ -173,8 +169,8 @@ public with sharing class DesignRevisionService {
 					'updateOpportunities',
 					ERR_UPDATE_OPPORTUNITIES + ': ' + e.getMessage(),
 					e.getStackTraceString(),
-					SOURCE_TYPE_APEX,
-					SEVERITY_ERROR,
+					Constants.SOURCE_TYPE_APEX,
+					Constants.SEVERITY_ERROR,
 					UserInfo.getUserId(),
 					null
 				);
@@ -231,9 +227,9 @@ public with sharing class DesignRevisionService {
 			Boolean revNumChanged = !isInsert && oldMap.get(rev.Id).Revision_Number__c != rev.Revision_Number__c;
 			if (isInsert || revNumChanged) {
 				Opportunity opp = oppMap.get(rev.Opportunity__c);
-				String accountName = (opp != null && opp.Account != null) ? opp.Account.Name : 'Unknown';
-				String revNum = String.isNotBlank(rev.Revision_Number__c) ? rev.Revision_Number__c : 'REV00';
-				rev.Name = accountName + ' (REV' + revNum + ')';
+				String accountName = (opp != null && opp.Account != null) ? opp.Account.Name : Constants.DESIGN_REVISION_UNKNOWN_ACCOUNT;
+				String revNum = String.isNotBlank(rev.Revision_Number__c) ? rev.Revision_Number__c : Constants.DESIGN_REVISION_NAME_DEFAULT_NUMBER;
+				rev.Name = accountName + ' (' + Constants.DESIGN_REVISION_NAME_PREFIX + revNum + ')';
 			}
 		}
 	}
@@ -256,7 +252,7 @@ public with sharing class DesignRevisionService {
 				Revision_Reason__c = revisionReason,
 				Project_Notes__c = projectNotes,
 				Is_Active__c = false,
-				Status__c = 'Not Started',
+				Status__c = Constants.DESIGN_REVISION_STATUS_NOT_STARTED,
 				Module_Quantity__c = current.Module_Quantity__c,
 				Module_Wattage_W__c = current.Module_Wattage_W__c,
 				Project_Wattage_kW__c = current.Project_Wattage_kW__c,
@@ -287,8 +283,8 @@ public with sharing class DesignRevisionService {
 				'createNewRevision',
 				ERR_CREATE_NEW_REVISION + ': ' + e.getMessage(),
 				e.getStackTraceString(),
-				SOURCE_TYPE_APEX,
-				SEVERITY_ERROR,
+				Constants.SOURCE_TYPE_APEX,
+				Constants.SEVERITY_ERROR,
 				UserInfo.getUserId(),
 				currentRevisionId
 			);
