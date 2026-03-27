@@ -55,7 +55,6 @@ public inherited sharing class DesignRevisionSelector {
 			SELECT Id, Name, Revision_Number__c, Revision_Reason__c, Project_Notes__c, Parent_Revision__c
 			FROM Design_Revision__c
 			WHERE Opportunity__c = :opportunityId
-			WITH USER_MODE
 			ORDER BY Revision_Number__c ASC NULLS LAST
 		];
 	}
