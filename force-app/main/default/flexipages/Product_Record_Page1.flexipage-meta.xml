@@ -181,6 +181,16 @@
                 <identifier>RecordCommitted__cField</identifier>
             </fieldInstance>
         </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.On_Order__c</fieldItem>
+                <identifier>RecordOn_Order_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
         <name>Facet-bed47a73-8d13-4334-aa40-45f3f5874898</name>
         <type>Facet</type>
     </flexiPageRegions>
