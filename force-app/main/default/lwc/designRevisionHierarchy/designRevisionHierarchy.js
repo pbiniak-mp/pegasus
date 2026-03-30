@@ -1,4 +1,5 @@
 import { LightningElement, api, wire } from 'lwc';
+import { NavigationMixin } from 'lightning/navigation';
 import getRevisionHierarchy from '@salesforce/apex/DesignRevisionHierarchyController.getRevisionHierarchy';
 
 const COLUMNS = [
@@ -13,7 +14,7 @@ const COLUMNS = [
     { label: 'Project Notes', fieldName: 'projectNotes', type: 'text' }
 ];
 
-export default class DesignRevisionHierarchy extends LightningElement {
+export default class DesignRevisionHierarchy extends NavigationMixin(LightningElement) {
     @api recordId;
 
     columns = COLUMNS;
@@ -25,11 +26,23 @@ export default class DesignRevisionHierarchy extends LightningElement {
     wiredHierarchy({ data, error }) {
         if (data) {
             this.data = data.map(node => this.remapChildren(node));
+            this.expandedRows = this.collectExpandedIds(this.data);
             this.error = undefined;
         } else if (error) {
             this.error = error.body?.message ?? 'An unexpected error occurred.';
             this.data = undefined;
         }
+    }
+
+    collectExpandedIds(nodes) {
+        let ids = [];
+        for (const node of nodes) {
+            if (node._children?.length) {
+                ids.push(node.id);
+                ids = ids.concat(this.collectExpandedIds(node._children));
+            }
+        }
+        return ids;
     }
 
     remapChildren(node) {
@@ -38,5 +51,18 @@ export default class DesignRevisionHierarchy extends LightningElement {
             ...rest,
             _children: children?.length ? children.map(child => this.remapChildren(child)) : undefined
         };
+    }
+
+    handleNew() {
+        this[NavigationMixin.Navigate]({
+            type: 'standard__objectPage',
+            attributes: {
+                objectApiName: 'Design_Revision__c',
+                actionName: 'new'
+            },
+            state: {
+                defaultFieldValues: 'Opportunity__c=' + this.recordId
+            }
+        });
     }
 }
