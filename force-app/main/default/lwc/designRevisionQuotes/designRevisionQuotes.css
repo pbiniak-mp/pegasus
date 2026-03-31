@@ -1,0 +1,113 @@
+.quotes-panel {
+    padding: 0.5rem 0;
+}
+
+.header-row {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 8px;
+}
+
+.cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.col-header {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #444;
+    margin: 0 0 8px 0;
+}
+
+.quote-card {
+    background: #ffffff;
+    border: 1px solid #dddbda;
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+}
+
+.quote-card:last-child {
+    margin-bottom: 0;
+}
+
+.quote-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: #0176d3;
+    text-decoration: none;
+    display: block;
+    margin-bottom: 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.quote-name:hover {
+    text-decoration: underline;
+}
+
+.quote-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.quote-total {
+    font-size: 13px;
+    font-weight: 500;
+    color: #181818;
+}
+
+.badge {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 20px;
+    white-space: nowrap;
+}
+
+.badge-accepted {
+    background: #EAF3DE;
+    color: #3B6D11;
+}
+
+.badge-denied {
+    background: #FCEBEB;
+    color: #A32D2D;
+}
+
+.badge-draft {
+    background: #F3F3F3;
+    color: #5F5E5A;
+    border: 1px solid #D3D1C7;
+}
+
+.badge-presented {
+    background: #E1F5EE;
+    color: #0F6E56;
+}
+
+.badge-review {
+    background: #FAEEDA;
+    color: #854F0B;
+}
+
+.empty {
+    font-size: 12px;
+    color: #888;
+    text-align: center;
+    padding: 12px 0;
+    border: 1px dashed #D3D1C7;
+    border-radius: 8px;
+}
+
+.error-msg {
+    font-size: 13px;
+    color: #A32D2D;
+}
