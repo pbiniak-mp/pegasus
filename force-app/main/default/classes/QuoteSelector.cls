@@ -67,6 +67,21 @@ public inherited sharing class QuoteSelector {
 		];
 	}
 
+	public static List<Quote> getQuotesByDesignRevisionId(Id revisionId) {
+		return [
+			SELECT
+				Id,
+				Name,
+				OpportunityId,
+				Status,
+				Quote_Type__c,
+				Quote_Grand_Total__c
+			FROM Quote
+			WHERE Design_Revision__c = :revisionId
+			ORDER BY Quote_Type__c, CreatedDate ASC
+		];
+	}
+
 	public static Quote getQuoteById(Id quoteId) {
 		List<Quote> quotes = getQuotesByIds(new Set<Id>{ quoteId });
 		return quotes.isEmpty() ? null : quotes[0];

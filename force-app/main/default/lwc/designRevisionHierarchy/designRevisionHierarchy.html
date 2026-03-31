@@ -1,5 +1,11 @@
 <template>
     <lightning-card title="Design Revisions" icon-name="standard:drafts">
+        <div slot="actions">
+            <lightning-button
+                label="New"
+                onclick={handleNew}>
+            </lightning-button>
+        </div>
         <template if:true={error}>
             <p class="slds-p-around_medium slds-text-color_error">{error}</p>
         </template>
