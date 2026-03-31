@@ -604,6 +604,12 @@
         </itemInstances>
         <itemInstances>
             <componentInstance>
+                <componentName>designRevisionQuotes</componentName>
+                <identifier>c_designRevisionQuotes</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
                 <componentInstanceProperties>
                     <name>parentFieldApiName</name>
                     <value>Design_Revision__c.Id</value>
