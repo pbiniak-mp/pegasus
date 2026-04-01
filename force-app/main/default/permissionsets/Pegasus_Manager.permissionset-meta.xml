@@ -1351,6 +1351,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>Product2.Subcategory__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>Product2.Tax_Schedule__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -1572,6 +1577,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Warehouse_Location__c.State__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Warehouse_Location__c.ZIP__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <hasActivationRequired>false</hasActivationRequired>
