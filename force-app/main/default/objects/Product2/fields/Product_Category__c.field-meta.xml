@@ -9,44 +9,74 @@
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
-                <fullName>Hardware</fullName>
-                <default>false</default>
-                <label>Hardware</label>
-            </value>
-            <value>
                 <fullName>Accessory</fullName>
                 <default>false</default>
                 <label>Accessory</label>
             </value>
             <value>
-                <fullName>Component</fullName>
+                <fullName>Commercial Roof</fullName>
                 <default>false</default>
-                <label>Component</label>
+                <label>Commercial Roof</label>
             </value>
             <value>
-                <fullName>Assembly</fullName>
+                <fullName>Common Build Component</fullName>
                 <default>false</default>
-                <label>Assembly</label>
+                <label>Common Build Component</label>
             </value>
             <value>
-                <fullName>Tool</fullName>
+                <fullName>Comp Roof Attachment</fullName>
                 <default>false</default>
-                <label>Tool</label>
+                <label>Comp Roof Attachment</label>
             </value>
             <value>
-                <fullName>Packaging</fullName>
+                <fullName>Demo</fullName>
                 <default>false</default>
-                <label>Packaging</label>
+                <label>Demo</label>
             </value>
             <value>
-                <fullName>Service</fullName>
+                <fullName>Flat Roof Attachment</fullName>
                 <default>false</default>
-                <label>Service</label>
+                <label>Flat Roof Attachment</label>
             </value>
             <value>
-                <fullName>Material</fullName>
+                <fullName>Ground Mount</fullName>
                 <default>false</default>
-                <label>Material</label>
+                <label>Ground Mount</label>
+            </value>
+            <value>
+                <fullName>Marketing</fullName>
+                <default>false</default>
+                <label>Marketing</label>
+            </value>
+            <value>
+                <fullName>Metal Roof Attachment</fullName>
+                <default>false</default>
+                <label>Metal Roof Attachment</label>
+            </value>
+            <value>
+                <fullName>Rail System</fullName>
+                <default>false</default>
+                <label>Rail System</label>
+            </value>
+            <value>
+                <fullName>Rail System : Rail Component</fullName>
+                <default>false</default>
+                <label>Rail System : Rail Component</label>
+            </value>
+            <value>
+                <fullName>Rail System : SKU - Rail System</fullName>
+                <default>false</default>
+                <label>Rail System : SKU - Rail System</label>
+            </value>
+            <value>
+                <fullName>Residential Roof</fullName>
+                <default>false</default>
+                <label>Residential Roof</label>
+            </value>
+            <value>
+                <fullName>Tile Roof Attachment</fullName>
+                <default>false</default>
+                <label>Tile Roof Attachment</label>
             </value>
         </valueSetDefinition>
     </valueSet>
