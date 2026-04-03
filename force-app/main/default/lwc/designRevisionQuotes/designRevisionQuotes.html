@@ -12,6 +12,7 @@
 			<div class="header-row">
 				<lightning-button
 					label="New Quote"
+					variant="brand"
 					icon-name="utility:add"
 					onclick={handleNewQuote}>
 				</lightning-button>
@@ -25,8 +26,22 @@
 							<a href={quote.recordUrl} class="quote-name">{quote.name}</a>
 							<div class="quote-row">
 								<span class="quote-total">{quote.grandTotalFormatted}</span>
-								<span class={quote.badgeClass}>{quote.status}</span>
+								<div class="quote-row-end">
+									<span class={quote.badgeClass}>{quote.status}</span>
+									<lightning-button-icon
+										data-quoteid={quote.id}
+										icon-name="utility:edit"
+										variant="border-filled"
+										size="x-small"
+										alternative-text="Change status"
+										title="Change status"
+										onclick={handleActionClick}>
+									</lightning-button-icon>
+								</div>
 							</div>
+							<template lwc:if={quote.expirationDate}>
+								<div class="quote-expiry">Exp: {quote.expirationDate}</div>
+							</template>
 						</div>
 					</template>
 					<template lwc:if={noMaterial}>
@@ -41,8 +56,22 @@
 							<a href={quote.recordUrl} class="quote-name">{quote.name}</a>
 							<div class="quote-row">
 								<span class="quote-total">{quote.grandTotalFormatted}</span>
-								<span class={quote.badgeClass}>{quote.status}</span>
+								<div class="quote-row-end">
+									<span class={quote.badgeClass}>{quote.status}</span>
+									<lightning-button-icon
+										data-quoteid={quote.id}
+										icon-name="utility:edit"
+										variant="border-filled"
+										size="x-small"
+										alternative-text="Change status"
+										title="Change status"
+										onclick={handleActionClick}>
+									</lightning-button-icon>
+								</div>
 							</div>
+							<template lwc:if={quote.expirationDate}>
+								<div class="quote-expiry">Exp: {quote.expirationDate}</div>
+							</template>
 						</div>
 					</template>
 					<template lwc:if={noStamp}>
@@ -52,4 +81,28 @@
 			</div>
 		</template>
 	</div>
+
+	<template lwc:if={confirmModal.visible}>
+		<div class="modal-overlay">
+			<div class="modal-box">
+				<p class="modal-title">Change Status</p>
+				<p class="modal-quote-name">{confirmModal.quoteName}</p>
+				<lightning-combobox
+					label="Status"
+					value={confirmModal.newStatus}
+					options={statusOptions}
+					onchange={handleModalStatusChange}>
+				</lightning-combobox>
+				<div class="modal-actions">
+					<lightning-button label="Cancel" onclick={handleCancel}></lightning-button>
+					<lightning-button
+						label="Confirm"
+						variant="brand"
+						disabled={isConfirmDisabled}
+						onclick={handleConfirm}>
+					</lightning-button>
+				</div>
+			</div>
+		</div>
+	</template>
 </template>
