@@ -75,10 +75,11 @@ public inherited sharing class QuoteSelector {
 				OpportunityId,
 				Status,
 				Quote_Type__c,
-				Quote_Grand_Total__c
+				Quote_Grand_Total__c,
+				ExpirationDate
 			FROM Quote
 			WHERE Design_Revision__c = :revisionId
-			ORDER BY Quote_Type__c, CreatedDate ASC
+			ORDER BY Quote_Type__c, CreatedDate DESC
 		];
 	}
 

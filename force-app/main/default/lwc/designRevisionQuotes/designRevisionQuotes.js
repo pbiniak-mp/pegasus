@@ -1,5 +1,8 @@
 import { LightningElement, api, wire } from 'lwc';
+import { refreshApex } from '@salesforce/apex';
 import getQuotesByRevision from '@salesforce/apex/DesignRevisionQuotesController.getQuotesByRevision';
+import getQuoteStatusPicklistValues from '@salesforce/apex/DesignRevisionQuotesController.getQuoteStatusPicklistValues';
+import updateQuoteStatus from '@salesforce/apex/DesignRevisionQuotesController.updateQuoteStatus';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import { NavigationMixin } from 'lightning/navigation';
 import OPPORTUNITY_FIELD from '@salesforce/schema/Design_Revision__c.Opportunity__c';
@@ -15,15 +18,21 @@ const STATUS_BADGE_MAP = {
 	'In Review':'badge badge-review'
 };
 
+const DATE_FMT = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 const USD = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
+
+const EMPTY_MODAL = { visible: false, quoteId: null, quoteName: null, currentStatus: null, newStatus: null };
 
 export default class DesignRevisionQuotes extends NavigationMixin(LightningElement) {
 	@api recordId;
 
 	quotes = [];
+	statusOptions = [];
 	isLoading = true;
 	errorMessage;
 	opportunityId;
+	confirmModal = { ...EMPTY_MODAL };
+	_wiredQuotesResult;
 
 	@wire(getRecord, { recordId: '$recordId', fields: [OPPORTUNITY_FIELD] })
 	wiredRevision({ data, error }) {
@@ -32,14 +41,26 @@ export default class DesignRevisionQuotes extends NavigationMixin(LightningEleme
 		}
 	}
 
+	@wire(getQuoteStatusPicklistValues)
+	wiredPicklist({ data, error }) {
+		if (data) {
+			this.statusOptions = data.map(opt => ({ label: opt.label, value: opt.value }));
+		}
+	}
+
 	@wire(getQuotesByRevision, { revisionId: '$recordId' })
-	wiredQuotes({ data, error }) {
+	wiredQuotes(result) {
+		this._wiredQuotesResult = result;
+		const { data, error } = result;
 		this.isLoading = false;
 		if (data) {
 			this.quotes = data.map(q => ({
 				...q,
 				badgeClass: STATUS_BADGE_MAP[q.status] || 'badge badge-draft',
-				grandTotalFormatted: q.grandTotal != null ? USD.format(q.grandTotal) : '—'
+				grandTotalFormatted: q.grandTotal != null ? USD.format(q.grandTotal) : '—',
+				expirationDate: q.expirationDate
+					? DATE_FMT.format(new Date(q.expirationDate))
+					: null
 			}));
 		} else if (error) {
 			this.errorMessage = error.body?.message || 'Failed to load quotes.';
@@ -57,6 +78,42 @@ export default class DesignRevisionQuotes extends NavigationMixin(LightningEleme
 				defaultFieldValues: `OpportunityId=${this.opportunityId},Design_Revision__c=${this.recordId}`
 			}
 		});
+	}
+
+	handleActionClick(event) {
+		const quoteId = event.currentTarget.dataset.quoteid;
+		const quote = this.quotes.find(q => q.id === quoteId);
+		this.confirmModal = {
+			visible: true,
+			quoteId,
+			quoteName: quote.name,
+			currentStatus: quote.status,
+			newStatus: quote.status
+		};
+	}
+
+	handleModalStatusChange(event) {
+		this.confirmModal = { ...this.confirmModal, newStatus: event.detail.value };
+	}
+
+	handleConfirm() {
+		updateQuoteStatus({ quoteId: this.confirmModal.quoteId, newStatus: this.confirmModal.newStatus })
+			.then(() => {
+				this.confirmModal = { ...EMPTY_MODAL };
+				return refreshApex(this._wiredQuotesResult);
+			})
+			.catch(error => {
+				this.errorMessage = error.body?.message || 'Update failed.';
+				this.confirmModal = { ...EMPTY_MODAL };
+			});
+	}
+
+	handleCancel() {
+		this.confirmModal = { ...EMPTY_MODAL };
+	}
+
+	get isConfirmDisabled() {
+		return this.confirmModal.newStatus === this.confirmModal.currentStatus;
 	}
 
 	get materialQuotes() {
