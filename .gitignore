@@ -64,5 +64,9 @@ target/
 .idea/
 IlluminatedCloud/
 
+/scripts
+
 CLAUDE.md
 .claude
+dev/
+.mcp.json
