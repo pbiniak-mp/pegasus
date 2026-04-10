@@ -52,10 +52,36 @@ public inherited sharing class DesignRevisionSelector {
 
 	public static List<Design_Revision__c> getHierarchyFieldsByOpportunityId(Id opportunityId) {
 		return [
-			SELECT Id, Name, Revision_Number__c, Revision_Reason__c, Project_Notes__c, Parent_Revision__c
+			SELECT
+				Id,
+				Name,
+				Revision_Number__c,
+				Revision_Reason__c,
+				Project_Notes__c,
+				Parent_Revision__c
 			FROM Design_Revision__c
 			WHERE Opportunity__c = :opportunityId
 			ORDER BY Revision_Number__c ASC NULLS LAST
+		];
+	}
+
+	public static List<Design_Revision__c> getRevisionsByOpportunityId(Id opportunityId) {
+		return [
+			SELECT
+				Id,
+				Name,
+				Status__c,
+				Is_Active__c,
+				Project_Wattage_kW__c,
+				System_Type__c,
+				Roof_Surface__c,
+				Project_Notes__c,
+				CreatedDate,
+				LastModifiedDate,
+				CreatedBy.Name
+			FROM Design_Revision__c
+			WHERE Opportunity__c = :opportunityId
+			ORDER BY CreatedDate DESC
 		];
 	}
 }
