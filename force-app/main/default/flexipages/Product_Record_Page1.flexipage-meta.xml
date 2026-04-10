@@ -263,6 +263,16 @@
                 <identifier>RecordCommitted__cField</identifier>
             </fieldInstance>
         </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.On_Order__c</fieldItem>
+                <identifier>RecordOn_Order_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
         <name>Facet-bed47a73-8d13-4334-aa40-45f3f5874898</name>
         <type>Facet</type>
     </flexiPageRegions>
@@ -285,16 +295,6 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.Primary_Stock_Unit__c</fieldItem>
                 <identifier>RecordPrimary_Stock_Unit__cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.On_Order__c</fieldItem>
-                <identifier>RecordOn_Order_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-2d4f4749-df44-48f1-ad42-4592eda0fc8f</name>
