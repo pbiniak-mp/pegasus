@@ -71,8 +71,8 @@
     <flexiPageRegions>
         <itemInstances>
             <componentInstance>
-                <componentName>designRevisionHierarchy</componentName>
-                <identifier>c_designRevisionHierarchy</identifier>
+                <componentName>revisionTimeline</componentName>
+                <identifier>c_revisionTimeline</identifier>
             </componentInstance>
         </itemInstances>
         <name>Facet-9bd5dd86-9f11-4b58-98fd-2f3ef1fd3190</name>
@@ -142,6 +142,20 @@
         <itemInstances>
             <componentInstance>
                 <componentInstanceProperties>
+                    <name>context</name>
+                    <value>RECORD</value>
+                </componentInstanceProperties>
+                <componentName>forceChatter:exposedFeed</componentName>
+                <identifier>forceChatter_exposedFeed</identifier>
+            </componentInstance>
+        </itemInstances>
+        <name>Facet-59125f2c-ac95-428f-906a-56f54d916b8b</name>
+        <type>Facet</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
                     <name>relatedListComponentOverride</name>
                     <value>NONE</value>
                 </componentInstanceProperties>
@@ -158,20 +172,6 @@
             </componentInstance>
         </itemInstances>
         <name>Facet-314b1f69-a635-409b-9aa2-47dfef718364</name>
-        <type>Facet</type>
-    </flexiPageRegions>
-    <flexiPageRegions>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
-                    <name>context</name>
-                    <value>RECORD</value>
-                </componentInstanceProperties>
-                <componentName>forceChatter:exposedFeed</componentName>
-                <identifier>forceChatter_exposedFeed</identifier>
-            </componentInstance>
-        </itemInstances>
-        <name>Facet-59125f2c-ac95-428f-906a-56f54d916b8b</name>
         <type>Facet</type>
     </flexiPageRegions>
     <flexiPageRegions>
@@ -239,20 +239,6 @@
             <componentInstance>
                 <componentInstanceProperties>
                     <name>body</name>
-                    <value>Facet-314b1f69-a635-409b-9aa2-47dfef718364</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>title</name>
-                    <value>Related</value>
-                </componentInstanceProperties>
-                <componentName>flexipage:tab</componentName>
-                <identifier>flexipage_tab</identifier>
-            </componentInstance>
-        </itemInstances>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
-                    <name>body</name>
                     <value>Facet-59125f2c-ac95-428f-906a-56f54d916b8b</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
@@ -261,6 +247,20 @@
                 </componentInstanceProperties>
                 <componentName>flexipage:tab</componentName>
                 <identifier>flexipage_tab7</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>body</name>
+                    <value>Facet-314b1f69-a635-409b-9aa2-47dfef718364</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>title</name>
+                    <value>Related</value>
+                </componentInstanceProperties>
+                <componentName>flexipage:tab</componentName>
+                <identifier>flexipage_tab</identifier>
             </componentInstance>
         </itemInstances>
         <name>Facet-431df9b9-f22b-4b7e-a990-b8e1617237c6</name>

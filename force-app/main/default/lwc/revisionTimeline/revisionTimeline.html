@@ -1,0 +1,90 @@
+<template>
+    <div class="tl-wrap">
+        <template lwc:if={isLoading}>
+            <lightning-spinner size="small"></lightning-spinner>
+        </template>
+
+        <template lwc:if={errorMessage}>
+            <p class="error-msg">{errorMessage}</p>
+        </template>
+
+        <template for:each={revisions} for:item="rev">
+            <div key={rev.id} class="tl-item">
+                <!-- Left column -->
+                <div class="tl-left">
+                    <template lwc:if={rev.isActive}>
+                        <div class="tl-icon icon-active"></div>
+                    </template>
+                    <template lwc:else>
+                        <div class="tl-icon icon-inactive"></div>
+                    </template>
+                    <template lwc:if={rev.showLine}>
+                        <div class="tl-line"></div>
+                    </template>
+                </div>
+
+                <!-- Right column -->
+                <div class="tl-content">
+                    <div class="rev-card">
+                        <!-- Header -->
+                        <div class="rev-header" onclick={handleToggle} data-revid={rev.id}>
+                            <div class="rev-name-wrap">
+                                <a class="rev-name rev-name-link" data-revid={rev.id} onclick={handleNavigateToRecord}>{rev.name}</a>
+                            </div>
+                            <div class="rev-meta">
+                                <span class="rev-date">{rev.createdDate}</span>
+                                <span class="rev-author">{rev.createdByName}</span>
+                                <div class="sep"></div>
+                                <span class={rev.statusBadgeClass}>{rev.status}</span>
+                                <template lwc:if={rev.isActive}>
+                                    <span class="badge-active-pill">Active</span>
+                                </template>
+                            </div>
+                            <span class={rev.chevronClass}></span>
+                        </div>
+
+                        <!-- Body -->
+                        <template lwc:if={rev.isExpanded}>
+                            <div class="rev-body">
+                                <div class="field-grid">
+                                    <div>
+                                        <div class="field-label">System size</div>
+                                        <div class="field-val">{rev.projectWattage}</div>
+                                    </div>
+                                    <div>
+                                        <div class="field-label">System type</div>
+                                        <div class="field-val">{rev.systemType}</div>
+                                    </div>
+                                    <div>
+                                        <div class="field-label">Roof surface</div>
+                                        <div class="field-val">{rev.roofSurface}</div>
+                                    </div>
+                                    <div>
+                                        <div class="field-label">Created by</div>
+                                        <div class="field-val">{rev.createdByName}</div>
+                                    </div>
+                                </div>
+
+                                <template lwc:if={rev.projectNotes}>
+                                    <div class="notes-label">Project notes</div>
+                                    <div class="notes-block">{rev.projectNotes}</div>
+                                </template>
+
+                                <div class="dates-row">
+                                    <div>
+                                        <span class="date-label">Created:</span>
+                                        <span class="date-val">{rev.createdDate}</span>
+                                    </div>
+                                    <div>
+                                        <span class="date-label">Last modified:</span>
+                                        <span class="date-val">{rev.lastModifiedDate}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </div>
+        </template>
+    </div>
+</template>
