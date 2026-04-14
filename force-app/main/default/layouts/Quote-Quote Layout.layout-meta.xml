@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Layout xmlns="http://soap.sforce.com/2006/04/metadata">
-    <excludeButtons>CreateContract</excludeButtons>
-    <excludeButtons>CreateOrder</excludeButtons>
-    <excludeButtons>DeepCloneAction</excludeButtons>
-    <excludeButtons>OpenSlackRecordChannel</excludeButtons>
     <layoutSections>
         <customLabel>false</customLabel>
         <detailHeading>false</detailHeading>
@@ -73,10 +69,6 @@
                 <behavior>Readonly</behavior>
                 <field>TotalPrice</field>
             </layoutItems>
-            <layoutItems>
-                <behavior>Readonly</behavior>
-                <field>Quote_Grand_Total_for_Email_Template__c</field>
-            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>
@@ -90,10 +82,6 @@
             <layoutItems>
                 <behavior>Readonly</behavior>
                 <field>GrandTotal</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Readonly</behavior>
-                <field>Quote_Grand_Total__c</field>
             </layoutItems>
         </layoutColumns>
         <style>TwoColumnsTopToBottom</style>

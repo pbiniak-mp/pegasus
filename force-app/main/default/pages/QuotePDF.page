@@ -169,7 +169,11 @@
 	<table class="totals-table">
 		<tr>
 			<td class="totals-label">Freight:</td>
-			<td class="totals-value">TBD</td>
+			<td class="totals-value">
+				$<apex:outputText value="{0, number, #,##0.00}">
+					<apex:param value="{!quote.ShippingHandling}"/>
+				</apex:outputText>
+			</td>
 		</tr>
 		<tr>
 			<td class="totals-label">Sub Total:</td>
