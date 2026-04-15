@@ -256,7 +256,7 @@ private class DesignRevisionTriggerTest {
 
 		Test.startTest();
 		// Update a non-activation field — Is_Active__c stays true (wasActive = true → not re-activated)
-		rev.Revision_Reason__c = 'Updated';
+		rev.Revision_Reason__c = 'Pegasus Revision';
 		update rev;
 		Test.stopTest();
 
