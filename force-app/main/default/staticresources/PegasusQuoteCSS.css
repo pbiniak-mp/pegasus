@@ -100,7 +100,9 @@ body {
   width: 14%;
   text-align: right;
 }
-
+.products-table th.col-num {
+  text-align: right;
+}
 .prod-pn {
   font-size: 8.5pt;
   padding: 1px 4px 1px 0;

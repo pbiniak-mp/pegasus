@@ -51,7 +51,8 @@ private class QuotePDFControllerTest {
 			BillingCity = 'Richmond',
 			BillingState = 'California',
 			BillingPostalCode = '94804',
-			BillingCountry = 'United States'
+			BillingCountry = 'United States',
+			Quote_Type__c = 'Material'
 		);
 		insert quote;
 
@@ -154,7 +155,8 @@ private class QuotePDFControllerTest {
 			Name = 'No Expiry Quote',
 			OpportunityId = opp.Id,
 			Pricebook2Id = standardPricebookId,
-			ExpirationDate = null
+			ExpirationDate = null,
+			Quote_Type__c = 'Material'
 		);
 		insert quoteNoExp;
 
@@ -174,7 +176,8 @@ private class QuotePDFControllerTest {
 		Quote emptyQuote = new Quote(
 			Name = 'Empty Quote',
 			OpportunityId = opp.Id,
-			Pricebook2Id = standardPricebookId
+			Pricebook2Id = standardPricebookId,
+			Quote_Type__c = 'Material'
 		);
 		insert emptyQuote;
 
@@ -204,7 +207,8 @@ private class QuotePDFControllerTest {
 			Name = 'No Contact Quote',
 			OpportunityId = opp.Id,
 			Pricebook2Id = standardPricebookId,
-			ContactId = null
+			ContactId = null,
+			Quote_Type__c = 'Material'
 		);
 		insert quoteNoContact;
 
@@ -241,7 +245,8 @@ private class QuotePDFControllerTest {
 		Quote emptyQuote = new Quote(
 			Name           = 'Empty Attachments Quote',
 			OpportunityId  = opp.Id,
-			Pricebook2Id   = Test.getStandardPricebookId()
+			Pricebook2Id   = Test.getStandardPricebookId(),
+			Quote_Type__c  = 'Material'
 		);
 		insert emptyQuote;
 

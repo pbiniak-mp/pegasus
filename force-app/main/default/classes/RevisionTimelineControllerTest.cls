@@ -72,7 +72,7 @@ private class RevisionTimelineControllerTest {
 
 		System.assertNotEquals(null, activeRev, 'Should have an active revision');
 		System.assertEquals('In Progress', activeRev.status, 'Active revision status should be In Progress');
-		System.assertEquals('10.5', activeRev.projectWattage, 'Project wattage should be formatted as string');
+		System.assertEquals('10.50', activeRev.projectWattage, 'Project wattage should be formatted as string');
 
 		System.assertNotEquals(null, inactiveRev, 'Should have an inactive revision');
 		System.assertEquals('Complete', inactiveRev.status, 'Inactive revision status should be Complete');
