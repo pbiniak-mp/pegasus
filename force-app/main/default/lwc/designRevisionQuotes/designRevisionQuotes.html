@@ -12,18 +12,28 @@
 			<div class="header-row">
 				<lightning-button
 					label="New Quote"
-					variant="brand"
+					variant="neutral"
 					icon-name="utility:add"
 					onclick={handleNewQuote}>
 				</lightning-button>
+				<span class="summary-pill">{materialCount} Material · {stampCount} Stamp</span>
 			</div>
 
 			<div class="cols">
 				<div class="col">
 					<p class="col-header">Material</p>
 					<template for:each={materialQuotes} for:item="quote">
-						<div key={quote.id} class="quote-card">
-							<a href={quote.recordUrl} class="quote-name">{quote.name}</a>
+						<div key={quote.id} class={quote.cardClass}>
+
+							<div class="quote-top">
+								<div>
+									<a href={quote.recordUrl} class="quote-name">{quote.name}</a>
+									<template lwc:if={quote.revNumber}>
+										<div class="quote-rev">Rev: {quote.revNumber}</div>
+									</template>
+								</div>
+							</div>
+
 							<div class="quote-row">
 								<span class="quote-total">{quote.grandTotalFormatted}</span>
 								<div class="quote-row-end">
@@ -39,9 +49,54 @@
 									</lightning-button-icon>
 								</div>
 							</div>
-							<template lwc:if={quote.expirationDate}>
-								<div class="quote-expiry">Exp: {quote.expirationDate}</div>
+
+							<div class="divider"></div>
+
+							<div class="meta-row">
+								<template lwc:if={quote.createdByName}>
+									<div class="meta-item">
+										<span class="meta-label">By:</span>
+										<span class="meta-val">{quote.createdByName}</span>
+									</div>
+								</template>
+								<template lwc:if={quote.expirationDate}>
+									<div class="meta-item">
+										<div class="expiry-row">
+											<div class={quote.expiryDotClass}></div>
+											<span class={quote.expiryTextClass}>
+												Exp: {quote.expirationDate}
+												<template lwc:if={quote.isExpiringSoon}>&nbsp;— expires soon</template>
+											</span>
+										</div>
+									</div>
+								</template>
+							</div>
+
+							<template lwc:if={quote.totalLineItems}>
+								<div class="lines-section">
+									<div class="lines-toggle" data-quoteid={quote.id} onclick={handleToggleLines}>
+										<span class="lines-toggle-label">Line items</span>
+										<div class="lines-toggle-right">
+											<span class="line-count-pill">{quote.totalLineItems} items</span>
+											<span class={quote.chevronClass}></span>
+										</div>
+									</div>
+									<template lwc:if={quote.linesExpanded}>
+										<div class="lines-list">
+											<template for:each={quote.lineItems} for:item="li">
+												<div key={li.productName} class="line-row">
+													<span class="line-name">{li.productName}</span>
+													<div class="line-right">
+														<span class="line-qty">×{li.quantity}</span>
+														<span class="line-price">{li.unitPrice}</span>
+													</div>
+												</div>
+											</template>
+										</div>
+									</template>
+								</div>
 							</template>
+
 						</div>
 					</template>
 					<template lwc:if={noMaterial}>
@@ -52,8 +107,17 @@
 				<div class="col">
 					<p class="col-header">Stamp</p>
 					<template for:each={stampQuotes} for:item="quote">
-						<div key={quote.id} class="quote-card">
-							<a href={quote.recordUrl} class="quote-name">{quote.name}</a>
+						<div key={quote.id} class={quote.cardClass}>
+
+							<div class="quote-top">
+								<div>
+									<a href={quote.recordUrl} class="quote-name">{quote.name}</a>
+									<template lwc:if={quote.revNumber}>
+										<div class="quote-rev">Rev: {quote.revNumber}</div>
+									</template>
+								</div>
+							</div>
+
 							<div class="quote-row">
 								<span class="quote-total">{quote.grandTotalFormatted}</span>
 								<div class="quote-row-end">
@@ -69,9 +133,54 @@
 									</lightning-button-icon>
 								</div>
 							</div>
-							<template lwc:if={quote.expirationDate}>
-								<div class="quote-expiry">Exp: {quote.expirationDate}</div>
+
+							<div class="divider"></div>
+
+							<div class="meta-row">
+								<template lwc:if={quote.createdByName}>
+									<div class="meta-item">
+										<span class="meta-label">By:</span>
+										<span class="meta-val">{quote.createdByName}</span>
+									</div>
+								</template>
+								<template lwc:if={quote.expirationDate}>
+									<div class="meta-item">
+										<div class="expiry-row">
+											<div class={quote.expiryDotClass}></div>
+											<span class={quote.expiryTextClass}>
+												Exp: {quote.expirationDate}
+												<template lwc:if={quote.isExpiringSoon}>&nbsp;— expires soon</template>
+											</span>
+										</div>
+									</div>
+								</template>
+							</div>
+
+							<template lwc:if={quote.totalLineItems}>
+								<div class="lines-section">
+									<div class="lines-toggle" data-quoteid={quote.id} onclick={handleToggleLines}>
+										<span class="lines-toggle-label">Line items</span>
+										<div class="lines-toggle-right">
+											<span class="line-count-pill">{quote.totalLineItems} items</span>
+											<span class={quote.chevronClass}></span>
+										</div>
+									</div>
+									<template lwc:if={quote.linesExpanded}>
+										<div class="lines-list">
+											<template for:each={quote.lineItems} for:item="li">
+												<div key={li.productName} class="line-row">
+													<span class="line-name">{li.productName}</span>
+													<div class="line-right">
+														<span class="line-qty">×{li.quantity}</span>
+														<span class="line-price">{li.unitPrice}</span>
+													</div>
+												</div>
+											</template>
+										</div>
+									</template>
+								</div>
 							</template>
+
 						</div>
 					</template>
 					<template lwc:if={noStamp}>
