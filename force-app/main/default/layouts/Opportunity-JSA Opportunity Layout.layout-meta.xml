@@ -280,8 +280,8 @@
                 <field>Module_Model_Number__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
-                <field>Module_Quantity__c</field>
+                <behavior>Readonly</behavior>
+                <field>Module_Quantity_F__c</field>
             </layoutItems>
         </layoutColumns>
         <layoutColumns>
