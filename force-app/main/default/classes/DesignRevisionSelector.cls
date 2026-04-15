@@ -13,7 +13,7 @@ public inherited sharing class DesignRevisionSelector {
 				Module_Length_mm__c,
 				Module_Manufacturer__c,
 				Module_Model_Number__c,
-				Module_Quantity__c,
+				Module_Quantity_F__c,
 				Module_Wattage_W__c,
 				Module_Weight_lbs__c,
 				Module_Width_mm__c,
