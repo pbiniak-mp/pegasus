@@ -17,7 +17,8 @@ private class QuoteSavePDFControllerTest {
 		Quote quote = new Quote(
 			Name = 'Test Quote',
 			OpportunityId = opp.Id,
-			Pricebook2Id = Test.getStandardPricebookId()
+			Pricebook2Id = Test.getStandardPricebookId(),
+			Quote_Type__c = 'Material'
 		);
 		insert quote;
 	}
