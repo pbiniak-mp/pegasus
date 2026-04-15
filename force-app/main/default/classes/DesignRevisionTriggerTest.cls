@@ -18,7 +18,7 @@ private class DesignRevisionTriggerTest {
 	private static final String REV_ROOF_SURFACE = 'Membrane';
 	private static final Integer REV_PLANNED_INSTALL_DAYS = 60;
 
-	private static final Integer REV_UPDATED_MODULE_QTY = 99;
+	private static final String REV_SYSTEM_TYPE_FLAT = 'Flat Roof';
 
 	private static final String CDL_SHARE_TYPE = 'V';
 	private static final String CDL_VISIBILITY = 'AllUsers';
@@ -35,7 +35,7 @@ private class DesignRevisionTriggerTest {
 	@IsTest
 	static void testActivation_copiesAllFieldsToOpportunity() {
 		Opportunity opp = getOpp();
-		Design_Revision__c rev = buildRevision(opp.Id, 20, 8.0);
+		Design_Revision__c rev = buildRevision(opp.Id, 8.0);
 		rev.System_Type__c = REV_SYSTEM_TYPE;
 		rev.Panel_Tilt__c = REV_PANEL_TILT;
 		rev.Roof_Surface__c = REV_ROOF_SURFACE;
@@ -50,7 +50,7 @@ private class DesignRevisionTriggerTest {
 		Opportunity result = [
 			SELECT
 				Design_Revision__c,
-				Module_Quantity__c,
+				Module_Quantity_F__c,
 				Project_Wattage_kW__c,
 				System_Type__c,
 				Panel_Tilt__c,
@@ -61,7 +61,7 @@ private class DesignRevisionTriggerTest {
 		];
 
 		Assert.areEqual(rev.Id, result.Design_Revision__c, 'Lookup should point to active revision');
-		Assert.areEqual(20, result.Module_Quantity__c, 'Module_Quantity__c should be copied');
+		Assert.areEqual('20', result.Module_Quantity_F__c, 'Module_Quantity_F__c should reflect copied wattage');
 		Assert.areEqual(8.0, result.Project_Wattage_kW__c, 'Project_Wattage_kW__c should be copied');
 		Assert.areEqual(REV_SYSTEM_TYPE, result.System_Type__c, 'System_Type__c should be copied');
 		Assert.areEqual(REV_PANEL_TILT, result.Panel_Tilt__c, 'Panel_Tilt__c should be copied');
@@ -72,8 +72,8 @@ private class DesignRevisionTriggerTest {
 	@IsTest
 	static void testActivation_deactivatesOtherRevisions() {
 		Opportunity opp = getOpp();
-		Design_Revision__c rev1 = buildRevision(opp.Id, 10, 4.0);
-		Design_Revision__c rev2 = buildRevision(opp.Id, 20, 8.0);
+		Design_Revision__c rev1 = buildRevision(opp.Id, 4.0);
+		Design_Revision__c rev2 = buildRevision(opp.Id, 8.0);
 		insert new List<Design_Revision__c>{ rev1, rev2 };
 
 		rev1.Is_Active__c = true;
@@ -95,9 +95,9 @@ private class DesignRevisionTriggerTest {
 	@IsTest
 	static void testActivation_deactivatesMultipleOtherRevisions() {
 		Opportunity opp = getOpp();
-		Design_Revision__c rev1 = buildRevision(opp.Id, 10, 4.0);
-		Design_Revision__c rev2 = buildRevision(opp.Id, 20, 8.0);
-		Design_Revision__c rev3 = buildRevision(opp.Id, 30, 12.0);
+		Design_Revision__c rev1 = buildRevision(opp.Id, 4.0);
+		Design_Revision__c rev2 = buildRevision(opp.Id, 8.0);
+		Design_Revision__c rev3 = buildRevision(opp.Id, 12.0);
 		insert new List<Design_Revision__c>{ rev1, rev2, rev3 };
 
 		rev1.Is_Active__c = true;
@@ -122,7 +122,7 @@ private class DesignRevisionTriggerTest {
 	@IsTest
 	static void testActivation_linksRevisionFilesToOpportunity() {
 		Opportunity opp = getOpp();
-		Design_Revision__c rev = buildRevision(opp.Id, 15, 6.0);
+		Design_Revision__c rev = buildRevision(opp.Id, 6.0);
 		insert rev;
 
 		ContentVersion cv = insertFile('Design Drawing');
@@ -140,7 +140,7 @@ private class DesignRevisionTriggerTest {
 	@IsTest
 	static void testActivation_linksMultipleFilesToOpportunity() {
 		Opportunity opp = getOpp();
-		Design_Revision__c rev = buildRevision(opp.Id, 15, 6.0);
+		Design_Revision__c rev = buildRevision(opp.Id, 6.0);
 		insert rev;
 
 		ContentVersion cv1 = insertFile('Drawing A');
@@ -161,8 +161,8 @@ private class DesignRevisionTriggerTest {
 	@IsTest
 	static void testReactivation_replacesOldFilesWithNewOnes() {
 		Opportunity opp = getOpp();
-		Design_Revision__c rev1 = buildRevision(opp.Id, 10, 4.0);
-		Design_Revision__c rev2 = buildRevision(opp.Id, 20, 8.0);
+		Design_Revision__c rev1 = buildRevision(opp.Id, 4.0);
+		Design_Revision__c rev2 = buildRevision(opp.Id, 8.0);
 		insert new List<Design_Revision__c>{ rev1, rev2 };
 
 		ContentVersion cv1 = insertFile('Rev1 Drawing');
@@ -188,29 +188,29 @@ private class DesignRevisionTriggerTest {
 		Opportunity opp = getOpp();
 
 		Test.startTest();
-		Design_Revision__c rev = buildRevision(opp.Id, 25, 10.0);
+		Design_Revision__c rev = buildRevision(opp.Id, 10.0);
 		rev.Is_Active__c = true;
 		insert rev;
 		Test.stopTest();
 
-		Opportunity result = [SELECT Design_Revision__c, Module_Quantity__c FROM Opportunity WHERE Id = :opp.Id];
+		Opportunity result = [SELECT Design_Revision__c, Module_Quantity_F__c FROM Opportunity WHERE Id = :opp.Id];
 		Assert.areEqual(rev.Id, result.Design_Revision__c, 'Lookup should be set on insert');
-		Assert.areEqual(25, result.Module_Quantity__c, 'Fields should be copied on insert');
+		Assert.areEqual('25', result.Module_Quantity_F__c, 'Fields should be reflected on insert');
 	}
 
 	@IsTest
 	static void testNoActivation_doesNotCopyFields() {
 		Opportunity opp = getOpp();
-		Design_Revision__c rev = buildRevision(opp.Id, 30, 12.0);
+		Design_Revision__c rev = buildRevision(opp.Id, 12.0);
 		insert rev;
 
 		Test.startTest();
-		rev.Module_Quantity__c = REV_UPDATED_MODULE_QTY;
+		rev.System_Type__c = REV_SYSTEM_TYPE_FLAT;
 		update rev;
 		Test.stopTest();
 
-		Opportunity result = [SELECT Module_Quantity__c FROM Opportunity WHERE Id = :opp.Id];
-		Assert.areNotEqual(REV_UPDATED_MODULE_QTY, result.Module_Quantity__c, 'Fields should not be copied when Is_Active__c stays false');
+		Opportunity result = [SELECT System_Type__c FROM Opportunity WHERE Id = :opp.Id];
+		Assert.areNotEqual(REV_SYSTEM_TYPE_FLAT, result.System_Type__c, 'Fields should not be copied when Is_Active__c stays false');
 	}
 
 	@IsTest
@@ -222,8 +222,8 @@ private class DesignRevisionTriggerTest {
 		insert opps;
 
 		List<Design_Revision__c> revisions = new List<Design_Revision__c>{
-			buildRevision(opps[0].Id, 10, 4.0),
-			buildRevision(opps[1].Id, 20, 8.0)
+			buildRevision(opps[0].Id, 4.0),
+			buildRevision(opps[1].Id, 8.0)
 		};
 		insert revisions;
 
@@ -234,36 +234,36 @@ private class DesignRevisionTriggerTest {
 		Test.stopTest();
 
 		Map<Id, Opportunity> oppMap = new Map<Id, Opportunity>(
-			[SELECT Id, Design_Revision__c, Module_Quantity__c FROM Opportunity WHERE Id IN :opps]
+			[SELECT Id, Design_Revision__c, Module_Quantity_F__c FROM Opportunity WHERE Id IN :opps]
 		);
 
 		Assert.areEqual(revisions[0].Id, oppMap.get(opps[0].Id).Design_Revision__c, 'Opp1 lookup should be set');
-		Assert.areEqual(10, oppMap.get(opps[0].Id).Module_Quantity__c, 'Opp1 qty should be copied');
+		Assert.areEqual('10', oppMap.get(opps[0].Id).Module_Quantity_F__c, 'Opp1 qty should be reflected');
 		Assert.areEqual(revisions[1].Id, oppMap.get(opps[1].Id).Design_Revision__c, 'Opp2 lookup should be set');
-		Assert.areEqual(20, oppMap.get(opps[1].Id).Module_Quantity__c, 'Opp2 qty should be copied');
+		Assert.areEqual('20', oppMap.get(opps[1].Id).Module_Quantity_F__c, 'Opp2 qty should be reflected');
 	}
 
 	@IsTest
 	static void testActivation_alreadyActive_noRedundantProcessing() {
-		// Insert revision as active → activates on insert, copies Module_Quantity__c = 25
+		// Insert revision as active → activates on insert, formula Module_Quantity_F__c = '25' (10kW / 400W)
 		Opportunity opp = getOpp();
-		Design_Revision__c rev = buildRevision(opp.Id, 25, 10.0);
+		Design_Revision__c rev = buildRevision(opp.Id, 10.0);
 		rev.Is_Active__c = true;
 		insert rev;
 
-		Opportunity afterInsert = [SELECT Module_Quantity__c FROM Opportunity WHERE Id = :opp.Id];
-		Assert.areEqual(25, afterInsert.Module_Quantity__c, 'Fields should be copied on initial activation');
+		Opportunity afterInsert = [SELECT Module_Quantity_F__c FROM Opportunity WHERE Id = :opp.Id];
+		Assert.areEqual('25', afterInsert.Module_Quantity_F__c, 'Fields should be reflected on initial activation');
 
 		Test.startTest();
 		// Update a non-activation field — Is_Active__c stays true (wasActive = true → not re-activated)
-		rev.Module_Quantity__c = REV_UPDATED_MODULE_QTY;
+		rev.Revision_Reason__c = 'Pegasus Revision';
 		update rev;
 		Test.stopTest();
 
-		Opportunity afterUpdate = [SELECT Module_Quantity__c FROM Opportunity WHERE Id = :opp.Id];
+		Opportunity afterUpdate = [SELECT Module_Quantity_F__c FROM Opportunity WHERE Id = :opp.Id];
 		Assert.areEqual(
-			25,
-			afterUpdate.Module_Quantity__c,
+			'25',
+			afterUpdate.Module_Quantity_F__c,
 			'Opportunity fields should not be overwritten when revision was already active'
 		);
 	}
@@ -273,7 +273,7 @@ private class DesignRevisionTriggerTest {
 		Opportunity opp = getOpp();
 
 		Test.startTest();
-		Design_Revision__c rev = buildRevision(opp.Id, 10, 4.0);
+		Design_Revision__c rev = buildRevision(opp.Id, 4.0);
 		insert rev;
 		Test.stopTest();
 
@@ -297,7 +297,7 @@ private class DesignRevisionTriggerTest {
 	@IsTest
 	static void testCreateNewRevision_clonesFieldsAndSetsParent() {
 		Opportunity opp = getOpp();
-		Design_Revision__c rev = buildRevision(opp.Id, 20, 8.0);
+		Design_Revision__c rev = buildRevision(opp.Id, 8.0);
 		rev.System_Type__c = REV_SYSTEM_TYPE;
 		rev.Panel_Tilt__c = REV_PANEL_TILT;
 		rev.Roof_Surface__c = REV_ROOF_SURFACE;
@@ -318,7 +318,7 @@ private class DesignRevisionTriggerTest {
 				Project_Notes__c,
 				Is_Active__c,
 				Status__c,
-				Module_Quantity__c,
+				Module_Quantity_F__c,
 				System_Type__c,
 				Panel_Tilt__c,
 				Roof_Surface__c
@@ -333,7 +333,7 @@ private class DesignRevisionTriggerTest {
 		Assert.areEqual('Some notes', newRev.Project_Notes__c, 'Project notes should be set');
 		Assert.isFalse(newRev.Is_Active__c, 'New revision should not be active');
 		Assert.areEqual(Constants.DESIGN_REVISION_STATUS_NOT_STARTED, newRev.Status__c, 'Status should be Not Started');
-		Assert.areEqual(20, newRev.Module_Quantity__c, 'Module_Quantity__c should be cloned');
+		Assert.areEqual('20', newRev.Module_Quantity_F__c, 'Module_Quantity_F__c should reflect wattage');
 		Assert.areEqual(REV_SYSTEM_TYPE, newRev.System_Type__c, 'System_Type__c should be cloned');
 		Assert.areEqual(REV_PANEL_TILT, newRev.Panel_Tilt__c, 'Panel_Tilt__c should be cloned');
 		Assert.areEqual(REV_ROOF_SURFACE, newRev.Roof_Surface__c, 'Roof_Surface__c should be cloned');
@@ -343,7 +343,7 @@ private class DesignRevisionTriggerTest {
 	@IsTest
 	static void testCreateNewRevision_invocable_returnsNewRevisionId() {
 		Opportunity opp = getOpp();
-		Design_Revision__c rev = buildRevision(opp.Id, 10, 4.0);
+		Design_Revision__c rev = buildRevision(opp.Id, 4.0);
 		insert rev;
 
 		CreateDesignRevisionInvocable.Request req = new CreateDesignRevisionInvocable.Request();
@@ -381,11 +381,10 @@ private class DesignRevisionTriggerTest {
 		return [SELECT Id FROM Opportunity LIMIT 1];
 	}
 
-	private static Design_Revision__c buildRevision(Id oppId, Decimal moduleQty, Decimal wattageKw) {
+	private static Design_Revision__c buildRevision(Id oppId, Decimal wattageKw) {
 		return new Design_Revision__c(
 			Opportunity__c = oppId,
 			Building_Height_ft__c = REV_BUILDING_HEIGHT,
-			Module_Quantity__c = moduleQty,
 			Module_Wattage_W__c = REV_MODULE_WATTAGE,
 			Project_Wattage_kW__c = wattageKw,
 			Revision_Reason__c = REV_REASON,

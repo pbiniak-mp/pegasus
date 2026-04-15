@@ -17,7 +17,6 @@ private class QuotePDFControllerTest {
 			AccountId = acc.Id,
 			StageName = 'Qualification',
 			CloseDate = Date.today().addDays(30),
-			Module_Quantity__c = 10,
 			Module_Wattage_W__c = 400,
 			Project_Wattage_kW__c = 4
 		);
@@ -222,7 +221,7 @@ private class QuotePDFControllerTest {
 		Quote q = getTestQuote();
 		QuotePDFController ctrl = buildController(q.Id);
 
-		System.assertEquals(10, ctrl.opp.Module_Quantity__c, 'Module quantity should match');
+		System.assertEquals('10', ctrl.opp.Module_Quantity_F__c, 'Module quantity should match');
 		System.assertEquals(400, ctrl.opp.Module_Wattage_W__c, 'Module wattage should match');
 		System.assertEquals(4, ctrl.opp.Project_Wattage_kW__c, 'Project wattage should match');
 	}
