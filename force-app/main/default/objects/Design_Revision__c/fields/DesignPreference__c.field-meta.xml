@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>DesignPreference__c</fullName>
+    <label>Design Preference</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Ballasted - Blocks used to resist active forces. No penetrations.</fullName>
+                <default>false</default>
+                <label>Ballasted - Blocks used to resist active forces. No penetrations.</label>
+            </value>
+            <value>
+                <fullName>Hybrid - Mix of anchors and ballast to resist active forces. Usually to meet load limits or seismic forces.</fullName>
+                <default>false</default>
+                <label>Hybrid - Mix of anchors and ballast to resist active forces. Usually to meet load limits or seismic forces.</label>
+            </value>
+            <value>
+                <fullName>Attached - Fully anchored to resist active forces. No ballast blocks.</fullName>
+                <default>false</default>
+                <label>Attached - Fully anchored to resist active forces. No ballast blocks.</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>
