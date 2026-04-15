@@ -3,9 +3,9 @@
     <fullName>Project_Wattage_kW__c</fullName>
     <externalId>false</externalId>
     <label>Project Wattage (kW)</label>
-    <precision>18</precision>
+    <precision>16</precision>
     <required>false</required>
-    <scale>0</scale>
+    <scale>2</scale>
     <trackFeedHistory>false</trackFeedHistory>
     <type>Number</type>
     <unique>false</unique>
