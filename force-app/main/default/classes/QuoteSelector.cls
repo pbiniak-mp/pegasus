@@ -15,6 +15,7 @@ public inherited sharing class QuoteSelector {
 				ExpirationDate,
 				Id,
 				Name,
+				ShippingHandling,
 				OpportunityId,
 				QuoteNumber,
 				Opportunity.Building_Height_ft__c,
@@ -76,7 +77,12 @@ public inherited sharing class QuoteSelector {
 				Status,
 				Quote_Type__c,
 				Quote_Grand_Total__c,
-				ExpirationDate
+				ExpirationDate,
+				Design_Revision__r.Revision_Number__c,
+				CreatedBy.Name,
+				(SELECT Id, Quantity, UnitPrice, Description, Product2.Name
+				 FROM QuoteLineItems
+				 ORDER BY SortOrder ASC NULLS LAST)
 			FROM Quote
 			WHERE Design_Revision__c = :revisionId
 			ORDER BY Quote_Type__c, CreatedDate DESC

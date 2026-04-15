@@ -4,7 +4,8 @@
 
 .header-row {
     display: flex;
-    justify-content: flex-start;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 16px;
 }
 
@@ -160,3 +161,34 @@
     gap: 8px;
     margin-top: 20px;
 }
+
+.quote-card.accepted { border-left: 2px solid #639922; }
+.quote-card.expiring { border-left: 2px solid #EF9F27; }
+.quote-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
+.quote-rev { font-size: 11px; color: #888; margin-top: 1px; }
+.divider { height: 0.5px; background: #dddbda; margin: 8px 0; }
+.meta-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 2px; align-items: center; }
+.meta-item { font-size: 11px; }
+.meta-label { color: #888; }
+.meta-val { color: #444; margin-left: 3px; font-weight: 500; }
+.expiry-row { display: flex; align-items: center; gap: 4px; }
+.expiry-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.dot-ok { background: #B4B2A9; }
+.dot-warn { background: #EF9F27; }
+.expiry-ok { font-size: 11px; color: #888; }
+.expiry-warn { font-size: 11px; color: #854F0B; font-weight: 500; }
+.summary-pill { font-size: 12px; color: #5F5E5A; background: #F3F3F3; border: 0.5px solid #D3D1C7; border-radius: 20px; padding: 3px 10px; }
+.lines-section { border-top: 0.5px solid #dddbda; padding-top: 8px; margin-top: 6px; }
+.lines-toggle { display: flex; align-items: center; justify-content: space-between; cursor: pointer; padding: 2px 0 6px; }
+.lines-toggle-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: #888; font-weight: 500; }
+.lines-toggle-right { display: flex; align-items: center; gap: 6px; }
+.line-count-pill { font-size: 11px; color: #5F5E5A; background: #F3F3F3; border-radius: 4px; padding: 1px 6px; }
+.chevron-icon { display: inline-block; width: 0; height: 0; border-left: 4px solid transparent; border-right: 4px solid transparent; border-top: 5px solid #888; transition: transform 0.15s; }
+.chevron-icon.open { transform: rotate(180deg); }
+.lines-list { padding-top: 2px; }
+.line-row { display: flex; align-items: center; justify-content: space-between; padding: 4px 0; border-bottom: 0.5px solid #f3f3f3; }
+.line-row:last-child { border-bottom: none; }
+.line-name { font-size: 12px; color: #181818; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 8px; }
+.line-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.line-qty { font-size: 11px; color: #888; }
+.line-price { font-size: 12px; font-weight: 500; color: #181818; }

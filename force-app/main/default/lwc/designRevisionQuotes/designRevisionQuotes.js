@@ -60,7 +60,37 @@ export default class DesignRevisionQuotes extends NavigationMixin(LightningEleme
 				grandTotalFormatted: q.grandTotal != null ? USD.format(q.grandTotal) : '—',
 				expirationDate: q.expirationDate
 					? DATE_FMT.format(new Date(q.expirationDate))
-					: null
+					: null,
+				revNumber: q.revNumber || null,
+				createdByName: q.createdByName || null,
+				totalLineItems: q.totalLineItems || 0,
+				lineItems: (q.lineItems || []).map(li => ({
+					productName: li.productName || '—',
+					quantity: li.quantity,
+					unitPrice: li.unitPrice != null ? USD.format(li.unitPrice) : '—'
+				})),
+				linesExpanded: false,
+				chevronClass: 'chevron-icon',
+				isExpiringSoon: q.expirationDate
+					? (new Date(q.expirationDate) - new Date()) / (1000 * 60 * 60 * 24) < 30
+					: false,
+				cardClass: (() => {
+					const expiring = q.expirationDate &&
+						(new Date(q.expirationDate) - new Date()) / (1000 * 60 * 60 * 24) < 30;
+					if (q.status === 'Accepted' || q.status === 'Approved') return 'quote-card accepted';
+					if (expiring) return 'quote-card expiring';
+					return 'quote-card';
+				})(),
+				expiryDotClass: (() => {
+					const expiring = q.expirationDate &&
+						(new Date(q.expirationDate) - new Date()) / (1000 * 60 * 60 * 24) < 30;
+					return expiring ? 'expiry-dot dot-warn' : 'expiry-dot dot-ok';
+				})(),
+				expiryTextClass: (() => {
+					const expiring = q.expirationDate &&
+						(new Date(q.expirationDate) - new Date()) / (1000 * 60 * 60 * 24) < 30;
+					return expiring ? 'expiry-warn' : 'expiry-ok';
+				})()
 			}));
 		} else if (error) {
 			this.errorMessage = error.body?.message || 'Failed to load quotes.';
@@ -112,6 +142,19 @@ export default class DesignRevisionQuotes extends NavigationMixin(LightningEleme
 		this.confirmModal = { ...EMPTY_MODAL };
 	}
 
+	handleToggleLines(event) {
+		const quoteId = event.currentTarget.dataset.quoteid;
+		this.quotes = this.quotes.map(q => {
+			if (q.id !== quoteId) return q;
+			const expanded = !q.linesExpanded;
+			return {
+				...q,
+				linesExpanded: expanded,
+				chevronClass: expanded ? 'chevron-icon open' : 'chevron-icon'
+			};
+		});
+	}
+
 	get isConfirmDisabled() {
 		return this.confirmModal.newStatus === this.confirmModal.currentStatus;
 	}
@@ -131,6 +174,9 @@ export default class DesignRevisionQuotes extends NavigationMixin(LightningEleme
 	get noStamp() {
 		return this.stampQuotes.length === 0;
 	}
+
+	get materialCount() { return this.materialQuotes.length; }
+	get stampCount() { return this.stampQuotes.length; }
 
 	get hasError() {
 		return !!this.errorMessage;
