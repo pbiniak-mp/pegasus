@@ -538,11 +538,7 @@
         <field>Design_Revision__c.Module_Quantity_F__c</field>
         <readable>true</readable>
     </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>Design_Revision__c.Module_Quantity__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
+
     <fieldPermissions>
         <editable>true</editable>
         <field>Design_Revision__c.Module_Wattage_W__c</field>
@@ -816,11 +812,6 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>Lead.Module_Quantity_F__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>Lead.Module_Quantity__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1231,11 +1222,6 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>Opportunity.Module_Quantity_F__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>Opportunity.Module_Quantity__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

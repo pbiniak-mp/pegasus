@@ -8,7 +8,7 @@
   &quot;0&quot;
 )</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-    <label>Module Quantity F</label>
+    <label>Module Quantity</label>
     <required>false</required>
     <type>Text</type>
     <unique>false</unique>
