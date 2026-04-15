@@ -12,12 +12,28 @@
     <objectMapping>
         <inputObject>Lead</inputObject>
         <mappingFields>
+            <inputField>Ballast_Block_Specification__c</inputField>
+            <outputField>Ballast_Block_Specification__c</outputField>
+        </mappingFields>
+        <mappingFields>
             <inputField>Building_Height_ft__c</inputField>
             <outputField>Building_Height_ft__c</outputField>
         </mappingFields>
         <mappingFields>
+            <inputField>Code_Standard__c</inputField>
+            <outputField>Code_Standard__c</outputField>
+        </mappingFields>
+        <mappingFields>
+            <inputField>DesignPreference__c</inputField>
+            <outputField>DesignPreference__c</outputField>
+        </mappingFields>
+        <mappingFields>
             <inputField>Existing_or_new_construction__c</inputField>
             <outputField>Existing_or_new_construction__c</outputField>
+        </mappingFields>
+        <mappingFields>
+            <inputField>Exposure_Category__c</inputField>
+            <outputField>Exposure_Category__c</outputField>
         </mappingFields>
         <mappingFields>
             <inputField>Is_Test__c</inputField>
@@ -28,12 +44,28 @@
             <outputField>Maximum_System_Weight_Limit_lbs__c</outputField>
         </mappingFields>
         <mappingFields>
-            <inputField>Module_Quantity__c</inputField>
-            <outputField>Module_Quantity__c</outputField>
+            <inputField>Module_Length_mm__c</inputField>
+            <outputField>Module_Length_mm__c</outputField>
+        </mappingFields>
+        <mappingFields>
+            <inputField>Module_Manufacturer__c</inputField>
+            <outputField>Module_Manufacturer__c</outputField>
+        </mappingFields>
+        <mappingFields>
+            <inputField>Module_Model_Number__c</inputField>
+            <outputField>Module_Model_Number__c</outputField>
         </mappingFields>
         <mappingFields>
             <inputField>Module_Wattage_W__c</inputField>
             <outputField>Module_Wattage_W__c</outputField>
+        </mappingFields>
+        <mappingFields>
+            <inputField>Module_Weight_lbs__c</inputField>
+            <outputField>Module_Weight_lbs__c</outputField>
+        </mappingFields>
+        <mappingFields>
+            <inputField>Module_Width_mm__c</inputField>
+            <outputField>Module_Width_mm__c</outputField>
         </mappingFields>
         <mappingFields>
             <inputField>Panel_Orientation__c</inputField>
@@ -64,12 +96,20 @@
             <outputField>Product_Line__c</outputField>
         </mappingFields>
         <mappingFields>
+            <inputField>ProjectName__c</inputField>
+            <outputField>ProjectName__c</outputField>
+        </mappingFields>
+        <mappingFields>
             <inputField>Project_Notes__c</inputField>
             <outputField>Project_Notes__c</outputField>
         </mappingFields>
         <mappingFields>
             <inputField>Project_Wattage_kW__c</inputField>
             <outputField>Project_Wattage_kW__c</outputField>
+        </mappingFields>
+        <mappingFields>
+            <inputField>Risk_Category__c</inputField>
+            <outputField>Risk_Category__c</outputField>
         </mappingFields>
         <mappingFields>
             <inputField>Roof_Pitch__c</inputField>
@@ -94,6 +134,14 @@
         <mappingFields>
             <inputField>System_Type__c</inputField>
             <outputField>System_Type__c</outputField>
+        </mappingFields>
+        <mappingFields>
+            <inputField>UL_3741_compliance__c</inputField>
+            <outputField>UL_3741_compliance__c</outputField>
+        </mappingFields>
+        <mappingFields>
+            <inputField>Wind_Speed_mph__c</inputField>
+            <outputField>Wind_Speed_mph__c</outputField>
         </mappingFields>
         <outputObject>Opportunity</outputObject>
     </objectMapping>
