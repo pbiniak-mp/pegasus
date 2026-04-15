@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Point_Load_Limit_psf__c</fullName>
+    <fullName>ProjectName__c</fullName>
     <externalId>false</externalId>
-    <label>Point Load Limit (psf)</label>
-    <precision>18</precision>
+    <label>Project Name</label>
+    <length>30</length>
     <required>false</required>
-    <scale>2</scale>
     <trackFeedHistory>false</trackFeedHistory>
-    <type>Number</type>
+    <type>Text</type>
     <unique>false</unique>
 </CustomField>
