@@ -10,7 +10,7 @@ public inherited sharing class OpportunitySelector {
 				Design_Revision__c,
 				Existing_or_new_construction__c,
 				Maximum_System_Weight_Limit_lbs__c,
-				Module_Quantity__c,
+				Module_Quantity_F__c,
 				Module_Wattage_W__c,
 				Name,
 				Panel_Orientation__c,
