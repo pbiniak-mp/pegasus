@@ -17,6 +17,7 @@ private class QuotePDFControllerTest {
 			AccountId = acc.Id,
 			StageName = 'Qualification',
 			CloseDate = Date.today().addDays(30),
+			Module_Wattage__c = '400',
 			Module_Wattage_W__c = 400,
 			Project_Wattage_kW__c = 4
 		);
