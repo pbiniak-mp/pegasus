@@ -3,10 +3,10 @@
     <fullName>Module_Quantity_F__c</fullName>
     <externalId>false</externalId>
     <formula>IF(
-  Module_Wattage_W__c &gt; 0,
-  TEXT(CEILING((Project_Wattage_kW__c * 1000) / Module_Wattage_W__c)),
-  &quot;0&quot;
-)</formula>
+        NOT(ISBLANK(Module_Wattage_Text__c)),
+        TEXT(CEILING((Project_Wattage_kW__c * 1000) / VALUE(Module_Wattage_Text__c))),
+        &quot;0&quot;
+        )</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Module Quantity</label>
     <required>false</required>
