@@ -587,6 +587,16 @@
                 <identifier>RecordModule_Weight_lbs_cField</identifier>
             </fieldInstance>
         </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Module_Quantity_F__c</fieldItem>
+                <identifier>RecordModule_Quantity_F_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
         <name>Facet-44444444-4444-4444-4444-444444444402</name>
         <type>Facet</type>
     </flexiPageRegions>
