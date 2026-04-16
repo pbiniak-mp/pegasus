@@ -9,6 +9,7 @@ private class DesignRevisionTriggerTest {
 
 	private static final Integer REV_BUILDING_HEIGHT = 20;
 	private static final Integer REV_MODULE_WATTAGE = 400;
+	private static final String REV_MODULE_WATTAGE_PICKLIST = '400';
 	private static final String REV_REASON = '--';
 	private static final String REV_REASON_PEGASUS = 'Pegasus Revision';
 	private static final String REV_NUMBER = '00';
@@ -385,6 +386,7 @@ private class DesignRevisionTriggerTest {
 		return new Design_Revision__c(
 			Opportunity__c = oppId,
 			Building_Height_ft__c = REV_BUILDING_HEIGHT,
+			Module_Wattage__c = REV_MODULE_WATTAGE_PICKLIST,
 			Module_Wattage_W__c = REV_MODULE_WATTAGE,
 			Project_Wattage_kW__c = wattageKw,
 			Revision_Reason__c = REV_REASON,
