@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>66.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <description>Sets Days_To_Convert_From_Lead__c on the converted Opportunity when a Lead is converted. Calculates the number of days between Lead CreatedDate and ConvertedDate.</description>
+    <environments>Default</environments>
+    <formulas>
+        <name>DaysToConvertFromLeadFormula</name>
+        <dataType>Number</dataType>
+        <expression>{!$Record.ConvertedDate} - DATEVALUE({!$Record.CreatedDate})</expression>
+        <scale>2</scale>
+    </formulas>
+    <interviewLabel>Lead - Stamp Days To Convert on Opportunity {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Lead - Stamp Days To Convert on Opportunity</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordUpdates>
+        <name>Update_Opportunity_Record</name>
+        <label>Update Opportunity Record</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.ConvertedOpportunityId</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>Days_to_Convert_from_Lead__c</field>
+            <value>
+                <elementReference>DaysToConvertFromLeadFormula</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Opportunity</object>
+    </recordUpdates>
+    <start>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Update_Opportunity_Record</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>IsConverted</field>
+            <operator>EqualTo</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </filters>
+        <filters>
+            <field>IsConverted</field>
+            <operator>IsChanged</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </filters>
+        <object>Lead</object>
+        <recordTriggerType>Update</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>
