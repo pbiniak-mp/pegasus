@@ -56,6 +56,10 @@
             <outputField>Module_Model_Number__c</outputField>
         </mappingFields>
         <mappingFields>
+            <inputField>Module_Wattage__c</inputField>
+            <outputField>Module_Wattage__c</outputField>
+        </mappingFields>
+        <mappingFields>
             <inputField>Module_Wattage_W__c</inputField>
             <outputField>Module_Wattage_W__c</outputField>
         </mappingFields>
