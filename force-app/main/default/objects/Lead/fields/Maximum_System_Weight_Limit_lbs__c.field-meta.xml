@@ -5,7 +5,7 @@
     <label>Maximum System Weight Limit (lbs)</label>
     <precision>18</precision>
     <required>false</required>
-    <scale>0</scale>
+    <scale>2</scale>
     <trackFeedHistory>false</trackFeedHistory>
     <type>Number</type>
     <unique>false</unique>
