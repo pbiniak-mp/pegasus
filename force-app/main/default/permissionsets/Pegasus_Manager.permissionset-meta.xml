@@ -574,11 +574,6 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
-        <field>Design_Revision__c.Module_Quantity__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
         <editable>false</editable>
         <field>Design_Revision__c.Module_Wattage_Text__c</field>
         <readable>true</readable>
