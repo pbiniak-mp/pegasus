@@ -115,6 +115,16 @@
                 <identifier>RecordRevision_Reason__cField</identifier>
             </fieldInstance>
         </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Distributor__c</fieldItem>
+                <identifier>RecordDistributor_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
         <name>Facet-b9924f47-ec89-4e9a-bc77-a4e9a49fba02</name>
         <type>Facet</type>
     </flexiPageRegions>
@@ -183,16 +193,6 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.DesignPreference__c</fieldItem>
-                <identifier>RecordDesignPreference_cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
                 <fieldItem>Record.Code_Standard__c</fieldItem>
                 <identifier>RecordCode_Standard_cField</identifier>
             </fieldInstance>
@@ -207,30 +207,10 @@
                 <identifier>RecordWind_Speed_mph_cField</identifier>
             </fieldInstance>
         </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.UL_3741_compliance__c</fieldItem>
-                <identifier>RecordUL_3741_compliance_cField</identifier>
-            </fieldInstance>
-        </itemInstances>
         <name>Facet-11111111-1111-1111-1111-111111111101</name>
         <type>Facet</type>
     </flexiPageRegions>
     <flexiPageRegions>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.Ballast_Block_Specification__c</fieldItem>
-                <identifier>RecordBallast_Block_Specification_cField</identifier>
-            </fieldInstance>
-        </itemInstances>
         <itemInstances>
             <fieldInstance>
                 <fieldInstanceProperties>
@@ -333,6 +313,16 @@
                 <identifier>RecordPanel_Orientation_cField</identifier>
             </fieldInstance>
         </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.UL_3741_compliance__c</fieldItem>
+                <identifier>RecordUL_3741_compliance_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
         <name>Facet-22222222-2222-2222-2222-222222222202</name>
         <type>Facet</type>
     </flexiPageRegions>
@@ -417,6 +407,16 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
+                <fieldItem>Record.Existing_or_new_construction__c</fieldItem>
+                <identifier>RecordExisting_or_new_construction_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
                 <fieldItem>Record.Project_Notes__c</fieldItem>
                 <identifier>RecordProject_Notes_cField</identifier>
             </fieldInstance>
@@ -481,8 +481,28 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.Existing_or_new_construction__c</fieldItem>
-                <identifier>RecordExisting_or_new_construction_cField</identifier>
+                <fieldItem>Record.Ground_Slope__c</fieldItem>
+                <identifier>RecordGround_Slope_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Array_Azimuth__c</fieldItem>
+                <identifier>RecordArray_Azimuth_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Landfill_Location__c</fieldItem>
+                <identifier>RecordLandfill_Location_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-33333333-3333-3333-3333-333333333302</name>
@@ -629,6 +649,86 @@
             <fieldInstance>
                 <fieldInstanceProperties>
                     <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.DesignPreference__c</fieldItem>
+                <identifier>RecordDesignPreference_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <name>Facet-55555555-5555-5555-5555-555555555501</name>
+        <type>Facet</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Ballast_Block_Specification__c</fieldItem>
+                <identifier>RecordBallast_Block_Specification_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <name>Facet-55555555-5555-5555-5555-555555555502</name>
+        <type>Facet</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>body</name>
+                    <value>Facet-55555555-5555-5555-5555-555555555501</value>
+                </componentInstanceProperties>
+                <componentName>flexipage:column</componentName>
+                <identifier>flexipage_column_dg_l</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>body</name>
+                    <value>Facet-55555555-5555-5555-5555-555555555502</value>
+                </componentInstanceProperties>
+                <componentName>flexipage:column</componentName>
+                <identifier>flexipage_column_dg_r</identifier>
+            </componentInstance>
+        </itemInstances>
+        <name>Facet-55555555-5555-5555-5555-555555555500</name>
+        <type>Facet</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.LegalConsent__c</fieldItem>
+                <identifier>RecordLegalConsent_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <name>Facet-66666666-6666-6666-6666-666666666601</name>
+        <type>Facet</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>body</name>
+                    <value>Facet-66666666-6666-6666-6666-666666666601</value>
+                </componentInstanceProperties>
+                <componentName>flexipage:column</componentName>
+                <identifier>flexipage_column_lc</identifier>
+            </componentInstance>
+        </itemInstances>
+        <name>Facet-66666666-6666-6666-6666-666666666600</name>
+        <type>Facet</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.CreatedById</fieldItem>
@@ -765,6 +865,42 @@
                 </componentInstanceProperties>
                 <componentName>flexipage:fieldSection</componentName>
                 <identifier>flexipage_fieldSection_mi</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>columns</name>
+                    <value>Facet-55555555-5555-5555-5555-555555555500</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>horizontalAlignment</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>label</name>
+                    <value>Design Goal</value>
+                </componentInstanceProperties>
+                <componentName>flexipage:fieldSection</componentName>
+                <identifier>flexipage_fieldSection_dg</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>columns</name>
+                    <value>Facet-66666666-6666-6666-6666-666666666600</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>horizontalAlignment</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>label</name>
+                    <value>Legal Consent</value>
+                </componentInstanceProperties>
+                <componentName>flexipage:fieldSection</componentName>
+                <identifier>flexipage_fieldSection_lc</identifier>
             </componentInstance>
         </itemInstances>
         <itemInstances>
