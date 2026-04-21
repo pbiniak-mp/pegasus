@@ -3,9 +3,7 @@ import { refreshApex } from '@salesforce/apex';
 import getQuotesByRevision from '@salesforce/apex/DesignRevisionQuotesController.getQuotesByRevision';
 import getQuoteStatusPicklistValues from '@salesforce/apex/DesignRevisionQuotesController.getQuoteStatusPicklistValues';
 import updateQuoteStatus from '@salesforce/apex/DesignRevisionQuotesController.updateQuoteStatus';
-import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import { NavigationMixin } from 'lightning/navigation';
-import OPPORTUNITY_FIELD from '@salesforce/schema/Design_Revision__c.Opportunity__c';
 
 const STATUS_BADGE_MAP = {
 	'Accepted': 'badge badge-accepted',
@@ -30,16 +28,8 @@ export default class DesignRevisionQuotes extends NavigationMixin(LightningEleme
 	statusOptions = [];
 	isLoading = true;
 	errorMessage;
-	opportunityId;
 	confirmModal = { ...EMPTY_MODAL };
 	_wiredQuotesResult;
-
-	@wire(getRecord, { recordId: '$recordId', fields: [OPPORTUNITY_FIELD] })
-	wiredRevision({ data, error }) {
-		if (data) {
-			this.opportunityId = getFieldValue(data, OPPORTUNITY_FIELD);
-		}
-	}
 
 	@wire(getQuoteStatusPicklistValues)
 	wiredPicklist({ data, error }) {
@@ -97,15 +87,14 @@ export default class DesignRevisionQuotes extends NavigationMixin(LightningEleme
 		}
 	}
 
-	handleNewQuote() {
+	handleNavigateToRecord(event) {
+		event.stopPropagation();
+		const quoteId = event.currentTarget.dataset.quoteid;
 		this[NavigationMixin.Navigate]({
-			type: 'standard__objectPage',
+			type: 'standard__recordPage',
 			attributes: {
-				objectApiName: 'Quote',
-				actionName: 'new'
-			},
-			state: {
-				defaultFieldValues: `OpportunityId=${this.opportunityId},Design_Revision__c=${this.recordId}`
+				recordId: quoteId,
+				actionName: 'view'
 			}
 		});
 	}

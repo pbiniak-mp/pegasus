@@ -8,6 +8,13 @@
             <p class="error-msg">{errorMessage}</p>
         </template>
 
+        <template lwc:if={showEmptyState}>
+            <div class="empty-state">
+                <p class="empty-title">No revisions yet</p>
+                <p class="empty-text">The first revision will be created automatically when the Opportunity stage is set to Design.</p>
+            </div>
+        </template>
+
         <template for:each={revisions} for:item="rev">
             <div key={rev.id} class="tl-item">
                 <!-- Left column -->
