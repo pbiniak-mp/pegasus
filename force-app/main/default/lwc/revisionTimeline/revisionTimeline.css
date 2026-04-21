@@ -54,3 +54,7 @@
 .date-val { font-size: 12px; color: #3e3e3c; margin-left: 3px; }
 
 .error-msg { font-size: 13px; color: #A32D2D; padding: 8px; }
+
+.empty-state { padding: 16px 12px; text-align: center; border: 0.5px dashed #dddbda; border-radius: 12px; background: #fafafa; }
+.empty-title { font-size: 13px; font-weight: 500; color: #181818; margin: 0 0 4px 0; }
+.empty-text { font-size: 12px; color: #706e6b; margin: 0; }
