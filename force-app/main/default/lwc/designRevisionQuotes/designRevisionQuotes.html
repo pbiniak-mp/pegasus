@@ -10,12 +10,6 @@
 
 		<template lwc:else>
 			<div class="header-row">
-				<lightning-button
-					label="New Quote"
-					variant="neutral"
-					icon-name="utility:add"
-					onclick={handleNewQuote}>
-				</lightning-button>
 				<span class="summary-pill">{materialCount} Material · {stampCount} Stamp</span>
 			</div>
 
@@ -27,7 +21,7 @@
 
 							<div class="quote-top">
 								<div>
-									<a href={quote.recordUrl} class="quote-name">{quote.name}</a>
+									<a class="quote-name" data-quoteid={quote.id} onclick={handleNavigateToRecord}>{quote.name}</a>
 									<template lwc:if={quote.revNumber}>
 										<div class="quote-rev">Rev: {quote.revNumber}</div>
 									</template>
@@ -111,7 +105,7 @@
 
 							<div class="quote-top">
 								<div>
-									<a href={quote.recordUrl} class="quote-name">{quote.name}</a>
+									<a class="quote-name" data-quoteid={quote.id} onclick={handleNavigateToRecord}>{quote.name}</a>
 									<template lwc:if={quote.revNumber}>
 										<div class="quote-rev">Rev: {quote.revNumber}</div>
 									</template>
