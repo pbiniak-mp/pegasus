@@ -15,13 +15,21 @@ export default class RevisionTimeline extends NavigationMixin(LightningElement) 
     isLoading = true;
     errorMessage;
 
+    get showEmptyState() {
+        return !this.isLoading && !this.errorMessage && this.revisions.length === 0;
+    }
+
     @wire(getRevisionsByOpportunity, { opportunityId: '$recordId' })
     wiredRevisions({ data, error }) {
         if (data) {
-            this.revisions = data.map((rev, index) => ({
+            const sorted = [...data].sort((a, b) => {
+                if (a.isActive === b.isActive) return 0;
+                return a.isActive ? -1 : 1;
+            });
+            this.revisions = sorted.map((rev, index) => ({
                 ...rev,
                 isExpanded: rev.isActive === true,
-                showLine: index < data.length - 1,
+                showLine: index < sorted.length - 1,
                 statusBadgeClass: STATUS_BADGE_MAP[rev.status] || 'badge badge-inprogress',
                 get chevronClass() {
                     return this.isExpanded ? 'tl-chevron open' : 'tl-chevron';
