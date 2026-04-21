@@ -102,14 +102,12 @@
 				<p class="section-title">Equipments Type</p>
 				<table class="info-table">
 					<tr>
-						<!-- TODO: Module Manufacturer — confirm with Ryan -->
 						<td class="info-label">Module Manufacturer</td>
-						<td class="info-value"></td>
+						<td class="info-value">{!quote.Design_Revision__r.Module_Manufacturer__c}</td>
 					</tr>
 					<tr>
-						<!-- TODO: Module Number — confirm with Ryan -->
 						<td class="info-label">Module Number</td>
-						<td class="info-value"></td>
+						<td class="info-value">{!quote.Design_Revision__r.Module_Model_Number__c}</td>
 					</tr>
 					<tr>
 						<td class="info-label">Module Watts</td>
