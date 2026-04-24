@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Validate_Positive_Numeric_Fields</fullName>
+    <active>true</active>
+    <errorConditionFormula>OR(
+    AND(NOT(ISBLANK(Setback_Distance_ft__c)),            Setback_Distance_ft__c &lt;= 0),
+    AND(NOT(ISBLANK(Structural_Load_Limit_psf__c)),      Structural_Load_Limit_psf__c &lt;= 0),
+    AND(NOT(ISBLANK(Parapet_Height_in__c)),              Parapet_Height_in__c &lt;= 0),
+    AND(NOT(ISBLANK(Parapet_Width_in__c)),               Parapet_Width_in__c &lt;= 0),
+    AND(NOT(ISBLANK(Point_Load_Limit_psf__c)),           Point_Load_Limit_psf__c &lt;= 0),
+    AND(NOT(ISBLANK(Maximum_System_Weight_Limit_lbs__c)),Maximum_System_Weight_Limit_lbs__c &lt;= 0),
+    AND(NOT(ISBLANK(Ground_Slope__c)),                   Ground_Slope__c &lt;= 0),
+    AND(NOT(ISBLANK(Array_Azimuth__c)),                  Array_Azimuth__c &lt;= 0),
+    AND(NOT(ISBLANK(Module_Length_mm__c)),               Module_Length_mm__c &lt;= 0),
+    AND(NOT(ISBLANK(Module_Width_mm__c)),                Module_Width_mm__c &lt;= 0),
+    AND(NOT(ISBLANK(Module_Weight_lbs__c)),              Module_Weight_lbs__c &lt;= 0)
+)</errorConditionFormula>
+    <errorMessage>This field must be greater than 0. Leave blank if not applicable.</errorMessage>
+</ValidationRule>

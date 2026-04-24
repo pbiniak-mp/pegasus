@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Validate_Planned_Install_Date_Future</fullName>
+    <active>true</active>
+    <errorConditionFormula>AND(
+    NOT(ISBLANK(Planned_Install_Date__c)),
+    Planned_Install_Date__c &lt; TODAY()
+)</errorConditionFormula>
+    <errorMessage>Planned Install Date cannot be in the past.</errorMessage>
+</ValidationRule>

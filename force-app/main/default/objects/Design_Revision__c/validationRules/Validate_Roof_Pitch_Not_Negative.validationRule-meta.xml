@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Validate_Roof_Pitch_Not_Negative</fullName>
+    <active>true</active>
+    <errorConditionFormula>AND(
+    NOT(ISBLANK(Roof_Pitch__c)),
+    Roof_Pitch__c &lt; 0
+)</errorConditionFormula>
+    <errorMessage>Roof Pitch cannot be negative. Leave blank if not applicable.</errorMessage>
+</ValidationRule>
