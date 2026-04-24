@@ -283,6 +283,16 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
+                <fieldItem>Record.Consignment_Stock_On_Hand__c</fieldItem>
+                <identifier>RecordConsignment_Stock_On_Hand__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
                 <fieldItem>Record.Primary_Unit_Type__c</fieldItem>
                 <identifier>RecordPrimary_Unit_Type__cField</identifier>
             </fieldInstance>
