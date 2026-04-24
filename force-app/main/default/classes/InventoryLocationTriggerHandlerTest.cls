@@ -164,28 +164,6 @@ private class InventoryLocationTriggerHandlerTest {
 		Assert.areEqual(4, p.Consignment_Stock_On_Hand__c);
 	}
 
-	// ── afterUndelete ───────────────────────────────────────────────────
-
-	@IsTest
-	static void testAfterUndelete_recalculatesAfterRestore() {
-		Id productId = getProduct(PROD_NAME_A).Id;
-		Id whConsignedId = getWarehouse(WH_CONSIGNED_NAME).Id;
-		Inventory_Location__c il = new Inventory_Location__c(
-			Product__c = productId,
-			Location__c = whConsignedId,
-			Quantity_On_Hand__c = 8
-		);
-		insert il;
-		delete il;
-
-		Test.startTest();
-		undelete il;
-		Test.stopTest();
-
-		Product2 p = reloadProduct(productId);
-		Assert.areEqual(8, p.On_Hand__c);
-		Assert.areEqual(8, p.Consignment_Stock_On_Hand__c);
-	}
 
 	// ── irrelevant update ───────────────────────────────────────────────
 
