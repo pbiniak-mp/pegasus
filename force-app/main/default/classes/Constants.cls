@@ -45,6 +45,11 @@ public class Constants {
 	public static final String NETSUITE_PRODUCT_MSG_FAILED_SUFFIX = ' failed: ';
 	public static final String NETSUITE_PRODUCT_MSG_MISSING_SUFFIX = ' missing';
 
+	// Inventory Location
+	public static final String INVENTORY_LOCATION_HANDLER_NAME = 'InventoryLocationTriggerHandler';
+	public static final String WAREHOUSE_LOCATION_TYPE_CONSIGNED = 'Consigned';
+	public static final Decimal INVENTORY_LOCATION_DEFAULT_ON_HAND = 0;
+
 	// Design Revision
 	public static final String DESIGN_REVISION_HANDLER_NAME = 'DesignRevisionTriggerHandler';
 	public static final String DESIGN_REVISION_STATUS_NOT_STARTED = 'Not Started';
