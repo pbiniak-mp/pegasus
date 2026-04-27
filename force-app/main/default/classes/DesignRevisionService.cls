@@ -236,9 +236,9 @@ public with sharing class DesignRevisionService {
 			Boolean revNumChanged = !isInsert && oldMap.get(rev.Id).Revision_Number__c != rev.Revision_Number__c;
 			if (isInsert || revNumChanged) {
 				Opportunity opp = oppMap.get(rev.Opportunity__c);
-				String accountName = (opp != null && opp.Account != null) ? opp.Account.Name : Constants.DESIGN_REVISION_UNKNOWN_ACCOUNT;
+				String opportunityName = (opp != null && String.isNotBlank(opp.Name)) ? opp.Name : Constants.DESIGN_REVISION_UNKNOWN_ACCOUNT;
 				String revNum = String.isNotBlank(rev.Revision_Number__c) ? rev.Revision_Number__c : Constants.DESIGN_REVISION_NAME_DEFAULT_NUMBER;
-				rev.Name = accountName + ' (' + Constants.DESIGN_REVISION_NAME_PREFIX + revNum + ')';
+				rev.Name = opportunityName + ' (' + Constants.DESIGN_REVISION_NAME_PREFIX + revNum + ')';
 			}
 		}
 	}
