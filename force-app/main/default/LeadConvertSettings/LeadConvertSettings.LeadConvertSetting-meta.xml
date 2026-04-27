@@ -12,6 +12,10 @@
     <objectMapping>
         <inputObject>Lead</inputObject>
         <mappingFields>
+            <inputField>Array_Azimuth__c</inputField>
+            <outputField>Array_Azimuth__c</outputField>
+        </mappingFields>
+        <mappingFields>
             <inputField>Ballast_Block_Specification__c</inputField>
             <outputField>Ballast_Block_Specification__c</outputField>
         </mappingFields>
@@ -28,12 +32,28 @@
             <outputField>DesignPreference__c</outputField>
         </mappingFields>
         <mappingFields>
+            <inputField>Distributor__c</inputField>
+            <outputField>Distributor__c</outputField>
+        </mappingFields>
+        <mappingFields>
+            <inputField>Distributor_Type__c</inputField>
+            <outputField>Distributor_Type__c</outputField>
+        </mappingFields>
+        <mappingFields>
             <inputField>Existing_or_new_construction__c</inputField>
             <outputField>Existing_or_new_construction__c</outputField>
         </mappingFields>
         <mappingFields>
             <inputField>Exposure_Category__c</inputField>
             <outputField>Exposure_Category__c</outputField>
+        </mappingFields>
+        <mappingFields>
+            <inputField>Ground_Slope__c</inputField>
+            <outputField>Ground_Slope__c</outputField>
+        </mappingFields>
+        <mappingFields>
+            <inputField>LegalConsent__c</inputField>
+            <outputField>LegalConsent__c</outputField>
         </mappingFields>
         <mappingFields>
             <inputField>Is_Test__c</inputField>
