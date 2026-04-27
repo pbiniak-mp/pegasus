@@ -19,7 +19,7 @@ private class RevisionTimelineControllerTest {
 				Name = 'Revision 1',
 				Opportunity__c = opp.Id,
 				Is_Active__c = true,
-				Status__c = 'In Progress',
+				Status__c = 'Active Design',
 				Project_Wattage_kW__c = 10.5,
 				System_Type__c = 'Pitched Roof',
 				Roof_Surface__c = 'Gravel',
@@ -29,7 +29,7 @@ private class RevisionTimelineControllerTest {
 				Name = 'Revision 2',
 				Opportunity__c = opp.Id,
 				Is_Active__c = false,
-				Status__c = 'Complete',
+				Status__c = 'Closed',
 				Project_Wattage_kW__c = null,
 				System_Type__c = null,
 				Roof_Surface__c = null,
@@ -71,11 +71,11 @@ private class RevisionTimelineControllerTest {
 		}
 
 		System.assertNotEquals(null, activeRev, 'Should have an active revision');
-		System.assertEquals('In Progress', activeRev.status, 'Active revision status should be In Progress');
+		System.assertEquals('Active Design', activeRev.status, 'Active revision status should be Active Design');
 		System.assertEquals('10.50', activeRev.projectWattage, 'Project wattage should be formatted as string');
 
 		System.assertNotEquals(null, inactiveRev, 'Should have an inactive revision');
-		System.assertEquals('Complete', inactiveRev.status, 'Inactive revision status should be Complete');
+		System.assertEquals('Closed', inactiveRev.status, 'Inactive revision status should be Closed');
 		System.assertEquals('—', inactiveRev.projectWattage, 'Null wattage should return em dash');
 		System.assertEquals('—', inactiveRev.systemType, 'Null system type should return em dash');
 		System.assertEquals('—', inactiveRev.roofSurface, 'Null roof surface should return em dash');
