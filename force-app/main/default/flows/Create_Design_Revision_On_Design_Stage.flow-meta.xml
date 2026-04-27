@@ -2,10 +2,62 @@
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>66.0</apiVersion>
     <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <assignments>
+        <name>Count_Designes</name>
+        <label>Count Designes</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>DesignRevisionCount</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <numberValue>1.0</numberValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Loop_Thought_Designs</targetReference>
+        </connector>
+    </assignments>
+    <decisions>
+        <name>Has_Any_Design_Revision</name>
+        <label>Has Any Design Revision</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>Create_Design_Revision</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>No</defaultConnectorLabel>
+        <rules>
+            <name>Has_Any_Design_Revision_Yes</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>DesignRevisionCount</leftValueReference>
+                <operator>GreaterThan</operator>
+                <rightValue>
+                    <numberValue>0.0</numberValue>
+                </rightValue>
+            </conditions>
+            <label>Yes</label>
+        </rules>
+    </decisions>
     <description>Creates a Design Revision record when Opportunity StageName changes to &quot;Design&quot;.</description>
     <environments>Default</environments>
     <interviewLabel>Create Design Revision On Design Stage {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Create Design Revision On Design Stage</label>
+    <loops>
+        <name>Loop_Thought_Designs</name>
+        <label>Loop Thought Designs</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <collectionReference>Get_Design_Revision</collectionReference>
+        <iterationOrder>Asc</iterationOrder>
+        <nextValueConnector>
+            <targetReference>Count_Designes</targetReference>
+        </nextValueConnector>
+        <noMoreValuesConnector>
+            <targetReference>Has_Any_Design_Revision</targetReference>
+        </noMoreValuesConnector>
+    </loops>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>
@@ -30,6 +82,12 @@
         <label>Create Design Revision</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
+        <inputAssignments>
+            <field>Array_Azimuth__c</field>
+            <value>
+                <elementReference>$Record.Array_Azimuth__c</elementReference>
+            </value>
+        </inputAssignments>
         <inputAssignments>
             <field>Ballast_Block_Specification__c</field>
             <value>
@@ -67,6 +125,24 @@
             </value>
         </inputAssignments>
         <inputAssignments>
+            <field>Ground_Slope__c</field>
+            <value>
+                <elementReference>$Record.Ground_Slope__c</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Landfill_Location__c</field>
+            <value>
+                <elementReference>$Record.Landfill_Location__c</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>LegalConsent__c</field>
+            <value>
+                <elementReference>$Record.LegalConsent__c</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
             <field>Maximum_System_Weight_Limit_lbs__c</field>
             <value>
                 <elementReference>$Record.Maximum_System_Weight_Limit_lbs__c</elementReference>
@@ -94,6 +170,12 @@
             <field>Module_Wattage_W__c</field>
             <value>
                 <elementReference>$Record.Module_Wattage_W__c</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Module_Wattage__c</field>
+            <value>
+                <elementReference>$Record.Module_Wattage__c</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -231,11 +313,32 @@
         <object>Design_Revision__c</object>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordCreates>
+    <recordLookups>
+        <name>Get_Design_Revision</name>
+        <label>Get Design Revision</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Loop_Thought_Designs</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Opportunity__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>false</getFirstRecordOnly>
+        <object>Design_Revision__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
     <start>
         <locationX>0</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>Create_Design_Revision</targetReference>
+            <targetReference>Get_Design_Revision</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
@@ -257,4 +360,12 @@
         <triggerType>RecordAfterSave</triggerType>
     </start>
     <status>Active</status>
+    <variables>
+        <name>DesignRevisionCount</name>
+        <dataType>Number</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <scale>2</scale>
+    </variables>
 </Flow>

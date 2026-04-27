@@ -50,9 +50,15 @@ public class Constants {
 	public static final String WAREHOUSE_LOCATION_TYPE_CONSIGNED = 'Consigned';
 	public static final Decimal INVENTORY_LOCATION_DEFAULT_ON_HAND = 0;
 
+	// Opportunity Line Item
+	public static final String OPPORTUNITY_LINE_ITEM_HANDLER_NAME = 'OpportunityLineItemTriggerHandler';
+
+	// Quote Line Item
+	public static final String QUOTE_LINE_ITEM_HANDLER_NAME = 'QuoteLineItemTriggerHandler';
+
 	// Design Revision
 	public static final String DESIGN_REVISION_HANDLER_NAME = 'DesignRevisionTriggerHandler';
-	public static final String DESIGN_REVISION_STATUS_NOT_STARTED = 'Not Started';
+	public static final String DESIGN_REVISION_STATUS_NEW = 'New';
 	public static final String DESIGN_REVISION_NAME_PREFIX = 'REV';
 	public static final String DESIGN_REVISION_NAME_DEFAULT_NUMBER = 'REV00';
 	public static final String DESIGN_REVISION_UNKNOWN_ACCOUNT = 'Unknown';

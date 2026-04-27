@@ -236,9 +236,9 @@ public with sharing class DesignRevisionService {
 			Boolean revNumChanged = !isInsert && oldMap.get(rev.Id).Revision_Number__c != rev.Revision_Number__c;
 			if (isInsert || revNumChanged) {
 				Opportunity opp = oppMap.get(rev.Opportunity__c);
-				String accountName = (opp != null && opp.Account != null) ? opp.Account.Name : Constants.DESIGN_REVISION_UNKNOWN_ACCOUNT;
+				String opportunityName = (opp != null && String.isNotBlank(opp.Name)) ? opp.Name : Constants.DESIGN_REVISION_UNKNOWN_ACCOUNT;
 				String revNum = String.isNotBlank(rev.Revision_Number__c) ? rev.Revision_Number__c : Constants.DESIGN_REVISION_NAME_DEFAULT_NUMBER;
-				rev.Name = accountName + ' (' + Constants.DESIGN_REVISION_NAME_PREFIX + revNum + ')';
+				rev.Name = opportunityName + ' (' + Constants.DESIGN_REVISION_NAME_PREFIX + revNum + ')';
 			}
 		}
 	}
@@ -261,7 +261,7 @@ public with sharing class DesignRevisionService {
 				Revision_Reason__c = revisionReason,
 				Project_Notes__c = projectNotes,
 				Is_Active__c = false,
-				Status__c = Constants.DESIGN_REVISION_STATUS_NOT_STARTED,
+				Status__c = Constants.DESIGN_REVISION_STATUS_NEW,
 				Building_Height_ft__c = current.Building_Height_ft__c,
 				Code_Standard__c = current.Code_Standard__c,
 				Existing_or_new_construction__c = current.Existing_or_new_construction__c,

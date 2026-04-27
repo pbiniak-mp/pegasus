@@ -96,6 +96,10 @@
             <outputField>Point_Load_Limit_psf__c</outputField>
         </mappingFields>
         <mappingFields>
+            <inputField>Priority__c</inputField>
+            <outputField>Priority__c</outputField>
+        </mappingFields>
+        <mappingFields>
             <inputField>Product_Line__c</inputField>
             <outputField>Product_Line__c</outputField>
         </mappingFields>

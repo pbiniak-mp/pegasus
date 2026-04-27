@@ -3,9 +3,12 @@ import { NavigationMixin } from 'lightning/navigation';
 import getRevisionsByOpportunity from '@salesforce/apex/RevisionTimelineController.getRevisionsByOpportunity';
 
 const STATUS_BADGE_MAP = {
-    'In Progress': 'badge badge-inprogress',
-    'In Review': 'badge badge-inreview',
-    'Complete': 'badge badge-complete'
+    'New': 'badge badge-new',
+    'Assigned': 'badge badge-assigned',
+    'Active Design': 'badge badge-active-design',
+    'Technical Hold': 'badge badge-technical-hold',
+    'Quote': 'badge badge-quote',
+    'Closed': 'badge badge-closed'
 };
 
 export default class RevisionTimeline extends NavigationMixin(LightningElement) {
@@ -30,7 +33,7 @@ export default class RevisionTimeline extends NavigationMixin(LightningElement) 
                 ...rev,
                 isExpanded: rev.isActive === true,
                 showLine: index < sorted.length - 1,
-                statusBadgeClass: STATUS_BADGE_MAP[rev.status] || 'badge badge-inprogress',
+                statusBadgeClass: STATUS_BADGE_MAP[rev.status] || 'badge badge-new',
                 get chevronClass() {
                     return this.isExpanded ? 'tl-chevron open' : 'tl-chevron';
                 }
