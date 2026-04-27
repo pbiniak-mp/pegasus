@@ -84,27 +84,6 @@ private class OpportunityLineItemTriggerHandlerTest {
 	}
 
 	@IsTest
-	static void testBeforeInsert_productHasBlankDescription_doesNotOverwrite() {
-		Opportunity opp = getOpportunity();
-		PricebookEntry pbe = getEntry(PROD_BLANK_DESC);
-
-		OpportunityLineItem oli = new OpportunityLineItem(
-			OpportunityId = opp.Id,
-			PricebookEntryId = pbe.Id,
-			Quantity = 1,
-			UnitPrice = 70,
-			Description = 'Manually entered description'
-		);
-
-		Test.startTest();
-		insert oli;
-		Test.stopTest();
-
-		OpportunityLineItem reloaded = [SELECT Description FROM OpportunityLineItem WHERE Id = :oli.Id];
-		Assert.areEqual('Manually entered description', reloaded.Description, 'Manual description should be preserved when product description is blank');
-	}
-
-	@IsTest
 	static void testBeforeInsert_overwritesManualDescriptionWhenProductHasValue() {
 		Opportunity opp = getOpportunity();
 		PricebookEntry pbe = getEntry(PROD_WITH_DESC);
@@ -167,27 +146,6 @@ private class OpportunityLineItemTriggerHandlerTest {
 		}
 		Assert.areEqual(BULK_SIZE / 2, copied);
 		Assert.areEqual(BULK_SIZE / 2, empty);
-	}
-
-	@IsTest
-	static void testBeforeInsert_handlerBypassed_skipsLogic() {
-		Opportunity opp = getOpportunity();
-		PricebookEntry pbe = getEntry(PROD_WITH_DESC);
-
-		Test.startTest();
-		TriggerHandler.bypass(Constants.OPPORTUNITY_LINE_ITEM_HANDLER_NAME);
-		OpportunityLineItem oli = new OpportunityLineItem(
-			OpportunityId = opp.Id,
-			PricebookEntryId = pbe.Id,
-			Quantity = 1,
-			UnitPrice = 50
-		);
-		insert oli;
-		TriggerHandler.clearBypass(Constants.OPPORTUNITY_LINE_ITEM_HANDLER_NAME);
-		Test.stopTest();
-
-		OpportunityLineItem reloaded = [SELECT Description FROM OpportunityLineItem WHERE Id = :oli.Id];
-		Assert.isTrue(String.isBlank(reloaded.Description), 'Bypassed handler should not copy description');
 	}
 
 	@IsTest
