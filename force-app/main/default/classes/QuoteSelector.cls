@@ -23,7 +23,7 @@ public inherited sharing class QuoteSelector {
 				Opportunity.Building_Height_ft__c,
 				Opportunity.Code_Standard__c,
 				Opportunity.DesignPreference__c,
-				Opportunity.Distributor__c,
+//				Opportunity.Distributor__c,
 				Opportunity.Existing_or_new_construction__c,
 				Opportunity.Exposure_Category__c,
 				Opportunity.Ground_Slope__c,

@@ -167,11 +167,7 @@
 	<table class="totals-table">
 		<tr>
 			<td class="totals-label">Freight:</td>
-			<td class="totals-value">
-				$<apex:outputText value="{0, number, #,##0.00}">
-					<apex:param value="{!quote.ShippingHandling}"/>
-				</apex:outputText>
-			</td>
+			<td class="totals-value">{!formattedFreight}</td>
 		</tr>
 		<tr>
 			<td class="totals-label">Sub Total:</td>
@@ -190,9 +186,8 @@
 			</td>
 		</tr>
 		<tr>
-			<!-- TODO: $/Watt — confirm formula with Ryan -->
 			<td class="totals-label">$/Watt:</td>
-			<td class="totals-value"></td>
+			<td class="totals-value">{!dollarPerWatt}</td>
 		</tr>
 	</table>
 

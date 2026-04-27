@@ -6,6 +6,7 @@ public with sharing class QuotePDFController {
 
 	public static final String EMPTY_STRING = '';
 	public static final String DATE_FORMAT = 'MMMM dd, yyyy';
+	public static final String FREIGHT_TBD = 'TBD';
 
 	public QuotePDFController(ApexPages.StandardController stdController) {
 		Id quoteId = stdController.getId();
@@ -43,6 +44,24 @@ public with sharing class QuotePDFController {
 			total += (li.TotalPrice != null ? li.TotalPrice : 0);
 		}
 		return total;
+	}
+
+	public String getDollarPerWatt() {
+		if (quote == null || quote.Design_Revision__r == null) return EMPTY_STRING;
+		Decimal kw = quote.Design_Revision__r.Project_Wattage_kW__c;
+		if (kw == null || kw == 0) return EMPTY_STRING;
+		Decimal totalPrice = getTotalPrice();
+		if (totalPrice == null || totalPrice == 0) return EMPTY_STRING;
+		Decimal watts = kw * 1000;
+		Decimal dpw = (watts / totalPrice).setScale(2, System.RoundingMode.HALF_UP);
+		return '$ ' + dpw.format();
+	}
+
+	public String getFormattedFreight() {
+		if (quote == null || quote.ShippingHandling == null || quote.ShippingHandling == 0) {
+			return FREIGHT_TBD;
+		}
+		return '$ ' + quote.ShippingHandling.setScale(2).format();
 	}
 
 	public Decimal getTotalAttachments() {
