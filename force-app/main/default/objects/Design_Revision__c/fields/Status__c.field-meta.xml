@@ -11,24 +11,58 @@
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
-                <fullName>Not Started</fullName>
+                <fullName>New</fullName>
+                <default>true</default>
+                <label>New</label>
+            </value>
+            <value>
+                <fullName>Assigned</fullName>
                 <default>false</default>
-                <label>Not Started</label>
+                <label>Assigned</label>
+            </value>
+            <value>
+                <fullName>Active Design</fullName>
+                <default>false</default>
+                <label>Active Design</label>
+            </value>
+            <value>
+                <fullName>Technical Hold</fullName>
+                <default>false</default>
+                <label>Technical Hold</label>
+            </value>
+            <value>
+                <fullName>Quote</fullName>
+                <default>false</default>
+                <label>Quote</label>
+            </value>
+            <value>
+                <fullName>Closed</fullName>
+                <default>false</default>
+                <label>Closed</label>
+            </value>
+            <value>
+                <fullName>Complete</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Complete</label>
             </value>
             <value>
                 <fullName>In Progress</fullName>
                 <default>false</default>
+                <isActive>false</isActive>
                 <label>In Progress</label>
             </value>
             <value>
                 <fullName>In Review</fullName>
                 <default>false</default>
+                <isActive>false</isActive>
                 <label>In Review</label>
             </value>
             <value>
-                <fullName>Complete</fullName>
+                <fullName>Not Started</fullName>
                 <default>false</default>
-                <label>Complete</label>
+                <isActive>false</isActive>
+                <label>Not Started</label>
             </value>
         </valueSetDefinition>
     </valueSet>

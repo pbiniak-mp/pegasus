@@ -333,7 +333,7 @@ private class DesignRevisionTriggerTest {
 		Assert.areEqual(REV_REASON_PEGASUS, newRev.Revision_Reason__c, 'Revision reason should be set');
 		Assert.areEqual('Some notes', newRev.Project_Notes__c, 'Project notes should be set');
 		Assert.isFalse(newRev.Is_Active__c, 'New revision should not be active');
-		Assert.areEqual(Constants.DESIGN_REVISION_STATUS_NOT_STARTED, newRev.Status__c, 'Status should be Not Started');
+		Assert.areEqual(Constants.DESIGN_REVISION_STATUS_NEW, newRev.Status__c, 'Status should be New');
 		Assert.areEqual('20', newRev.Module_Quantity_F__c, 'Module_Quantity_F__c should reflect wattage');
 		Assert.areEqual(REV_SYSTEM_TYPE, newRev.System_Type__c, 'System_Type__c should be cloned');
 		Assert.areEqual(REV_PANEL_TILT, newRev.Panel_Tilt__c, 'Panel_Tilt__c should be cloned');

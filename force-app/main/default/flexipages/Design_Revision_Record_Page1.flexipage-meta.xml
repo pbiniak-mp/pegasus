@@ -79,16 +79,6 @@
             <fieldInstance>
                 <fieldInstanceProperties>
                     <name>uiBehavior</name>
-                    <value>readonly</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.Name</fieldItem>
-                <identifier>RecordNameField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
                     <value>required</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.Opportunity__c</fieldItem>
@@ -157,6 +147,16 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.Parent_Revision__c</fieldItem>
                 <identifier>RecordParent_Revision__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Priority__c</fieldItem>
+                <identifier>RecordPriority_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-8a59ea9e-2fd7-4c2c-ad10-fe9c5b01ccd5</name>
@@ -549,8 +549,8 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.Module_Wattage_W__c</fieldItem>
-                <identifier>RecordModule_Wattage_W_cField</identifier>
+                <fieldItem>Record.Module_Wattage__c</fieldItem>
+                <identifier>RecordModule_Wattage_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
