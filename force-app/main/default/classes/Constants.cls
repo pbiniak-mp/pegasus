@@ -58,7 +58,7 @@ public class Constants {
 
 	// Design Revision
 	public static final String DESIGN_REVISION_HANDLER_NAME = 'DesignRevisionTriggerHandler';
-	public static final String DESIGN_REVISION_STATUS_NOT_STARTED = 'Not Started';
+	public static final String DESIGN_REVISION_STATUS_NEW = 'New';
 	public static final String DESIGN_REVISION_NAME_PREFIX = 'REV';
 	public static final String DESIGN_REVISION_NAME_DEFAULT_NUMBER = 'REV00';
 	public static final String DESIGN_REVISION_UNKNOWN_ACCOUNT = 'Unknown';

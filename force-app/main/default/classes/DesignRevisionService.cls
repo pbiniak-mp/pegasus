@@ -261,7 +261,7 @@ public with sharing class DesignRevisionService {
 				Revision_Reason__c = revisionReason,
 				Project_Notes__c = projectNotes,
 				Is_Active__c = false,
-				Status__c = Constants.DESIGN_REVISION_STATUS_NOT_STARTED,
+				Status__c = Constants.DESIGN_REVISION_STATUS_NEW,
 				Building_Height_ft__c = current.Building_Height_ft__c,
 				Code_Standard__c = current.Code_Standard__c,
 				Existing_or_new_construction__c = current.Existing_or_new_construction__c,
