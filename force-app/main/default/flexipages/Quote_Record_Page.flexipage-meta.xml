@@ -19,6 +19,9 @@
                             <value>EmailQuote</value>
                         </valueListItems>
                         <valueListItems>
+                            <value>Quote.Clone_Quote</value>
+                        </valueListItems>
+                        <valueListItems>
                             <value>Delete</value>
                         </valueListItems>
                     </valueList>
