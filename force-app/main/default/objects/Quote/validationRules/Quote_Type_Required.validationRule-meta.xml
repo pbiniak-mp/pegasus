@@ -3,7 +3,7 @@
     <fullName>Quote_Type_Required</fullName>
     <active>true</active>
     <description>Prevents saving a Quote when the Quote Type picklist field is blank. Quote Type is mandatory for all Quotes.</description>
-    <errorConditionFormula>ISPICKVAL(Quote_Type__c, '')</errorConditionFormula>
+    <errorConditionFormula>ISPICKVAL(Quote_Type__c, &apos;&apos;)</errorConditionFormula>
     <errorDisplayField>Quote_Type__c</errorDisplayField>
     <errorMessage>Quote Type is required.</errorMessage>
 </ValidationRule>
