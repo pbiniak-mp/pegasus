@@ -59,7 +59,7 @@
             <assignToReference>Get_Original_Quote_to_Clone.Name</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference>Get_Original_Quote_to_Clone.Name</elementReference>
+                <elementReference>Enter_Quote_Name</elementReference>
             </value>
         </assignmentItems>
         <assignmentItems>
@@ -348,6 +348,7 @@
                 </width>
             </styleProperties>
         </fields>
+        <nextOrFinishButtonLabel>Go to Quote</nextOrFinishButtonLabel>
         <showFooter>true</showFooter>
         <showHeader>false</showHeader>
     </screens>
