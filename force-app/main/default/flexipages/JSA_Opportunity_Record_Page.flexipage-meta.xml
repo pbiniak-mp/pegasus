@@ -13,6 +13,9 @@
                             <value>DeepClone</value>
                         </valueListItems>
                         <valueListItems>
+                            <value>Opportunity.Create_Quote</value>
+                        </valueListItems>
+                        <valueListItems>
                             <value>Delete</value>
                         </valueListItems>
                     </valueList>

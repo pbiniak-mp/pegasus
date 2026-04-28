@@ -14,6 +14,11 @@ private class QuoteSavePDFControllerTest {
 		);
 		insert opp;
 
+		insert new Quote_Sequence__c(
+			SetupOwnerId = UserInfo.getOrganizationId(),
+			Last_Number__c = 26099
+		);
+
 		Quote quote = new Quote(
 			Name = 'Test Quote',
 			OpportunityId = opp.Id,
