@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Layout xmlns="http://soap.sforce.com/2006/04/metadata">
     <excludeButtons>CreateSalesChannel</excludeButtons>
+    <excludeButtons>OpenSlackRecordChannel</excludeButtons>
     <excludeButtons>PrintableView</excludeButtons>
     <excludeButtons>RecordShareHierarchy</excludeButtons>
     <excludeButtons>StartOutboundConversation</excludeButtons>
@@ -461,6 +462,7 @@
         <relatedList>Design_Revision__c.Opportunity__c</relatedList>
     </relatedLists>
     <relatedLists>
+        <excludeButtons>NewQuote</excludeButtons>
         <fields>QUOTE.QUOTENUMBER</fields>
         <fields>Quote_Number__c</fields>
         <fields>QUOTE.NAME</fields>
