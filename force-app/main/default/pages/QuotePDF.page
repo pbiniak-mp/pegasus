@@ -25,7 +25,7 @@
 					</tr>
 					<tr>
 						<td class="info-label">Quote #</td>
-						<td class="info-value">{!quote.Name}</td>
+						<td class="info-value">{!quote.Quote_Number__c}</td>
 					</tr>
 					<tr>
 						<td class="info-label">REV Number</td>
