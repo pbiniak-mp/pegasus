@@ -53,6 +53,9 @@ public class Constants {
 	// Opportunity Line Item
 	public static final String OPPORTUNITY_LINE_ITEM_HANDLER_NAME = 'OpportunityLineItemTriggerHandler';
 
+	// Quote
+	public static final String QUOTE_HANDLER_NAME = 'QuoteTriggerHandler';
+
 	// Quote Line Item
 	public static final String QUOTE_LINE_ITEM_HANDLER_NAME = 'QuoteLineItemTriggerHandler';
 
