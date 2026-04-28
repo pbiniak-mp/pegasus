@@ -22,6 +22,11 @@ private class DesignRevisionQuotesControllerTest {
 
 		Id pricebookId = Test.getStandardPricebookId();
 
+		insert new Quote_Sequence__c(
+			SetupOwnerId = UserInfo.getOrganizationId(),
+			Last_Number__c = 26099
+		);
+
 		Quote materialQuote = new Quote(
 			Name = 'Material Quote',
 			OpportunityId = opp.Id,
