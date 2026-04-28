@@ -173,7 +173,7 @@
 			<td class="totals-label">Sub Total:</td>
 			<td class="totals-value">
 				$<apex:outputText value="{0, number, #,##0.00}">
-					<apex:param value="{!totalPrice}"/>
+					<apex:param value="{!quote.GrandTotal}"/>
 				</apex:outputText>
 			</td>
 		</tr>
@@ -181,7 +181,7 @@
 			<td class="totals-label">Racking Total:</td>
 			<td class="totals-value">
 				$<apex:outputText value="{0, number, #,##0.00}">
-					<apex:param value="{!totalPrice}"/>
+					<apex:param value="{!quote.TotalPrice}"/>
 				</apex:outputText>
 			</td>
 		</tr>
