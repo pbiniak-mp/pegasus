@@ -18,6 +18,7 @@ public inherited sharing class QuoteSelector {
 				ShippingHandling,
 				OpportunityId,
 				QuoteNumber,
+				Quote_Number__c,
 				Opportunity.Array_Azimuth__c,
 				Opportunity.Ballast_Block_Specification__c,
 				Opportunity.Building_Height_ft__c,
