@@ -34,6 +34,11 @@ private class QuoteLineItemTriggerHandlerTest {
 			new PricebookEntry(Pricebook2Id = pricebookId, Product2Id = productBlankDesc.Id, UnitPrice = 70, IsActive = true)
 		};
 
+		insert new Quote_Sequence__c(
+			SetupOwnerId = UserInfo.getOrganizationId(),
+			Last_Number__c = 26099
+		);
+
 		Quote quote = new Quote(
 			Name = 'QLI Test Quote',
 			OpportunityId = opp.Id,
