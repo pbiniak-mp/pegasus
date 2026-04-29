@@ -38,6 +38,7 @@ public inherited sharing class DesignRevisionSelector {
 				Structural_Load_Limit_psf__c,
 				System_Configuration__c,
 				System_Type__c,
+				Total_Attachments__c,
 				Wind_Speed_mph__c
 			FROM Design_Revision__c
 			WHERE Id IN :ids
