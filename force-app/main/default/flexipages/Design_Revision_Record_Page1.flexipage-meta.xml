@@ -47,6 +47,20 @@
                 <identifier>force_highlightsPanel</identifier>
             </componentInstance>
         </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>hideUpdateButton</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>variant</name>
+                    <value>linear</value>
+                </componentInstanceProperties>
+                <componentName>runtime_sales_pathassistant:pathAssistant</componentName>
+                <identifier>runtime_sales_pathassistant_pathAssistant</identifier>
+            </componentInstance>
+        </itemInstances>
         <mode>Replace</mode>
         <name>header</name>
         <type>Region</type>
@@ -113,6 +127,16 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.Distributor__c</fieldItem>
                 <identifier>RecordDistributor_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Assign_To__c</fieldItem>
+                <identifier>RecordAssign_To__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-b9924f47-ec89-4e9a-bc77-a4e9a49fba02</name>
