@@ -89,6 +89,12 @@
             </value>
         </inputAssignments>
         <inputAssignments>
+            <field>Assign_To__c</field>
+            <value>
+                <elementReference>$User.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
             <field>Ballast_Block_Specification__c</field>
             <value>
                 <elementReference>$Record.Ballast_Block_Specification__c</elementReference>
@@ -340,6 +346,7 @@
         <connector>
             <targetReference>Get_Design_Revision</targetReference>
         </connector>
+        <doesRequireRecordChangedToMeetCriteria>true</doesRequireRecordChangedToMeetCriteria>
         <filterLogic>and</filterLogic>
         <filters>
             <field>StageName</field>
@@ -348,15 +355,8 @@
                 <stringValue>Design</stringValue>
             </value>
         </filters>
-        <filters>
-            <field>StageName</field>
-            <operator>IsChanged</operator>
-            <value>
-                <booleanValue>true</booleanValue>
-            </value>
-        </filters>
         <object>Opportunity</object>
-        <recordTriggerType>Update</recordTriggerType>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
         <triggerType>RecordAfterSave</triggerType>
     </start>
     <status>Active</status>
