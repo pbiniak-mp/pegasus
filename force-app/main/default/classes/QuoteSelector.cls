@@ -104,6 +104,7 @@ public inherited sharing class QuoteSelector {
 				Design_Revision__r.Structural_Load_Limit_psf__c,
 				Design_Revision__r.System_Configuration__c,
 				Design_Revision__r.System_Type__c,
+				Design_Revision__r.Total_Attachments__c,
 				Design_Revision__r.UL_3741_compliance__c,
 				Design_Revision__r.Wind_Speed_mph__c
 			FROM Quote

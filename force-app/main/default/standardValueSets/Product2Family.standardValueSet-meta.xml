@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<StandardValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <sorted>false</sorted>
+    <standardValue>
+        <fullName>None</fullName>
+        <default>false</default>
+        <label>None</label>
+    </standardValue>
+    <standardValue>
+        <fullName>S 10 E/W</fullName>
+        <default>false</default>
+        <label>S 10 E/W</label>
+    </standardValue>
+    <standardValue>
+        <fullName>S 5 Deg</fullName>
+        <default>false</default>
+        <label>S 5 Deg</label>
+    </standardValue>
+    <standardValue>
+        <fullName>S 10 Deg</fullName>
+        <default>false</default>
+        <label>S 10 Deg</label>
+    </standardValue>
+    <standardValue>
+        <fullName>S 15 Deg</fullName>
+        <default>false</default>
+        <label>S 15 Deg</label>
+    </standardValue>
+    <standardValue>
+        <fullName>S Hardware and Accessories</fullName>
+        <default>false</default>
+        <label>S Hardware and Accessories</label>
+    </standardValue>
+    <standardValue>
+        <fullName>SN2</fullName>
+        <default>false</default>
+        <label>SN2</label>
+    </standardValue>
+    <standardValue>
+        <fullName>S-Base</fullName>
+        <default>false</default>
+        <label>S-Base</label>
+    </standardValue>
+    <standardValue>
+        <fullName>G E/W</fullName>
+        <default>false</default>
+        <label>G E/W</label>
+    </standardValue>
+    <standardValue>
+        <fullName>G-Base 15 Deg</fullName>
+        <default>false</default>
+        <label>G-Base 15 Deg</label>
+    </standardValue>
+    <standardValue>
+        <fullName>G-Base 20 Deg</fullName>
+        <default>false</default>
+        <label>G-Base 20 Deg</label>
+    </standardValue>
+    <standardValue>
+        <fullName>G Base Hardware and Accessories</fullName>
+        <default>false</default>
+        <label>G Base Hardware and Accessories</label>
+    </standardValue>
+    <standardValue>
+        <fullName>misc</fullName>
+        <default>false</default>
+        <label>misc</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Hardware and Accessories</fullName>
+        <default>false</default>
+        <label>Hardware and Accessories</label>
+    </standardValue>
+    <standardValue>
+        <fullName>FIXED PRICED PRODUCTS</fullName>
+        <default>false</default>
+        <label>FIXED PRICED PRODUCTS</label>
+    </standardValue>
+    <standardValue>
+        <fullName>LEGACY PRODUCTS</fullName>
+        <default>false</default>
+        <label>LEGACY PRODUCTS</label>
+    </standardValue>
+    <standardValue>
+        <fullName>PERMIT SERVICES</fullName>
+        <default>false</default>
+        <label>PERMIT SERVICES</label>
+    </standardValue>
+    <standardValue>
+        <fullName>CHANGE ORDER</fullName>
+        <default>false</default>
+        <label>CHANGE ORDER</label>
+    </standardValue>
+    <standardValue>
+        <fullName>PRINTS &amp; WET SEALS</fullName>
+        <default>false</default>
+        <label>PRINTS &amp; WET SEALS</label>
+    </standardValue>
+</StandardValueSet>
