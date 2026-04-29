@@ -53,7 +53,7 @@ public with sharing class QuotePDFController {
 		Decimal totalPrice = getTotalPrice();
 		if (totalPrice == null || totalPrice == 0) return EMPTY_STRING;
 		Decimal watts = kw * 1000;
-		Decimal dpw = (watts / totalPrice).setScale(2, System.RoundingMode.HALF_UP);
+		Decimal dpw = (totalPrice / watts).setScale(2, System.RoundingMode.HALF_UP);
 		return '$ ' + dpw.format();
 	}
 

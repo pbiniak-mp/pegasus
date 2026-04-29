@@ -289,6 +289,7 @@ public with sharing class DesignRevisionService {
 				Structural_Load_Limit_psf__c = current.Structural_Load_Limit_psf__c,
 				System_Configuration__c = current.System_Configuration__c,
 				System_Type__c = current.System_Type__c,
+				Total_Attachments__c = current.Total_Attachments__c,
 				Wind_Speed_mph__c = current.Wind_Speed_mph__c
 			);
 

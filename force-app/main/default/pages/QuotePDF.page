@@ -86,14 +86,14 @@
 						<td class="info-value">{!quote.Design_Revision__r.Module_Quantity_F__c}</td>
 					</tr>
 					<tr>
-						<td class="info-label">Total Watts</td>
+						<td class="info-label">Project Size</td>
 						<td class="info-value">{!quote.Design_Revision__r.Project_Wattage_kW__c}&nbsp;kW</td>
 					</tr>
 					<tr>
 						<td class="info-label">Total Attachments</td>
 						<td class="info-value">
 							<apex:outputText value="{0, number, #,##0}">
-								<apex:param value="{!totalAttachments}"/>
+								<apex:param value="{!quote.Design_Revision__r.Total_Attachments__c}"/>
 							</apex:outputText>
 						</td>
 					</tr>
