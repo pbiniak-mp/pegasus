@@ -111,7 +111,7 @@
 					</tr>
 					<tr>
 						<td class="info-label">Module Watts</td>
-						<td class="info-value">{!quote.Design_Revision__r.Module_Wattage_W__c}</td>
+						<td class="info-value">{!quote.Design_Revision__r.Module_Wattage__c}</td>
 					</tr>
 					<tr>
 						<td class="info-label">System</td>
