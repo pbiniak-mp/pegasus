@@ -5,6 +5,12 @@ public with sharing class DesignRevisionService {
 	private static final String ERR_INSERT_CONTENT_LINKS = 'Failed to insert ContentDocumentLinks to Opportunity';
 	private static final String ERR_UPDATE_OPPORTUNITIES = 'Failed to update Opportunities after Design Revision activation';
 	private static final String ERR_CREATE_NEW_REVISION = 'Unhandled error during createNewRevision';
+	private static final String ERR_SYNC_OPP_STAGE = 'Failed to sync Opportunity StageName from Design Revision status';
+
+	private static final Map<String, String> DR_STATUS_TO_OPP_STAGE = new Map<String, String>{
+		Constants.DESIGN_REVISION_STATUS_QUOTE => Constants.OPPORTUNITY_STAGE_QUOTE,
+		Constants.DESIGN_REVISION_STATUS_CLOSED => Constants.OPPORTUNITY_STAGE_OFFERED
+	};
 
 	public static List<Design_Revision__c> filterActivated(
 		List<Design_Revision__c> newList,
@@ -217,6 +223,64 @@ public with sharing class DesignRevisionService {
 		);
 	}
 
+	public static void syncOpportunityStageOnStatusChange(
+		List<Design_Revision__c> revisions,
+		Map<Id, Design_Revision__c> oldMap
+	) {
+		if (oldMap == null) return;
+		Map<Id, String> oppIdToTargetStage = new Map<Id, String>();
+		for (Design_Revision__c rev : revisions) {
+			Design_Revision__c oldRev = oldMap.get(rev.Id);
+			if (rev.Status__c == oldRev.Status__c || rev.Opportunity__c == null) continue;
+			String targetStage = DR_STATUS_TO_OPP_STAGE.get(rev.Status__c);
+			if (targetStage == null) continue;
+			oppIdToTargetStage.put(rev.Opportunity__c, targetStage);
+		}
+		if (oppIdToTargetStage.isEmpty()) return;
+
+		List<Opportunity> opps = OpportunitySelector.getOpportunitiesByIds(oppIdToTargetStage.keySet());
+		List<Opportunity> toUpdate = new List<Opportunity>();
+		for (Opportunity opp : opps) {
+			String target = oppIdToTargetStage.get(opp.Id);
+			if (opp.StageName != target) {
+				toUpdate.add(new Opportunity(Id = opp.Id, StageName = target));
+			}
+		}
+		if (toUpdate.isEmpty()) return;
+
+		try {
+			update toUpdate;
+		} catch (Exception e) {
+			BoltErrorLogger.logError(
+				CLASS_NAME,
+				'syncOpportunityStageOnStatusChange',
+				ERR_SYNC_OPP_STAGE + ': ' + e.getMessage(),
+				e.getStackTraceString(),
+				Constants.SOURCE_TYPE_APEX,
+				Constants.SEVERITY_ERROR,
+				UserInfo.getUserId(),
+				null
+			);
+			throw e;
+		}
+	}
+
+	public static void assignOwnerOnStatusChange(
+		List<Design_Revision__c> revisions,
+		Map<Id, Design_Revision__c> oldMap
+	) {
+		if (oldMap == null) return;
+		Id currentUserId = UserInfo.getUserId();
+		for (Design_Revision__c rev : revisions) {
+			Design_Revision__c oldRev = oldMap.get(rev.Id);
+			Boolean changedToAssigned = rev.Status__c == Constants.DESIGN_REVISION_STATUS_ASSIGNED
+				&& oldRev.Status__c != Constants.DESIGN_REVISION_STATUS_ASSIGNED;
+			if (changedToAssigned) {
+				rev.Assign_To__c = currentUserId;
+			}
+		}
+	}
+
 	public static void buildNames(List<Design_Revision__c> revisions, Map<Id, Design_Revision__c> oldMap) {
 		Set<Id> oppIds = new Set<Id>();
 		for (Design_Revision__c rev : revisions) {
@@ -264,6 +328,7 @@ public with sharing class DesignRevisionService {
 				Project_Notes__c = projectNotes,
 				Is_Active__c = false,
 				Status__c = Constants.DESIGN_REVISION_STATUS_NEW,
+				Assign_To__c = current.Assign_To__c,
 				Building_Height_ft__c = current.Building_Height_ft__c,
 				Code_Standard__c = current.Code_Standard__c,
 				Existing_or_new_construction__c = current.Existing_or_new_construction__c,

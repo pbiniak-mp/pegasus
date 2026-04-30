@@ -5,8 +5,6 @@
     <fieldName>Status__c</fieldName>
     <masterLabel>Design Revision</masterLabel>
     <pathAssistantSteps>
-        <fieldNames>Assign_To__c</fieldNames>
-        <info>&lt;p&gt;If Assign To is populated then move to the &amp;quot;Assigned Status&amp;quot;&lt;/p&gt;</info>
         <picklistValueName>New</picklistValueName>
     </pathAssistantSteps>
     <recordTypeName>__MASTER__</recordTypeName>
