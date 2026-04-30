@@ -4,6 +4,7 @@ public inherited sharing class DesignRevisionSelector {
 		return [
 			SELECT
 				Id,
+				Assign_To__c,
 				Building_Height_ft__c,
 				Code_Standard__c,
 				Existing_or_new_construction__c,
