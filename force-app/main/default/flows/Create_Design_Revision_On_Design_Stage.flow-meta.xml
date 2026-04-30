@@ -119,6 +119,12 @@
             </value>
         </inputAssignments>
         <inputAssignments>
+            <field>Distributor__c</field>
+            <value>
+                <elementReference>$Record.Distributor__c</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
             <field>Existing_or_new_construction__c</field>
             <value>
                 <elementReference>$Record.Existing_or_new_construction__c</elementReference>
@@ -239,6 +245,12 @@
             </value>
         </inputAssignments>
         <inputAssignments>
+            <field>Priority__c</field>
+            <value>
+                <elementReference>$Record.Priority__c</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
             <field>Product_Line__c</field>
             <value>
                 <elementReference>$Record.Product_Line__c</elementReference>
@@ -302,6 +314,12 @@
             <field>System_Type__c</field>
             <value>
                 <elementReference>$Record.System_Type__c</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Total_Attachments__c</field>
+            <value>
+                <elementReference>$Record.Total_Attachments__c</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
