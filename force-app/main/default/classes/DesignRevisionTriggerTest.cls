@@ -370,6 +370,57 @@ private class DesignRevisionTriggerTest {
 		Assert.areEqual(rev.Id, newRev.Parent_Revision__c, 'Parent should be set');
 	}
 
+	@IsTest
+	static void testAssignTo_setOnStatusChangeToAssigned_andClonedToNewRevision() {
+		Opportunity opp = getOpp();
+		Design_Revision__c rev = buildRevision(opp.Id, 6.0);
+		insert rev;
+
+		Design_Revision__c afterInsert = [SELECT Assign_To__c FROM Design_Revision__c WHERE Id = :rev.Id];
+		Assert.isNull(afterInsert.Assign_To__c, 'Assign_To__c should not be set before status change');
+
+		Test.startTest();
+		rev.Status__c = Constants.DESIGN_REVISION_STATUS_ASSIGNED;
+		update rev;
+		Test.stopTest();
+
+		Design_Revision__c afterAssign = [SELECT Assign_To__c, Status__c FROM Design_Revision__c WHERE Id = :rev.Id];
+		Assert.areEqual(UserInfo.getUserId(), afterAssign.Assign_To__c, 'Assign_To__c should be set to the current user when Status changes to Assigned');
+
+		Id newRevId = DesignRevisionService.createNewRevision(rev.Id, REV_REASON_PEGASUS, null);
+		Design_Revision__c newRev = [SELECT Assign_To__c FROM Design_Revision__c WHERE Id = :newRevId];
+		Assert.areEqual(UserInfo.getUserId(), newRev.Assign_To__c, 'Assign_To__c should be cloned to the new revision');
+	}
+
+	@IsTest
+	static void testStatusSync_quoteAndClosedUpdateOpportunityStage() {
+		List<Opportunity> opps = new List<Opportunity>{
+			new Opportunity(Name = 'Sync Opp Quote', StageName = OPP_STAGE, CloseDate = Date.today().addDays(OPP_CLOSE_DAYS)),
+			new Opportunity(Name = 'Sync Opp Closed', StageName = OPP_STAGE, CloseDate = Date.today().addDays(OPP_CLOSE_DAYS)),
+			new Opportunity(Name = 'Sync Opp Already Quote', StageName = 'Quote', CloseDate = Date.today().addDays(OPP_CLOSE_DAYS))
+		};
+		insert opps;
+
+		Design_Revision__c revQuote = buildRevision(opps[0].Id, 4.0);
+		Design_Revision__c revClosed = buildRevision(opps[1].Id, 6.0);
+		Design_Revision__c revAlreadyQuote = buildRevision(opps[2].Id, 8.0);
+		insert new List<Design_Revision__c>{ revQuote, revClosed, revAlreadyQuote };
+
+		Test.startTest();
+		revQuote.Status__c = Constants.DESIGN_REVISION_STATUS_QUOTE;
+		revClosed.Status__c = Constants.DESIGN_REVISION_STATUS_CLOSED;
+		revAlreadyQuote.Status__c = Constants.DESIGN_REVISION_STATUS_QUOTE;
+		update new List<Design_Revision__c>{ revQuote, revClosed, revAlreadyQuote };
+		Test.stopTest();
+
+		Map<Id, Opportunity> result = new Map<Id, Opportunity>(
+			[SELECT Id, StageName FROM Opportunity WHERE Id IN :opps]
+		);
+		Assert.areEqual(Constants.OPPORTUNITY_STAGE_QUOTE, result.get(opps[0].Id).StageName, 'Opp StageName should be set to Quote when DR Status changes to Quote');
+		Assert.areEqual(Constants.OPPORTUNITY_STAGE_OFFERED, result.get(opps[1].Id).StageName, 'Opp StageName should be set to Offered when DR Status changes to Closed');
+		Assert.areEqual(Constants.OPPORTUNITY_STAGE_QUOTE, result.get(opps[2].Id).StageName, 'Opp StageName should remain Quote when already Quote');
+	}
+
 	private static Set<Id> getLinkedDocIds(Id recordId) {
 		Set<Id> result = new Set<Id>();
 		for (ContentDocumentLink cdl : [SELECT ContentDocumentId FROM ContentDocumentLink WHERE LinkedEntityId = :recordId]) {
