@@ -201,6 +201,7 @@ public with sharing class DesignRevisionService {
 			Parapet_Width_in__c = dr.Parapet_Width_in__c,
 			Planned_Install_Date__c = dr.Planned_Install_Date__c,
 			Point_Load_Limit_psf__c = dr.Point_Load_Limit_psf__c,
+			Priority__c = dr.Priority__c,
 			Product_Line__c = dr.Product_Line__c,
 			Project_Notes__c = dr.Project_Notes__c,
 			Project_Wattage_kW__c = dr.Project_Wattage_kW__c,
@@ -211,6 +212,7 @@ public with sharing class DesignRevisionService {
 			Structural_Load_Limit_psf__c = dr.Structural_Load_Limit_psf__c,
 			System_Configuration__c = dr.System_Configuration__c,
 			System_Type__c = dr.System_Type__c,
+			Total_Attachments__c = dr.Total_Attachments__c,
 			Wind_Speed_mph__c = dr.Wind_Speed_mph__c
 		);
 	}
@@ -280,6 +282,7 @@ public with sharing class DesignRevisionService {
 				Parapet_Width_in__c = current.Parapet_Width_in__c,
 				Planned_Install_Date__c = current.Planned_Install_Date__c,
 				Point_Load_Limit_psf__c = current.Point_Load_Limit_psf__c,
+				Priority__c = current.Priority__c,
 				Product_Line__c = current.Product_Line__c,
 				Project_Wattage_kW__c = current.Project_Wattage_kW__c,
 				Risk_Category__c = current.Risk_Category__c,

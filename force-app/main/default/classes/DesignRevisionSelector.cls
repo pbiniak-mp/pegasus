@@ -25,6 +25,7 @@ public inherited sharing class DesignRevisionSelector {
 				Parapet_Width_in__c,
 				Planned_Install_Date__c,
 				Point_Load_Limit_psf__c,
+				Priority__c,
 				Product_Line__c,
 				Project_Notes__c,
 				Project_Wattage_kW__c,
