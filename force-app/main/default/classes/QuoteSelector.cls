@@ -117,6 +117,7 @@ public inherited sharing class QuoteSelector {
 			SELECT
 				Id,
 				Name,
+				Quote_Number__c,
 				OpportunityId,
 				Status,
 				Quote_Type__c,
