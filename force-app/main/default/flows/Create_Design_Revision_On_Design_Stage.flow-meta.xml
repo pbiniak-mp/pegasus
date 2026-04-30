@@ -89,12 +89,6 @@
             </value>
         </inputAssignments>
         <inputAssignments>
-            <field>Assign_To__c</field>
-            <value>
-                <elementReference>$User.Id</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
             <field>Ballast_Block_Specification__c</field>
             <value>
                 <elementReference>$Record.Ballast_Block_Specification__c</elementReference>
