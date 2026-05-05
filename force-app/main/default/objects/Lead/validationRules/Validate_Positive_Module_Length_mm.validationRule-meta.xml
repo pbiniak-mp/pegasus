@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Validate_Positive_Module_Length_mm</fullName>
+    <active>true</active>
+    <errorConditionFormula>AND(NOT(ISBLANK(Module_Length_mm__c)), Module_Length_mm__c &lt;= 0)</errorConditionFormula>
+    <errorDisplayField>Module_Length_mm__c</errorDisplayField>
+    <errorMessage>Module Length must be greater than 0. Leave blank if not applicable.</errorMessage>
+</ValidationRule>

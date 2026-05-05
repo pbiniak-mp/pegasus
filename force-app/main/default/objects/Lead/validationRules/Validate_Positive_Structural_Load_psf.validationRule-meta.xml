@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Validate_Positive_Structural_Load_psf</fullName>
+    <active>true</active>
+    <errorConditionFormula>AND(NOT(ISBLANK(Structural_Load_Limit_psf__c)), Structural_Load_Limit_psf__c &lt;= 0)</errorConditionFormula>
+    <errorDisplayField>Structural_Load_Limit_psf__c</errorDisplayField>
+    <errorMessage>Structural Load Limit must be greater than 0. Leave blank if not applicable.</errorMessage>
+</ValidationRule>

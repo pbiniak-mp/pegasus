@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Validate_Positive_Ground_Slope</fullName>
+    <active>true</active>
+    <errorConditionFormula>AND(NOT(ISBLANK(Ground_Slope__c)), Ground_Slope__c &lt;= 0)</errorConditionFormula>
+    <errorDisplayField>Ground_Slope__c</errorDisplayField>
+    <errorMessage>Ground Slope must be greater than 0. Leave blank if not applicable.</errorMessage>
+</ValidationRule>

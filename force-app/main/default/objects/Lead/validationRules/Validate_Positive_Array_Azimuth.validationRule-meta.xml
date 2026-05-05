@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Validate_Positive_Array_Azimuth</fullName>
+    <active>true</active>
+    <errorConditionFormula>AND(NOT(ISBLANK(Array_Azimuth__c)), Array_Azimuth__c &lt;= 0)</errorConditionFormula>
+    <errorDisplayField>Array_Azimuth__c</errorDisplayField>
+    <errorMessage>Array Azimuth must be greater than 0. Leave blank if not applicable.</errorMessage>
+</ValidationRule>
