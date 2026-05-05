@@ -85,8 +85,8 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.StockKeepingUnit</fieldItem>
-                <identifier>RecordStockKeepingUnitField</identifier>
+                <fieldItem>Record.Description</fieldItem>
+                <identifier>RecordDescriptionField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -95,8 +95,18 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.Description</fieldItem>
-                <identifier>RecordDescriptionField</identifier>
+                <fieldItem>Record.Family</fieldItem>
+                <identifier>RecordFamilyField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Type__c</fieldItem>
+                <identifier>RecordType_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -115,28 +125,6 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.ProductCode</fieldItem>
-                <identifier>RecordProductCodeField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.Family</fieldItem>
-                <identifier>RecordFamilyField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldItem>Record.Product_Name_External__c</fieldItem>
-                <identifier>RecordProduct_Name_External__cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
                 <fieldItem>Record.Weight__c</fieldItem>
                 <identifier>RecordWeight__cField</identifier>
             </fieldInstance>
@@ -161,8 +149,18 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.Type__c</fieldItem>
-                <identifier>RecordType_cField</identifier>
+                <fieldItem>Record.Base_Price__c</fieldItem>
+                <identifier>RecordBase_Price_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Product_Category__c</fieldItem>
+                <identifier>RecordProduct_Category__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -181,28 +179,8 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.Base_Price__c</fieldItem>
-                <identifier>RecordBase_Price_cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
                 <fieldItem>Record.Tax_Schedule__c</fieldItem>
                 <identifier>RecordTax_Schedule_cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.Product_Category__c</fieldItem>
-                <identifier>RecordProduct_Category__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-f0aad33a-243f-48e2-86d3-29d6677358c8</name>
@@ -387,6 +365,16 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.CreatedById</fieldItem>
                 <identifier>RecordCreatedByIdField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Product_Name_External__c</fieldItem>
+                <identifier>RecordProduct_Name_External__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-2d481c0c-b3f1-4021-afb4-7f20ea3b6b3d</name>
