@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Validate_Positive_Max_System_Weight_lbs</fullName>
+    <active>true</active>
+    <errorConditionFormula>AND(NOT(ISBLANK(Maximum_System_Weight_Limit_lbs__c)), Maximum_System_Weight_Limit_lbs__c &lt;= 0)</errorConditionFormula>
+    <errorDisplayField>Maximum_System_Weight_Limit_lbs__c</errorDisplayField>
+    <errorMessage>Maximum System Weight Limit must be greater than 0. Leave blank if not applicable.</errorMessage>
+</ValidationRule>

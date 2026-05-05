@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Restrict_Status_Transition_From_New</fullName>
+    <active>true</active>
+    <description>When Status is New, the only allowed transition is to Assigned. Any other status change from New is blocked.</description>
+    <errorConditionFormula>AND(
+    ISPICKVAL(PRIORVALUE(Status__c), &quot;New&quot;),
+    NOT(ISPICKVAL(Status__c, &quot;New&quot;)),
+    NOT(ISPICKVAL(Status__c, &quot;Assigned&quot;))
+)</errorConditionFormula>
+    <errorDisplayField>Status__c</errorDisplayField>
+    <errorMessage>Status can only be changed from &quot;New&quot; to &quot;Assigned&quot;. Please assign the Design Revision before moving it to any other status.</errorMessage>
+</ValidationRule>
