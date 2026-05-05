@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Require_Distributor_Before_Conversion</fullName>
+    <active>true</active>
+    <errorConditionFormula>AND(
+    OR(
+        IsConverted,
+        ISPICKVAL(Status, &quot;Qualified&quot;)
+    ),
+    OR(
+        ISBLANK(TEXT(Distributor_Type__c)),
+        AND(
+            ISPICKVAL(Distributor_Type__c, &quot;Indirect&quot;),
+            ISBLANK(Distributor__c)
+        )
+    )
+)</errorConditionFormula>
+    <errorDisplayField>Distributor_Type__c</errorDisplayField>
+    <errorMessage>Distributor Type is required. If Indirect, Distributor field must also be filled in.</errorMessage>
+</ValidationRule>
