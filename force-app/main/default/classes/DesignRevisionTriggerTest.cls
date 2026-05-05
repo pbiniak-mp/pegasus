@@ -406,6 +406,11 @@ private class DesignRevisionTriggerTest {
 		Design_Revision__c revAlreadyQuote = buildRevision(opps[2].Id, 8.0);
 		insert new List<Design_Revision__c>{ revQuote, revClosed, revAlreadyQuote };
 
+		revQuote.Status__c = Constants.DESIGN_REVISION_STATUS_ASSIGNED;
+		revClosed.Status__c = Constants.DESIGN_REVISION_STATUS_ASSIGNED;
+		revAlreadyQuote.Status__c = Constants.DESIGN_REVISION_STATUS_ASSIGNED;
+		update new List<Design_Revision__c>{ revQuote, revClosed, revAlreadyQuote };
+
 		Test.startTest();
 		revQuote.Status__c = Constants.DESIGN_REVISION_STATUS_QUOTE;
 		revClosed.Status__c = Constants.DESIGN_REVISION_STATUS_CLOSED;
