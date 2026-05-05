@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Validate_Positive_Point_Load_Limit_psf</fullName>
+    <active>true</active>
+    <errorConditionFormula>AND(NOT(ISBLANK(Point_Load_Limit_psf__c)), Point_Load_Limit_psf__c &lt;= 0)</errorConditionFormula>
+    <errorDisplayField>Point_Load_Limit_psf__c</errorDisplayField>
+    <errorMessage>Point Load Limit must be greater than 0. Leave blank if not applicable.</errorMessage>
+</ValidationRule>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Require_Priority_Before_Working</fullName>
+    <active>true</active>
+    <errorConditionFormula>AND(
+    ISPICKVAL(Status, &quot;Working&quot;),
+    ISPICKVAL(PRIORVALUE(Status), &quot;New&quot;),
+    ISBLANK(TEXT(Priority__c))
+)</errorConditionFormula>
+    <errorDisplayField>Priority__c</errorDisplayField>
+    <errorMessage>Priority is required before moving to Working.</errorMessage>
+</ValidationRule>
