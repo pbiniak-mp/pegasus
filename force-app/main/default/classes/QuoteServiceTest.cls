@@ -248,6 +248,57 @@ private class QuoteServiceTest {
 		Assert.areEqual(INITIAL_SEQUENCE, getSequence().Last_Number__c, 'Bypassed handler should not move the sequence');
 	}
 
+	// ── Global Discount ─────────────────────────────────────────────────
+
+	@IsTest
+	static void testApplyGlobalDiscount_updatesAllQuoteLineItemDiscounts() {
+		Id pricebookId = Test.getStandardPricebookId();
+		Id oppId = getOpportunityId();
+
+		Product2 product = new Product2(Name = 'GD Test Product', IsActive = true);
+		insert product;
+
+		PricebookEntry pbe = new PricebookEntry(
+			Pricebook2Id = pricebookId,
+			Product2Id = product.Id,
+			UnitPrice = 100,
+			IsActive = true
+		);
+		insert pbe;
+
+		Quote q = new Quote(
+			Name = 'Discount Quote',
+			OpportunityId = oppId,
+			Pricebook2Id = pricebookId,
+			ExpirationDate = Date.today().addDays(30),
+			Quote_Type__c = 'Material'
+		);
+		insert q;
+
+		List<QuoteLineItem> qlis = new List<QuoteLineItem>();
+		for (Integer i = 0; i < 3; i++) {
+			qlis.add(new QuoteLineItem(
+				QuoteId = q.Id,
+				PricebookEntryId = pbe.Id,
+				Product2Id = product.Id,
+				Quantity = 2,
+				UnitPrice = 100
+			));
+		}
+		insert qlis;
+
+		Test.startTest();
+		q.Global_Discount__c = 50;
+		update q;
+		Test.stopTest();
+
+		List<QuoteLineItem> reloaded = [SELECT Discount FROM QuoteLineItem WHERE QuoteId = :q.Id];
+		Assert.areEqual(3, reloaded.size());
+		for (QuoteLineItem qli : reloaded) {
+			Assert.areEqual(50, qli.Discount, 'Each QLI Discount should match Global_Discount__c');
+		}
+	}
+
 	@IsTest
 	static void testTrigger_doesNotRecurse_internalUpdateBypassesHandler() {
 		Quote q = new Quote(
