@@ -3,6 +3,7 @@ public with sharing class QuoteService {
 	private static final String CLASS_NAME = 'QuoteService';
 	private static final String ERR_ASSIGN_NUMBERS = 'Failed to assign Quote Numbers';
 	private static final String ERR_NO_SEQUENCE = 'Quote_Sequence__c org default record not found';
+	private static final String ERR_APPLY_GLOBAL_DISCOUNT = 'Failed to apply Global Discount to Quote Line Items';
 
 	public static void assignQuoteNumbers(List<Quote> newList) {
 		if (newList == null || newList.isEmpty()) return;
@@ -39,6 +40,54 @@ public with sharing class QuoteService {
 			throw e;
 		} finally {
 			TriggerHandler.clearBypass(Constants.QUOTE_HANDLER_NAME);
+		}
+	}
+
+	public static void applyGlobalDiscount(List<Quote> newList, Map<Id, Quote> oldMap) {
+		if (newList == null || newList.isEmpty() || oldMap == null) return;
+
+		Map<Id, Decimal> discountByQuoteId = new Map<Id, Decimal>();
+		for (Quote q : newList) {
+			Decimal newDiscount = q.Global_Discount__c;
+			Decimal oldDiscount = oldMap.get(q.Id) != null ? oldMap.get(q.Id).Global_Discount__c : null;
+
+			if (newDiscount != null && newDiscount > 0 && newDiscount != oldDiscount) {
+				discountByQuoteId.put(q.Id, newDiscount);
+			}
+		}
+
+		if (discountByQuoteId.isEmpty()) return;
+
+		List<QuoteLineItem> lineItems = QuoteLineItemSelector.getLineItemsForDiscountUpdate(discountByQuoteId.keySet());
+		if (lineItems.isEmpty()) return;
+
+		List<QuoteLineItem> toUpdate = new List<QuoteLineItem>();
+		for (QuoteLineItem qli : lineItems) {
+			Decimal discount = discountByQuoteId.get(qli.QuoteId);
+			if (qli.Discount != discount) {
+				toUpdate.add(new QuoteLineItem(Id = qli.Id, Discount = discount));
+			}
+		}
+
+		if (toUpdate.isEmpty()) return;
+
+		TriggerHandler.bypass(Constants.QUOTE_LINE_ITEM_HANDLER_NAME);
+		try {
+			update toUpdate;
+		} catch (Exception e) {
+			BoltErrorLogger.logError(
+				CLASS_NAME,
+				'applyGlobalDiscount',
+				ERR_APPLY_GLOBAL_DISCOUNT + ': ' + e.getMessage(),
+				e.getStackTraceString(),
+				Constants.SOURCE_TYPE_APEX,
+				Constants.SEVERITY_ERROR,
+				UserInfo.getUserId(),
+				null
+			);
+			throw e;
+		} finally {
+			TriggerHandler.clearBypass(Constants.QUOTE_LINE_ITEM_HANDLER_NAME);
 		}
 	}
 
