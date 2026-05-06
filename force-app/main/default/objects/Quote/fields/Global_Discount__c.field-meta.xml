@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Global_Discount__c</fullName>
+    <description>Sets a uniform discount on all Quote Line Items after saving.</description>
+    <inlineHelpText>Sets a uniform discount on all Quote Line Items after saving.</inlineHelpText>
+    <label>Global Discount</label>
+    <precision>5</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <trackHistory>false</trackHistory>
+    <type>Percent</type>
+</CustomField>
