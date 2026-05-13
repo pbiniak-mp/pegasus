@@ -1518,6 +1518,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>Opportunity.Price_Per_Watt__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>Opportunity.Priority__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -2064,6 +2069,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Quote.Phone</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Quote.Price_Per_Watt__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

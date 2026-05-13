@@ -69,6 +69,10 @@
                 <behavior>Readonly</behavior>
                 <field>GrandTotal</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>Price_Per_Watt__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>
