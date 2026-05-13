@@ -28,6 +28,10 @@ public with sharing class QuoteTriggerHandler extends TriggerHandler {
 				Trigger.new,
 				(Map<Id, Quote>) Trigger.oldMap
 			);
+			QuoteService.syncPricePerWattToOpportunity(
+				Trigger.new,
+				(Map<Id, Quote>) Trigger.oldMap
+			);
 		} catch (Exception e) {
 			BoltErrorLogger.logError(
 				CLASS_NAME,
