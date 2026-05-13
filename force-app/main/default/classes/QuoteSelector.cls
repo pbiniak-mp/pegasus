@@ -138,4 +138,12 @@ public inherited sharing class QuoteSelector {
 		List<Quote> quotes = getQuotesByIds(new Set<Id>{ quoteId });
 		return quotes.isEmpty() ? null : quotes[0];
 	}
+
+	public static List<Quote> getPricePerWattByIds(Set<Id> quoteIds) {
+		return [
+			SELECT Id, OpportunityId, Price_Per_Watt__c
+			FROM Quote
+			WHERE Id IN :quoteIds
+		];
+	}
 }

@@ -299,6 +299,167 @@ private class QuoteServiceTest {
 		}
 	}
 
+	// ── Price Per Watt sync ─────────────────────────────────────────────
+
+	private static final Decimal PPW_WATTAGE_KW = 10;
+	private static final Decimal PPW_QLI_QUANTITY = 2;
+	private static final Decimal PPW_QLI_UNIT_PRICE = 500;
+	// 2 * 500 = 1000 / (10 * 1000) = 0.10
+	private static final Decimal PPW_EXPECTED = 0.10;
+	private static final String PPW_STATUS_DRAFT = 'Draft';
+	private static final String PPW_STATUS_PRESENTED = 'Presented';
+
+	private static Design_Revision__c insertDesignRevision(Id oppId, Decimal wattageKw) {
+		Design_Revision__c rev = new Design_Revision__c(
+			Opportunity__c = oppId,
+			Project_Wattage_kW__c = wattageKw,
+			Revision_Number__c = '00'
+		);
+		insert rev;
+		return rev;
+	}
+
+	private static Quote insertQuoteWithLineItem(Id oppId, Id designRevisionId, String status) {
+		Id pricebookId = Test.getStandardPricebookId();
+
+		Product2 product = new Product2(Name = 'PPW Test Product ' + Crypto.getRandomLong(), IsActive = true);
+		insert product;
+
+		PricebookEntry pbe = new PricebookEntry(
+			Pricebook2Id = pricebookId,
+			Product2Id = product.Id,
+			UnitPrice = PPW_QLI_UNIT_PRICE,
+			IsActive = true
+		);
+		insert pbe;
+
+		Quote q = new Quote(
+			Name = 'PPW Quote',
+			OpportunityId = oppId,
+			Pricebook2Id = pricebookId,
+			ExpirationDate = Date.today().addDays(30),
+			Quote_Type__c = 'Material',
+			Design_Revision__c = designRevisionId,
+			Status = status
+		);
+		insert q;
+
+		insert new QuoteLineItem(
+			QuoteId = q.Id,
+			PricebookEntryId = pbe.Id,
+			Product2Id = product.Id,
+			Quantity = PPW_QLI_QUANTITY,
+			UnitPrice = PPW_QLI_UNIT_PRICE
+		);
+
+		return q;
+	}
+
+	@IsTest
+	static void testSyncPricePerWatt_statusChangesToPresented_updatesOpportunity() {
+		Id oppId = getOpportunityId();
+		Design_Revision__c rev = insertDesignRevision(oppId, PPW_WATTAGE_KW);
+		Quote q = insertQuoteWithLineItem(oppId, rev.Id, PPW_STATUS_DRAFT);
+
+		Test.startTest();
+		q.Status = PPW_STATUS_PRESENTED;
+		update q;
+		Test.stopTest();
+
+		Opportunity opp = [SELECT Price_Per_Watt__c FROM Opportunity WHERE Id = :oppId];
+		Assert.areEqual(PPW_EXPECTED, opp.Price_Per_Watt__c,
+			'Opportunity.Price_Per_Watt__c should be copied from Quote when Status changes to Presented');
+	}
+
+	@IsTest
+	static void testSyncPricePerWatt_alreadyPresented_doesNotResyncOnUnrelatedUpdate() {
+		Id oppId = getOpportunityId();
+		Design_Revision__c rev = insertDesignRevision(oppId, PPW_WATTAGE_KW);
+		Quote q = insertQuoteWithLineItem(oppId, rev.Id, PPW_STATUS_DRAFT);
+
+		// Transition Draft -> Presented syncs the Opp once.
+		q.Status = PPW_STATUS_PRESENTED;
+		update q;
+
+		// Clear the Opp value to detect any unwanted resync.
+		update new Opportunity(Id = oppId, Price_Per_Watt__c = null);
+
+		Test.startTest();
+		// Same status, unrelated field change — should NOT touch the Opp.
+		q.Description = 'unrelated change';
+		update q;
+		Test.stopTest();
+
+		Opportunity opp = [SELECT Price_Per_Watt__c FROM Opportunity WHERE Id = :oppId];
+		Assert.isNull(opp.Price_Per_Watt__c,
+			'Sync should only fire on transition into Presented, not on every update of a Presented quote');
+	}
+
+	@IsTest
+	static void testSyncPricePerWatt_statusChangesToNonPresented_doesNotUpdate() {
+		Id oppId = getOpportunityId();
+		Design_Revision__c rev = insertDesignRevision(oppId, PPW_WATTAGE_KW);
+		Quote q = insertQuoteWithLineItem(oppId, rev.Id, PPW_STATUS_DRAFT);
+
+		Test.startTest();
+		q.Status = 'In Review';
+		update q;
+		Test.stopTest();
+
+		Opportunity opp = [SELECT Price_Per_Watt__c FROM Opportunity WHERE Id = :oppId];
+		Assert.isNull(opp.Price_Per_Watt__c,
+			'Opportunity should not be touched when Quote moves to a status other than Presented');
+	}
+
+	@IsTest
+	static void testSyncPricePerWatt_nullList_isNoOp() {
+		Test.startTest();
+		QuoteService.syncPricePerWattToOpportunity(null, new Map<Id, Quote>());
+		QuoteService.syncPricePerWattToOpportunity(new List<Quote>(), new Map<Id, Quote>());
+		QuoteService.syncPricePerWattToOpportunity(new List<Quote>{ new Quote() }, null);
+		Test.stopTest();
+		// No DML, no exception expected.
+	}
+
+	@IsTest
+	static void testSyncPricePerWatt_bulk_multipleOpportunitiesUpdatedInSingleTransaction() {
+		Account acc = [SELECT Id FROM Account LIMIT 1];
+
+		List<Opportunity> opps = new List<Opportunity>();
+		for (Integer i = 0; i < 5; i++) {
+			opps.add(new Opportunity(
+				Name = 'PPW Bulk Opp ' + i,
+				AccountId = acc.Id,
+				StageName = 'Qualification',
+				CloseDate = Date.today().addDays(30),
+				Pricebook2Id = Test.getStandardPricebookId()
+			));
+		}
+		insert opps;
+
+		List<Quote> quotes = new List<Quote>();
+		for (Opportunity opp : opps) {
+			Design_Revision__c rev = insertDesignRevision(opp.Id, PPW_WATTAGE_KW);
+			quotes.add(insertQuoteWithLineItem(opp.Id, rev.Id, PPW_STATUS_DRAFT));
+		}
+
+		for (Quote q : quotes) {
+			q.Status = PPW_STATUS_PRESENTED;
+		}
+
+		Test.startTest();
+		update quotes;
+		Test.stopTest();
+
+		Map<Id, Opportunity> reloaded = new Map<Id, Opportunity>(
+			[SELECT Price_Per_Watt__c FROM Opportunity WHERE Id IN :opps]
+		);
+		for (Opportunity o : reloaded.values()) {
+			Assert.areEqual(PPW_EXPECTED, o.Price_Per_Watt__c,
+				'Every Opportunity in the bulk transition should be updated');
+		}
+	}
+
 	@IsTest
 	static void testTrigger_doesNotRecurse_internalUpdateBypassesHandler() {
 		Quote q = new Quote(
