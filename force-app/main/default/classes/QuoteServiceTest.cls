@@ -313,7 +313,7 @@ private class QuoteServiceTest {
 		Design_Revision__c rev = new Design_Revision__c(
 			Opportunity__c = oppId,
 			Project_Wattage_kW__c = wattageKw,
-			Revision_Number__c = '01'
+			Revision_Number__c = '00'
 		);
 		insert rev;
 		return rev;
