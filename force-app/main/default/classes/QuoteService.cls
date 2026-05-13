@@ -4,6 +4,7 @@ public with sharing class QuoteService {
 	private static final String ERR_ASSIGN_NUMBERS = 'Failed to assign Quote Numbers';
 	private static final String ERR_NO_SEQUENCE = 'Quote_Sequence__c org default record not found';
 	private static final String ERR_APPLY_GLOBAL_DISCOUNT = 'Failed to apply Global Discount to Quote Line Items';
+	private static final String ERR_SYNC_PRICE_PER_WATT = 'Failed to sync Price Per Watt to Opportunity';
 
 	public static void assignQuoteNumbers(List<Quote> newList) {
 		if (newList == null || newList.isEmpty()) return;
@@ -88,6 +89,51 @@ public with sharing class QuoteService {
 			throw e;
 		} finally {
 			TriggerHandler.clearBypass(Constants.QUOTE_LINE_ITEM_HANDLER_NAME);
+		}
+	}
+
+	public static void syncPricePerWattToOpportunity(List<Quote> newList, Map<Id, Quote> oldMap) {
+		if (newList == null || newList.isEmpty() || oldMap == null) return;
+
+		Set<Id> presentedQuoteIds = new Set<Id>();
+		for (Quote q : newList) {
+			Quote oldQuote = oldMap.get(q.Id);
+			String oldStatus = oldQuote != null ? oldQuote.Status : null;
+			if (q.Status == Constants.QUOTE_STATUS_PRESENTED
+				&& q.Status != oldStatus
+				&& q.OpportunityId != null) {
+				presentedQuoteIds.add(q.Id);
+			}
+		}
+
+		if (presentedQuoteIds.isEmpty()) return;
+
+		List<Quote> refreshed = QuoteSelector.getPricePerWattByIds(presentedQuoteIds);
+		Map<Id, Opportunity> oppsById = new Map<Id, Opportunity>();
+		for (Quote q : refreshed) {
+			if (q.OpportunityId == null) continue;
+			oppsById.put(q.OpportunityId, new Opportunity(
+				Id = q.OpportunityId,
+				Price_Per_Watt__c = q.Price_Per_Watt__c
+			));
+		}
+
+		if (oppsById.isEmpty()) return;
+
+		try {
+			update oppsById.values();
+		} catch (Exception e) {
+			BoltErrorLogger.logError(
+				CLASS_NAME,
+				'syncPricePerWattToOpportunity',
+				ERR_SYNC_PRICE_PER_WATT + ': ' + e.getMessage(),
+				e.getStackTraceString(),
+				Constants.SOURCE_TYPE_APEX,
+				Constants.SEVERITY_ERROR,
+				UserInfo.getUserId(),
+				null
+			);
+			throw e;
 		}
 	}
 
