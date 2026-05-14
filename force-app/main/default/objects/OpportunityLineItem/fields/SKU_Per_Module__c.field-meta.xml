@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>SKU_Per_Module__c</fullName>
+    <description>Calculates the quantity of this SKU relative to the number of solar modules in the Opportunity. Used for forecasting and analyzing average component ratios across product lines.</description>
+    <externalId>false</externalId>
+    <formula>IF(
+  NOT(ISBLANK(Opportunity.Module_Quantity_F__c)),
+  Quantity / VALUE(Opportunity.Module_Quantity_F__c),
+  NULL
+)</formula>
+    <label>SKU Per Module</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>
