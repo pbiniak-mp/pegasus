@@ -140,11 +140,14 @@ public inherited sharing class QuoteSelector {
 		return quotes.isEmpty() ? null : quotes[0];
 	}
 
-	public static List<Quote> getPricePerWattByIds(Set<Id> quoteIds) {
-		return [
-			SELECT Id, OpportunityId, Price_Per_Watt__c
-			FROM Quote
-			WHERE Id IN :quoteIds
-		];
+	public static List<Quote> getSyncFieldsByIds(Set<Id> quoteIds, Set<Schema.SObjectField> sourceFields) {
+		Set<String> fieldNames = new Set<String>{ 'Id', 'OpportunityId' };
+		for (Schema.SObjectField sourceField : sourceFields) {
+			fieldNames.add(sourceField.getDescribe().getName());
+		}
+		String soql =
+			'SELECT ' + String.join(new List<String>(fieldNames), ', ') +
+			' FROM Quote WHERE Id IN :quoteIds';
+		return Database.query(soql);
 	}
 }
