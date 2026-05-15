@@ -44,6 +44,7 @@ public with sharing class DesignRevisionQuotesController {
 		@AuraEnabled public String status { get; set; }
 		@AuraEnabled public String quoteType { get; set; }
 		@AuraEnabled public Decimal grandTotal { get; set; }
+		@AuraEnabled public Decimal pricePerWatt { get; set; }
 		@AuraEnabled public String recordUrl { get; set; }
 		@AuraEnabled public Date expirationDate { get; set; }
 		@AuraEnabled public String revNumber { get; set; }
@@ -57,6 +58,7 @@ public with sharing class DesignRevisionQuotesController {
 			this.status = q.Status;
 			this.quoteType = q.Quote_Type__c;
 			this.grandTotal = q.Quote_Grand_Total__c;
+			this.pricePerWatt = q.Price_Per_Watt__c;
 			this.recordUrl = '/lightning/r/Quote/' + q.Id + '/view';
 			this.expirationDate = q.ExpirationDate;
 			this.revNumber = q.Design_Revision__r.Revision_Number__c;
