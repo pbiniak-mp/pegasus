@@ -73,6 +73,10 @@
                 <behavior>Readonly</behavior>
                 <field>Price_Per_Watt__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>Total_Weight__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>

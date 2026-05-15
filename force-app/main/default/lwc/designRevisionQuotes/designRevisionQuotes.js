@@ -16,8 +16,25 @@ const STATUS_BADGE_MAP = {
 	'In Review':'badge badge-review'
 };
 
+const STATUS_BORDER_MAP = {
+	'Accepted': 'quote-card border-accepted',
+	'Approved': 'quote-card border-accepted',
+	'Denied':   'quote-card border-denied',
+	'Rejected': 'quote-card border-denied',
+	'Draft':    'quote-card border-draft',
+	'Presented':'quote-card border-presented',
+	'Needs Review': 'quote-card border-review',
+	'In Review':'quote-card border-review'
+};
+
 const DATE_FMT = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 const USD = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
+const USD_PPW = new Intl.NumberFormat('en-US', {
+	style: 'currency',
+	currency: 'USD',
+	minimumFractionDigits: 2,
+	maximumFractionDigits: 2
+});
 
 const EMPTY_MODAL = { visible: false, quoteId: null, quoteName: null, currentStatus: null, newStatus: null };
 
@@ -48,6 +65,9 @@ export default class DesignRevisionQuotes extends NavigationMixin(LightningEleme
 				...q,
 				badgeClass: STATUS_BADGE_MAP[q.status] || 'badge badge-draft',
 				grandTotalFormatted: q.grandTotal != null ? USD.format(q.grandTotal) : '—',
+				pricePerWattFormatted: q.pricePerWatt != null
+					? `${USD_PPW.format(q.pricePerWatt)}/W`
+					: null,
 				expirationDate: q.expirationDate
 					? DATE_FMT.format(new Date(q.expirationDate))
 					: null,
@@ -64,13 +84,7 @@ export default class DesignRevisionQuotes extends NavigationMixin(LightningEleme
 				isExpiringSoon: q.expirationDate
 					? (new Date(q.expirationDate) - new Date()) / (1000 * 60 * 60 * 24) < 30
 					: false,
-				cardClass: (() => {
-					const expiring = q.expirationDate &&
-						(new Date(q.expirationDate) - new Date()) / (1000 * 60 * 60 * 24) < 30;
-					if (q.status === 'Accepted' || q.status === 'Approved') return 'quote-card accepted';
-					if (expiring) return 'quote-card expiring';
-					return 'quote-card';
-				})(),
+				cardClass: STATUS_BORDER_MAP[q.status] || 'quote-card border-draft',
 				expiryDotClass: (() => {
 					const expiring = q.expirationDate &&
 						(new Date(q.expirationDate) - new Date()) / (1000 * 60 * 60 * 24) < 30;

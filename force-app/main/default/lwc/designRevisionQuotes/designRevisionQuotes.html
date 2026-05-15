@@ -29,7 +29,12 @@
 							</div>
 
 							<div class="quote-row">
-								<span class="quote-total">{quote.grandTotalFormatted}</span>
+								<div class="quote-total-group">
+									<span class="quote-total">{quote.grandTotalFormatted}</span>
+									<template lwc:if={quote.pricePerWattFormatted}>
+										<span class="ppw-pill" title="Price per Watt">{quote.pricePerWattFormatted}</span>
+									</template>
+								</div>
 								<div class="quote-row-end">
 									<span class={quote.badgeClass}>{quote.status}</span>
 									<lightning-button-icon
@@ -113,7 +118,12 @@
 							</div>
 
 							<div class="quote-row">
-								<span class="quote-total">{quote.grandTotalFormatted}</span>
+								<div class="quote-total-group">
+									<span class="quote-total">{quote.grandTotalFormatted}</span>
+									<template lwc:if={quote.pricePerWattFormatted}>
+										<span class="ppw-pill" title="Price per Watt">{quote.pricePerWattFormatted}</span>
+									</template>
+								</div>
 								<div class="quote-row-end">
 									<span class={quote.badgeClass}>{quote.status}</span>
 									<lightning-button-icon

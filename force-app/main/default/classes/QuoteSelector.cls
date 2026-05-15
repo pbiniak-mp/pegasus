@@ -122,6 +122,7 @@ public inherited sharing class QuoteSelector {
 				Status,
 				Quote_Type__c,
 				Quote_Grand_Total__c,
+				Price_Per_Watt__c,
 				ExpirationDate,
 				Design_Revision__r.Revision_Number__c,
 				CreatedBy.Name,
