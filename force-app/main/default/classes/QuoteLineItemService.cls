@@ -24,4 +24,36 @@ public with sharing class QuoteLineItemService {
 			}
 		}
 	}
+
+	public static void recalculateQuoteTotalWeight(Set<Id> quoteIds) {
+		if (quoteIds == null) return;
+		quoteIds.remove(null);
+		if (quoteIds.isEmpty()) return;
+
+		Map<Id, Decimal> weightByQuoteId = new Map<Id, Decimal>();
+		for (Id quoteId : quoteIds) {
+			weightByQuoteId.put(quoteId, 0);
+		}
+
+		for (AggregateResult ar : QuoteLineItemSelector.getTotalWeightByQuoteIds(quoteIds)) {
+			Id quoteId = (Id) ar.get('quoteId');
+			Decimal total = (Decimal) ar.get('total');
+			weightByQuoteId.put(quoteId, total != null ? total : 0);
+		}
+
+		List<Quote> toUpdate = new List<Quote>();
+		for (Id quoteId : weightByQuoteId.keySet()) {
+			toUpdate.add(new Quote(
+				Id = quoteId,
+				Total_Weight__c = weightByQuoteId.get(quoteId)
+			));
+		}
+
+		TriggerHandler.bypass(Constants.QUOTE_HANDLER_NAME);
+		try {
+			update toUpdate;
+		} finally {
+			TriggerHandler.clearBypass(Constants.QUOTE_HANDLER_NAME);
+		}
+	}
 }
