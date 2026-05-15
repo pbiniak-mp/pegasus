@@ -299,15 +299,14 @@ private class QuoteServiceTest {
 		}
 	}
 
-	// ── Price Per Watt sync ─────────────────────────────────────────────
+	// ── Quote -> Opportunity field sync ─────────────────────────────────
 
-	private static final Decimal PPW_WATTAGE_KW = 10;
-	private static final Decimal PPW_QLI_QUANTITY = 2;
-	private static final Decimal PPW_QLI_UNIT_PRICE = 500;
-	// 2 * 500 = 1000 / (10 * 1000) = 0.10
-	private static final Decimal PPW_EXPECTED = 0.10;
-	private static final String PPW_STATUS_DRAFT = 'Draft';
-	private static final String PPW_STATUS_PRESENTED = 'Presented';
+	private static final Decimal SYNC_WATTAGE_KW = 10;
+	private static final Decimal SYNC_QLI_QUANTITY = 2;
+	private static final Decimal SYNC_QLI_UNIT_PRICE = 500;
+	// 2 * 500 = 1000 -> Expected Revenue; 1000 / (10 * 1000) = 0.10 -> Price Per Watt
+	private static final Decimal SYNC_EXPECTED_REVENUE = 1000;
+	private static final Decimal SYNC_EXPECTED_PPW = 0.10;
 
 	private static Design_Revision__c insertDesignRevision(Id oppId, Decimal wattageKw) {
 		Design_Revision__c rev = new Design_Revision__c(
@@ -319,28 +318,27 @@ private class QuoteServiceTest {
 		return rev;
 	}
 
-	private static Quote insertQuoteWithLineItem(Id oppId, Id designRevisionId, String status) {
+	private static Quote insertQuoteWithLineItem(Id oppId, Id designRevisionId) {
 		Id pricebookId = Test.getStandardPricebookId();
 
-		Product2 product = new Product2(Name = 'PPW Test Product ' + Crypto.getRandomLong(), IsActive = true);
+		Product2 product = new Product2(Name = 'Sync Test Product ' + Crypto.getRandomLong(), IsActive = true);
 		insert product;
 
 		PricebookEntry pbe = new PricebookEntry(
 			Pricebook2Id = pricebookId,
 			Product2Id = product.Id,
-			UnitPrice = PPW_QLI_UNIT_PRICE,
+			UnitPrice = SYNC_QLI_UNIT_PRICE,
 			IsActive = true
 		);
 		insert pbe;
 
 		Quote q = new Quote(
-			Name = 'PPW Quote',
+			Name = 'Sync Quote',
 			OpportunityId = oppId,
 			Pricebook2Id = pricebookId,
 			ExpirationDate = Date.today().addDays(30),
 			Quote_Type__c = 'Material',
-			Design_Revision__c = designRevisionId,
-			Status = status
+			Design_Revision__c = designRevisionId
 		);
 		insert q;
 
@@ -348,87 +346,96 @@ private class QuoteServiceTest {
 			QuoteId = q.Id,
 			PricebookEntryId = pbe.Id,
 			Product2Id = product.Id,
-			Quantity = PPW_QLI_QUANTITY,
-			UnitPrice = PPW_QLI_UNIT_PRICE
+			Quantity = SYNC_QLI_QUANTITY,
+			UnitPrice = SYNC_QLI_UNIT_PRICE
 		);
 
 		return q;
 	}
 
-	@IsTest
-	static void testSyncPricePerWatt_statusChangesToPresented_updatesOpportunity() {
-		Id oppId = getOpportunityId();
-		Design_Revision__c rev = insertDesignRevision(oppId, PPW_WATTAGE_KW);
-		Quote q = insertQuoteWithLineItem(oppId, rev.Id, PPW_STATUS_DRAFT);
-
-		Test.startTest();
-		q.Status = PPW_STATUS_PRESENTED;
-		update q;
-		Test.stopTest();
-
-		Opportunity opp = [SELECT Price_Per_Watt__c FROM Opportunity WHERE Id = :oppId];
-		Assert.areEqual(PPW_EXPECTED, opp.Price_Per_Watt__c,
-			'Opportunity.Price_Per_Watt__c should be copied from Quote when Status changes to Presented');
+	// IsSyncing is platform-controlled; setting Opportunity.SyncedQuoteId flips it to true.
+	private static void startSyncing(Id oppId, Id quoteId) {
+		update new Opportunity(Id = oppId, SyncedQuoteId = quoteId);
 	}
 
 	@IsTest
-	static void testSyncPricePerWatt_alreadyPresented_doesNotResyncOnUnrelatedUpdate() {
+	static void testSync_quoteStartsSyncing_copiesFieldsToOpportunity() {
 		Id oppId = getOpportunityId();
-		Design_Revision__c rev = insertDesignRevision(oppId, PPW_WATTAGE_KW);
-		Quote q = insertQuoteWithLineItem(oppId, rev.Id, PPW_STATUS_DRAFT);
-
-		// Transition Draft -> Presented syncs the Opp once.
-		q.Status = PPW_STATUS_PRESENTED;
-		update q;
-
-		// Clear the Opp value to detect any unwanted resync.
-		update new Opportunity(Id = oppId, Price_Per_Watt__c = null);
+		Design_Revision__c rev = insertDesignRevision(oppId, SYNC_WATTAGE_KW);
+		Quote q = insertQuoteWithLineItem(oppId, rev.Id);
 
 		Test.startTest();
-		// Same status, unrelated field change — should NOT touch the Opp.
+		startSyncing(oppId, q.Id);
+		Test.stopTest();
+
+		Opportunity opp = [SELECT Expected_Revenue__c, Price_Per_Watt__c FROM Opportunity WHERE Id = :oppId];
+		Assert.areEqual(SYNC_EXPECTED_REVENUE, opp.Expected_Revenue__c,
+			'Quote.TotalPrice should be copied to Opportunity.Expected_Revenue__c when the Quote starts syncing');
+		Assert.areEqual(SYNC_EXPECTED_PPW, opp.Price_Per_Watt__c,
+			'Quote.Price_Per_Watt__c should be copied to Opportunity.Price_Per_Watt__c when the Quote starts syncing');
+	}
+
+	@IsTest
+	static void testSync_quoteNeverSyncing_doesNotUpdate() {
+		Id oppId = getOpportunityId();
+		Design_Revision__c rev = insertDesignRevision(oppId, SYNC_WATTAGE_KW);
+		Quote q = insertQuoteWithLineItem(oppId, rev.Id);
+
+		Test.startTest();
 		q.Description = 'unrelated change';
 		update q;
 		Test.stopTest();
 
-		Opportunity opp = [SELECT Price_Per_Watt__c FROM Opportunity WHERE Id = :oppId];
+		Opportunity opp = [SELECT Expected_Revenue__c, Price_Per_Watt__c FROM Opportunity WHERE Id = :oppId];
+		Assert.isNull(opp.Expected_Revenue__c,
+			'Opportunity should not be touched while the Quote is not syncing');
 		Assert.isNull(opp.Price_Per_Watt__c,
-			'Sync should only fire on transition into Presented, not on every update of a Presented quote');
+			'Opportunity should not be touched while the Quote is not syncing');
 	}
 
 	@IsTest
-	static void testSyncPricePerWatt_statusChangesToNonPresented_doesNotUpdate() {
+	static void testSync_alreadySyncing_doesNotResyncOnUnrelatedUpdate() {
 		Id oppId = getOpportunityId();
-		Design_Revision__c rev = insertDesignRevision(oppId, PPW_WATTAGE_KW);
-		Quote q = insertQuoteWithLineItem(oppId, rev.Id, PPW_STATUS_DRAFT);
+		Design_Revision__c rev = insertDesignRevision(oppId, SYNC_WATTAGE_KW);
+		Quote q = insertQuoteWithLineItem(oppId, rev.Id);
+
+		// Start syncing once.
+		startSyncing(oppId, q.Id);
+
+		// Clear the Opp values to detect any unwanted resync.
+		update new Opportunity(Id = oppId, Expected_Revenue__c = null, Price_Per_Watt__c = null);
 
 		Test.startTest();
-		q.Status = 'In Review';
+		// Quote is still syncing; an unrelated change must NOT re-copy the fields.
+		q.Description = 'unrelated change';
 		update q;
 		Test.stopTest();
 
-		Opportunity opp = [SELECT Price_Per_Watt__c FROM Opportunity WHERE Id = :oppId];
+		Opportunity opp = [SELECT Expected_Revenue__c, Price_Per_Watt__c FROM Opportunity WHERE Id = :oppId];
+		Assert.isNull(opp.Expected_Revenue__c,
+			'Sync should only fire when the Quote starts syncing, not on every update of a syncing quote');
 		Assert.isNull(opp.Price_Per_Watt__c,
-			'Opportunity should not be touched when Quote moves to a status other than Presented');
+			'Sync should only fire when the Quote starts syncing, not on every update of a syncing quote');
 	}
 
 	@IsTest
-	static void testSyncPricePerWatt_nullList_isNoOp() {
+	static void testSync_nullList_isNoOp() {
 		Test.startTest();
-		QuoteService.syncPricePerWattToOpportunity(null, new Map<Id, Quote>());
-		QuoteService.syncPricePerWattToOpportunity(new List<Quote>(), new Map<Id, Quote>());
-		QuoteService.syncPricePerWattToOpportunity(new List<Quote>{ new Quote() }, null);
+		QuoteService.syncQuoteFieldsToOpportunity(null, new Map<Id, Quote>());
+		QuoteService.syncQuoteFieldsToOpportunity(new List<Quote>(), new Map<Id, Quote>());
+		QuoteService.syncQuoteFieldsToOpportunity(new List<Quote>{ new Quote() }, null);
 		Test.stopTest();
 		// No DML, no exception expected.
 	}
 
 	@IsTest
-	static void testSyncPricePerWatt_bulk_multipleOpportunitiesUpdatedInSingleTransaction() {
+	static void testSync_bulk_multipleOpportunitiesUpdatedInSingleTransaction() {
 		Account acc = [SELECT Id FROM Account LIMIT 1];
 
 		List<Opportunity> opps = new List<Opportunity>();
 		for (Integer i = 0; i < 5; i++) {
 			opps.add(new Opportunity(
-				Name = 'PPW Bulk Opp ' + i,
+				Name = 'Sync Bulk Opp ' + i,
 				AccountId = acc.Id,
 				StageName = 'Qualification',
 				CloseDate = Date.today().addDays(30),
@@ -437,26 +444,30 @@ private class QuoteServiceTest {
 		}
 		insert opps;
 
-		List<Quote> quotes = new List<Quote>();
+		Map<Id, Id> quoteIdByOppId = new Map<Id, Id>();
 		for (Opportunity opp : opps) {
-			Design_Revision__c rev = insertDesignRevision(opp.Id, PPW_WATTAGE_KW);
-			quotes.add(insertQuoteWithLineItem(opp.Id, rev.Id, PPW_STATUS_DRAFT));
+			Design_Revision__c rev = insertDesignRevision(opp.Id, SYNC_WATTAGE_KW);
+			Quote q = insertQuoteWithLineItem(opp.Id, rev.Id);
+			quoteIdByOppId.put(opp.Id, q.Id);
 		}
 
-		for (Quote q : quotes) {
-			q.Status = PPW_STATUS_PRESENTED;
+		List<Opportunity> toSync = new List<Opportunity>();
+		for (Id oppId : quoteIdByOppId.keySet()) {
+			toSync.add(new Opportunity(Id = oppId, SyncedQuoteId = quoteIdByOppId.get(oppId)));
 		}
 
 		Test.startTest();
-		update quotes;
+		update toSync;
 		Test.stopTest();
 
 		Map<Id, Opportunity> reloaded = new Map<Id, Opportunity>(
-			[SELECT Price_Per_Watt__c FROM Opportunity WHERE Id IN :opps]
+			[SELECT Expected_Revenue__c, Price_Per_Watt__c FROM Opportunity WHERE Id IN :opps]
 		);
 		for (Opportunity o : reloaded.values()) {
-			Assert.areEqual(PPW_EXPECTED, o.Price_Per_Watt__c,
-				'Every Opportunity in the bulk transition should be updated');
+			Assert.areEqual(SYNC_EXPECTED_REVENUE, o.Expected_Revenue__c,
+				'Every Opportunity in the bulk sync should get Expected_Revenue__c');
+			Assert.areEqual(SYNC_EXPECTED_PPW, o.Price_Per_Watt__c,
+				'Every Opportunity in the bulk sync should get Price_Per_Watt__c');
 		}
 	}
 
