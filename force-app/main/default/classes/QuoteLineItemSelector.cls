@@ -30,4 +30,13 @@ public inherited sharing class QuoteLineItemSelector {
 			WHERE QuoteId IN :quoteIds
 		];
 	}
+
+	public static List<AggregateResult> getTotalWeightByQuoteIds(Set<Id> quoteIds) {
+		return [
+			SELECT QuoteId quoteId, SUM(Line_Weight__c) total
+			FROM QuoteLineItem
+			WHERE QuoteId IN :quoteIds
+			GROUP BY QuoteId
+		];
+	}
 }
