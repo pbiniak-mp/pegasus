@@ -4,7 +4,13 @@ public with sharing class QuoteService {
 	private static final String ERR_ASSIGN_NUMBERS = 'Failed to assign Quote Numbers';
 	private static final String ERR_NO_SEQUENCE = 'Quote_Sequence__c org default record not found';
 	private static final String ERR_APPLY_GLOBAL_DISCOUNT = 'Failed to apply Global Discount to Quote Line Items';
-	private static final String ERR_SYNC_PRICE_PER_WATT = 'Failed to sync Price Per Watt to Opportunity';
+
+	// Quote source field -> Opportunity target field. Add a pair here to sync another field.
+	private static final Map<Schema.SObjectField, Schema.SObjectField> SYNC_FIELD_MAP =
+		new Map<Schema.SObjectField, Schema.SObjectField>{
+			Quote.TotalPrice => Opportunity.Expected_Revenue__c,
+			Quote.Price_Per_Watt__c => Opportunity.Price_Per_Watt__c
+		};
 
 	public static void assignQuoteNumbers(List<Quote> newList) {
 		if (newList == null || newList.isEmpty()) return;
@@ -92,49 +98,34 @@ public with sharing class QuoteService {
 		}
 	}
 
-	public static void syncPricePerWattToOpportunity(List<Quote> newList, Map<Id, Quote> oldMap) {
+	public static void syncQuoteFieldsToOpportunity(List<Quote> newList, Map<Id, Quote> oldMap) {
 		if (newList == null || newList.isEmpty() || oldMap == null) return;
 
-		Set<Id> presentedQuoteIds = new Set<Id>();
+		Set<Id> syncingQuoteIds = new Set<Id>();
 		for (Quote q : newList) {
 			Quote oldQuote = oldMap.get(q.Id);
-			String oldStatus = oldQuote != null ? oldQuote.Status : null;
-			if (q.Status == Constants.QUOTE_STATUS_PRESENTED
-				&& q.Status != oldStatus
-				&& q.OpportunityId != null) {
-				presentedQuoteIds.add(q.Id);
+			Boolean wasSyncing = oldQuote != null && oldQuote.IsSyncing == true;
+			if (q.IsSyncing == true && !wasSyncing && q.OpportunityId != null) {
+				syncingQuoteIds.add(q.Id);
 			}
 		}
 
-		if (presentedQuoteIds.isEmpty()) return;
+		if (syncingQuoteIds.isEmpty()) return;
 
-		List<Quote> refreshed = QuoteSelector.getPricePerWattByIds(presentedQuoteIds);
+		List<Quote> refreshed = QuoteSelector.getSyncFieldsByIds(syncingQuoteIds, SYNC_FIELD_MAP.keySet());
 		Map<Id, Opportunity> oppsById = new Map<Id, Opportunity>();
 		for (Quote q : refreshed) {
 			if (q.OpportunityId == null) continue;
-			oppsById.put(q.OpportunityId, new Opportunity(
-				Id = q.OpportunityId,
-				Price_Per_Watt__c = q.Price_Per_Watt__c
-			));
+			Opportunity opp = new Opportunity(Id = q.OpportunityId);
+			for (Schema.SObjectField sourceField : SYNC_FIELD_MAP.keySet()) {
+				opp.put(SYNC_FIELD_MAP.get(sourceField), q.get(sourceField));
+			}
+			oppsById.put(q.OpportunityId, opp);
 		}
 
 		if (oppsById.isEmpty()) return;
 
-		try {
-			update oppsById.values();
-		} catch (Exception e) {
-			BoltErrorLogger.logError(
-				CLASS_NAME,
-				'syncPricePerWattToOpportunity',
-				ERR_SYNC_PRICE_PER_WATT + ': ' + e.getMessage(),
-				e.getStackTraceString(),
-				Constants.SOURCE_TYPE_APEX,
-				Constants.SEVERITY_ERROR,
-				UserInfo.getUserId(),
-				null
-			);
-			throw e;
-		}
+		update oppsById.values();
 	}
 
 	public class QuoteServiceException extends Exception {}
