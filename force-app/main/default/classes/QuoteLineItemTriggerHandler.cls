@@ -20,4 +20,35 @@ public with sharing class QuoteLineItemTriggerHandler extends TriggerHandler {
 			throw e;
 		}
 	}
+
+	public override void afterInsert() {
+		QuoteLineItemService.recalculateQuoteTotalWeight(collectQuoteIds(Trigger.new));
+	}
+
+	public override void afterUpdate() {
+		Set<Id> quoteIds = collectQuoteIds(Trigger.new);
+		quoteIds.addAll(collectQuoteIds(Trigger.old));
+		QuoteLineItemService.recalculateQuoteTotalWeight(quoteIds);
+	}
+
+	public override void afterDelete() {
+		QuoteLineItemService.recalculateQuoteTotalWeight(
+			collectQuoteIds(Trigger.old)
+		);
+	}
+
+	public override void afterUndelete() {
+		QuoteLineItemService.recalculateQuoteTotalWeight(collectQuoteIds(Trigger.new));
+	}
+
+	private static Set<Id> collectQuoteIds(List<QuoteLineItem> records) {
+		Set<Id> quoteIds = new Set<Id>();
+		if (records == null) return quoteIds;
+		for (QuoteLineItem qli : records) {
+			if (qli.QuoteId != null) {
+				quoteIds.add(qli.QuoteId);
+			}
+		}
+		return quoteIds;
+	}
 }
