@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Price_Per_Watt__c</fullName>
-    <description>Price per Watt copied from the related Quote when its status moves to Presented.</description>
+    <fullName>Expected_Revenue__c</fullName>
     <inlineHelpText>This will be updated when the relevant quote is sync</inlineHelpText>
-    <label>Price Per Watt</label>
+    <label>Expected Revenue</label>
     <precision>18</precision>
     <required>false</required>
     <scale>2</scale>

@@ -28,7 +28,7 @@ public with sharing class QuoteTriggerHandler extends TriggerHandler {
 				Trigger.new,
 				(Map<Id, Quote>) Trigger.oldMap
 			);
-			QuoteService.syncPricePerWattToOpportunity(
+			QuoteService.syncQuoteFieldsToOpportunity(
 				Trigger.new,
 				(Map<Id, Quote>) Trigger.oldMap
 			);
