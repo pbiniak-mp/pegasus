@@ -4,6 +4,10 @@ public with sharing class QuotePDFController {
 	public List<QuoteLineItem> lineItems { get; private set; }
 	public Contact contact { get; private set; }
 
+	// Discounted unit price shown on the PDF, derived from the authoritative
+	// TotalPrice: round(TotalPrice / Quantity, 2). Keyed by QuoteLineItem Id.
+	public Map<Id, Decimal> displayUnitPriceByLineId { get; private set; }
+
 	public static final String EMPTY_STRING = '';
 	public static final String DATE_FORMAT = 'MMMM dd, yyyy';
 	public static final String FREIGHT_TBD = 'TBD';
@@ -19,6 +23,24 @@ public with sharing class QuotePDFController {
 		contact = ContactSelector.getContactById(quote.ContactId);
 
 		lineItems = QuoteLineItemSelector.getLineItemsByQuoteId(quoteId);
+
+		buildDisplayUnitPrices();
+	}
+
+	private void buildDisplayUnitPrices() {
+		displayUnitPriceByLineId = new Map<Id, Decimal>();
+		if (lineItems == null) return;
+		for (QuoteLineItem li : lineItems) {
+			Decimal displayPrice;
+			if (li.TotalPrice == null || li.Quantity == null || li.Quantity == 0) {
+				// Fallback: keep the catalog unit price when we can't derive it
+				displayPrice = li.UnitPrice != null ? li.UnitPrice : 0;
+			} else {
+				displayPrice = (li.TotalPrice / li.Quantity)
+					.setScale(2, System.RoundingMode.HALF_UP);
+			}
+			displayUnitPriceByLineId.put(li.Id, displayPrice);
+		}
 	}
 
 	public String getFormattedDate() {
