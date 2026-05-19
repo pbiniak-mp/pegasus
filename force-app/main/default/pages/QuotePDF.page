@@ -146,7 +146,7 @@
 				</td>
 				<td class="prod-num">
 					$&nbsp;<apex:outputText value="{0, number, #,##0.00}">
-						<apex:param value="{!li.UnitPrice}"/>
+						<apex:param value="{!displayUnitPriceByLineId[li.Id]}"/>
 					</apex:outputText>
 				</td>
 				<td class="prod-num">
