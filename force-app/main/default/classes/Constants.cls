@@ -60,6 +60,10 @@ public class Constants {
 	// Quote Line Item
 	public static final String QUOTE_LINE_ITEM_HANDLER_NAME = 'QuoteLineItemTriggerHandler';
 
+	// Lead
+	public static final String LEAD_HANDLER_NAME = 'LeadTriggerHandler';
+	public static final Integer LEAD_CONVERSION_NEW_ACCOUNT_WINDOW_SECONDS = 30;
+
 	// Design Revision
 	public static final String DESIGN_REVISION_HANDLER_NAME = 'DesignRevisionTriggerHandler';
 	public static final String DESIGN_REVISION_STATUS_NEW = 'New';
