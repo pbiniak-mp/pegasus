@@ -1,0 +1,55 @@
+<template>
+	<div class="project-map">
+
+		<template lwc:if={isLoading}>
+			<div class="state state-loading">
+				<lightning-spinner alternative-text="Loading project address" size="small"></lightning-spinner>
+			</div>
+		</template>
+
+		<template lwc:elseif={hasError}>
+			<div class="state state-error">
+				<lightning-icon icon-name="utility:error" alternative-text="Error" size="small" variant="error"></lightning-icon>
+				<p>{errorMessage}</p>
+			</div>
+		</template>
+
+		<template lwc:elseif={hasAddress}>
+			<div class="address-bar">
+				<div class="address-text">
+					<lightning-icon icon-name="utility:location" alternative-text="Location" size="x-small"></lightning-icon>
+					<div class="address-lines">
+						<template lwc:if={formattedAddressLine1}>
+							<span class="address-line-1">{formattedAddressLine1}</span>
+						</template>
+						<template lwc:if={formattedAddressLine2}>
+							<span class="address-line-2">{formattedAddressLine2}</span>
+						</template>
+					</div>
+				</div>
+				<template lwc:if={directionsUrl}>
+					<a class="directions-link" href={directionsUrl} target="_blank" rel="noopener noreferrer">
+						<lightning-icon icon-name="utility:routing_offline" size="x-small"></lightning-icon>
+						<span>Directions</span>
+					</a>
+				</template>
+			</div>
+
+			<div class="map-wrap">
+				<lightning-map
+					map-markers={mapMarkers}
+					zoom-level="14"
+					list-view="hidden">
+				</lightning-map>
+			</div>
+		</template>
+
+		<template lwc:else>
+			<div class="state state-empty">
+				<lightning-icon icon-name="utility:location" alternative-text="No address" size="small"></lightning-icon>
+				<p>No project address has been set on this Opportunity yet.</p>
+			</div>
+		</template>
+
+	</div>
+</template>

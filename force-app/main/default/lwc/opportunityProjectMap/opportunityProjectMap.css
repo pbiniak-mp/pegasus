@@ -1,0 +1,127 @@
+.project-map {
+	display: flex;
+	flex-direction: column;
+	background: #fff;
+	border-radius: 0.5rem;
+	overflow: hidden;
+}
+
+.address-bar {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 1rem;
+	padding: 0.75rem 1rem;
+	background: linear-gradient(to right, #f3f6fb, #ffffff);
+	border-bottom: 1px solid #e5e9f2;
+}
+
+.address-text {
+	display: flex;
+	align-items: flex-start;
+	gap: 0.5rem;
+	min-width: 0;
+}
+
+.address-text lightning-icon {
+	margin-top: 0.125rem;
+	flex-shrink: 0;
+	--sds-c-icon-color-foreground-default: #5a6b8a;
+}
+
+.address-lines {
+	display: flex;
+	flex-direction: column;
+	min-width: 0;
+}
+
+.address-line-1 {
+	font-size: 0.875rem;
+	font-weight: 600;
+	color: #16325c;
+	line-height: 1.25rem;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.address-line-2 {
+	font-size: 0.8125rem;
+	color: #5a6b8a;
+	line-height: 1.125rem;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.directions-link {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.375rem;
+	padding: 0.375rem 0.75rem;
+	border-radius: 999px;
+	background: #ffffff;
+	border: 1px solid #d8dde6;
+	color: #0070d2;
+	font-size: 0.8125rem;
+	font-weight: 500;
+	text-decoration: none;
+	white-space: nowrap;
+	transition: all 0.15s ease;
+}
+
+.directions-link:hover,
+.directions-link:focus {
+	background: #0070d2;
+	color: #ffffff;
+	border-color: #0070d2;
+	text-decoration: none;
+}
+
+.directions-link:hover lightning-icon,
+.directions-link:focus lightning-icon {
+	--sds-c-icon-color-foreground-default: #ffffff;
+}
+
+.directions-link lightning-icon {
+	--sds-c-icon-color-foreground-default: #0070d2;
+}
+
+.map-wrap {
+	height: 320px;
+	width: 100%;
+}
+
+.map-wrap lightning-map {
+	height: 100%;
+	display: block;
+}
+
+.state {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 0.5rem;
+	padding: 2rem 1rem;
+	color: #5a6b8a;
+	font-size: 0.875rem;
+	text-align: center;
+}
+
+.state-loading {
+	min-height: 200px;
+	position: relative;
+}
+
+.state-empty lightning-icon {
+	--sds-c-icon-color-foreground-default: #b0b7c3;
+}
+
+.state-empty p {
+	color: #747a83;
+}
+
+.state-error {
+	color: #c23934;
+}

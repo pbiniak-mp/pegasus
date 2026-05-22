@@ -1,0 +1,98 @@
+<template>
+	<lightning-card title={cardTitle} icon-name="standard:email">
+
+		<template lwc:if={isLoading}>
+			<div class="slds-is-relative slds-p-around_medium">
+				<lightning-spinner alternative-text="Loading emails" size="small"></lightning-spinner>
+			</div>
+		</template>
+
+		<template lwc:if={hasError}>
+			<div class="slds-p-around_medium slds-text-color_error">
+				<lightning-icon icon-name="utility:error" size="x-small" variant="error"
+					class="slds-m-right_x-small"></lightning-icon>
+				{errorMessage}
+			</div>
+		</template>
+
+		<template lwc:if={isEmpty}>
+			<div class="slds-illustration slds-illustration_small slds-p-around_medium slds-text-align_center">
+				<lightning-icon icon-name="utility:email" size="medium" variant="inverse"
+					class="slds-m-bottom_small"></lightning-icon>
+				<p class="slds-text-body_regular slds-text-color_weak">
+					No emails logged for this record
+				</p>
+			</div>
+		</template>
+
+		<template lwc:if={hasEmails}>
+			<div class="slds-p-horizontal_small">
+				<template for:each={emails} for:item="email">
+					<article key={email.id} class={email.cardClass}>
+
+						<div class="slds-media slds-media_center slds-grid slds-grid_align-spread"
+							data-id={email.id} onclick={handleToggle}>
+
+							<div class="slds-media__figure">
+								<lightning-icon icon-name={email.directionIcon} size="small"
+									alternative-text={email.directionLabel}
+									title={email.directionLabel}></lightning-icon>
+							</div>
+
+							<div class="slds-media__body">
+								<div class="slds-grid slds-grid_align-spread slds-grid_vertical-align-center">
+									<p class="slds-truncate slds-text-body_small slds-text-color_weak">
+										{email.fromDisplay}
+									</p>
+									<p class="slds-text-body_small slds-text-color_weak slds-m-left_small">
+										{email.messageDate}
+									</p>
+								</div>
+								<p class="slds-truncate slds-text-heading_small slds-text-title_bold">
+									{email.subject}
+								</p>
+								<p class="slds-text-body_small slds-truncate">
+									{email.preview}
+								</p>
+								<div class="slds-m-top_xx-small">
+									<template lwc:if={email.statusLabel}>
+										<span class="slds-badge slds-m-right_x-small">{email.statusLabel}</span>
+									</template>
+									<template lwc:if={email.hasAttachment}>
+										<lightning-icon icon-name="utility:attach" size="xx-small"
+											alternative-text="Has attachment" title="Has attachment"></lightning-icon>
+									</template>
+								</div>
+							</div>
+
+							<div class="slds-media__figure slds-media__figure_reverse">
+								<lightning-icon icon-name={email.toggleIcon} size="x-small"
+									alternative-text="Toggle email body"></lightning-icon>
+							</div>
+						</div>
+
+						<template lwc:if={email.expanded}>
+							<div class="slds-p-around_small slds-border_top slds-m-top_small">
+								<dl class="slds-dl_horizontal slds-text-body_small slds-m-bottom_x-small">
+									<dt class="slds-dl_horizontal__label">From:</dt>
+									<dd class="slds-dl_horizontal__detail">{email.fromDisplay}</dd>
+									<template lwc:if={email.toAddress}>
+										<dt class="slds-dl_horizontal__label">To:</dt>
+										<dd class="slds-dl_horizontal__detail">{email.toAddress}</dd>
+									</template>
+									<template lwc:if={email.ccAddress}>
+										<dt class="slds-dl_horizontal__label">Cc:</dt>
+										<dd class="slds-dl_horizontal__detail">{email.ccAddress}</dd>
+									</template>
+								</dl>
+								<pre class="slds-text-body_small email-body">{email.textBody}</pre>
+							</div>
+						</template>
+
+					</article>
+				</template>
+			</div>
+		</template>
+
+	</lightning-card>
+</template>
