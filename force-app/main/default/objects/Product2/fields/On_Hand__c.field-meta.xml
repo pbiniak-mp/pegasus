@@ -2,6 +2,7 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>On_Hand__c</fullName>
     <externalId>false</externalId>
+    <inlineHelpText>The sum of Quantity On Hand from all InventoryLocations associated with the product</inlineHelpText>
     <label>On Hand</label>
     <precision>18</precision>
     <required>false</required>

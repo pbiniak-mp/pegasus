@@ -227,6 +227,30 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
+                <fieldItem>Record.Non_Consignment_Stock_On_Hand__c</fieldItem>
+                <identifier>RecordNon_Consignment_Stock_On_Hand_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Consignment_Stock_On_Hand__c</fieldItem>
+                <identifier>RecordConsignment_Stock_On_Hand__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <name>Facet-bed47a73-8d13-4334-aa40-45f3f5874898</name>
+        <type>Facet</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
                 <fieldItem>Record.Available__c</fieldItem>
                 <identifier>RecordAvailable__cField</identifier>
             </fieldInstance>
@@ -249,20 +273,6 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.On_Order__c</fieldItem>
                 <identifier>RecordOn_Order_cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <name>Facet-bed47a73-8d13-4334-aa40-45f3f5874898</name>
-        <type>Facet</type>
-    </flexiPageRegions>
-    <flexiPageRegions>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.Consignment_Stock_On_Hand__c</fieldItem>
-                <identifier>RecordConsignment_Stock_On_Hand__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
