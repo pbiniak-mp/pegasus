@@ -19,6 +19,11 @@
                 <default>false</default>
                 <label>Stamp</label>
             </value>
+            <value>
+                <fullName>Extra</fullName>
+                <default>false</default>
+                <label>Extra</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>
