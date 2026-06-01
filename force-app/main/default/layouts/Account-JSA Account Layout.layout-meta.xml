@@ -41,11 +41,11 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>Distribution_Partner__c</field>
+                <field>Account_Lifecycle__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>Account_Lifecycle__c</field>
+                <field>Default_Discount__c</field>
             </layoutItems>
         </layoutColumns>
         <layoutColumns>

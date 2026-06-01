@@ -25,6 +25,30 @@ public with sharing class QuoteLineItemService {
 		}
 	}
 
+	public static void applyQuoteGlobalDiscount(List<QuoteLineItem> newList) {
+		if (newList == null || newList.isEmpty()) return;
+
+		// Only consider new lines without an explicitly set discount, so a
+		// manually entered per-line discount is never overwritten.
+		Set<Id> quoteIds = new Set<Id>();
+		for (QuoteLineItem qli : newList) {
+			if (qli.QuoteId != null && qli.Discount == null) {
+				quoteIds.add(qli.QuoteId);
+			}
+		}
+
+		if (quoteIds.isEmpty()) return;
+
+		Map<Id, Decimal> discountByQuoteId = QuoteSelector.getGlobalDiscountByQuoteIds(quoteIds);
+		if (discountByQuoteId.isEmpty()) return;
+
+		for (QuoteLineItem qli : newList) {
+			if (qli.QuoteId != null && qli.Discount == null && discountByQuoteId.containsKey(qli.QuoteId)) {
+				qli.Discount = discountByQuoteId.get(qli.QuoteId);
+			}
+		}
+	}
+
 	public static void recalculateQuoteTotalWeight(Set<Id> quoteIds) {
 		if (quoteIds == null) return;
 		quoteIds.remove(null);

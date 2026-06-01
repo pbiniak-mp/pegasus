@@ -1,5 +1,9 @@
 public with sharing class QuoteTriggerHandler extends TriggerHandler {
 
+	public override void beforeInsert() {
+		QuoteService.applyAccountDefaultDiscount(Trigger.new);
+	}
+
 	public override void afterInsert() {
 		QuoteService.assignQuoteNumbers(Trigger.new);
 	}
