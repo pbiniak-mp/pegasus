@@ -140,6 +140,36 @@ public inherited sharing class QuoteSelector {
 		return quotes.isEmpty() ? null : quotes[0];
 	}
 
+	public static Map<Id, Decimal> getAccountDefaultDiscountByOpportunityIds(Set<Id> opportunityIds) {
+		List<Opportunity> opps = [
+			SELECT Id, Account.Default_Discount__c
+			FROM Opportunity
+			WHERE Id IN :opportunityIds
+				AND Account.Default_Discount__c != null
+		];
+
+		Map<Id, Decimal> discountByOppId = new Map<Id, Decimal>();
+		for (Opportunity opp : opps) {
+			discountByOppId.put(opp.Id, opp.Account.Default_Discount__c);
+		}
+		return discountByOppId;
+	}
+
+	public static Map<Id, Decimal> getGlobalDiscountByQuoteIds(Set<Id> quoteIds) {
+		List<Quote> quotes = [
+			SELECT Id, Global_Discount__c
+			FROM Quote
+			WHERE Id IN :quoteIds
+				AND Global_Discount__c != null
+		];
+
+		Map<Id, Decimal> discountByQuoteId = new Map<Id, Decimal>();
+		for (Quote q : quotes) {
+			discountByQuoteId.put(q.Id, q.Global_Discount__c);
+		}
+		return discountByQuoteId;
+	}
+
 	public static List<Quote> getSyncFieldsByIds(Set<Id> quoteIds, Set<Schema.SObjectField> sourceFields) {
 		Set<String> fieldNames = new Set<String>{ 'Id', 'OpportunityId' };
 		for (Schema.SObjectField sourceField : sourceFields) {
