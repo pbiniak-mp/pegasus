@@ -79,6 +79,10 @@
                 <behavior>Edit</behavior>
                 <field>Priority__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Discount__c</field>
+            </layoutItems>
         </layoutColumns>
         <style>TwoColumnsTopToBottom</style>
     </layoutSections>
@@ -164,7 +168,7 @@
         <label>Project Site Information</label>
         <layoutColumns>
             <layoutItems>
-                <behavior>Required</behavior>
+                <behavior>Edit</behavior>
                 <field>Building_Height_ft__c</field>
             </layoutItems>
             <layoutItems>

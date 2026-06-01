@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Default_Discount__c</fullName>
+    <label>Default Discount</label>
+    <type>Percent</type>
+    <precision>5</precision>
+    <scale>2</scale>
+    <description>Default discount percentage applied to quotes created for this account.</description>
+</CustomField>

@@ -7,6 +7,10 @@
             <inputField>Is_Test__c</inputField>
             <outputField>Is_Test__c</outputField>
         </mappingFields>
+        <mappingFields>
+            <inputField>Discount__c</inputField>
+            <outputField>Default_Discount__c</outputField>
+        </mappingFields>
         <outputObject>Account</outputObject>
     </objectMapping>
     <objectMapping>
