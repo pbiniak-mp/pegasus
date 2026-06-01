@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Lead_Discount_Required_Direct_Sales</fullName>
+    <active>true</active>
+    <description>Prevents a lead from being set to Working status without a discount defined. Exempt only when Distributor_Type__c = Indirect (indirect/distributor sales). All other leads (Direct or blank) require a discount before progressing.</description>
+    <errorConditionFormula>AND(
+    ISPICKVAL(Status, &quot;Working&quot;),
+    NOT(ISPICKVAL(Distributor_Type__c, &quot;Indirect&quot;)),
+    ISBLANK(Discount__c)
+)</errorConditionFormula>
+    <errorDisplayField>Discount__c</errorDisplayField>
+    <errorMessage>A Discount must be defined before this lead can be set to Working. This is required for all direct sales leads.</errorMessage>
+</ValidationRule>

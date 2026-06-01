@@ -12,6 +12,29 @@ public with sharing class QuoteService {
 			Quote.Price_Per_Watt__c => Opportunity.Price_Per_Watt__c
 		};
 
+	public static void applyAccountDefaultDiscount(List<Quote> newList) {
+		if (newList == null || newList.isEmpty()) return;
+
+		Set<Id> opportunityIds = new Set<Id>();
+		for (Quote q : newList) {
+			if (q.OpportunityId != null && q.Global_Discount__c == null) {
+				opportunityIds.add(q.OpportunityId);
+			}
+		}
+
+		if (opportunityIds.isEmpty()) return;
+
+		Map<Id, Decimal> discountByOppId =
+			QuoteSelector.getAccountDefaultDiscountByOpportunityIds(opportunityIds);
+		if (discountByOppId.isEmpty()) return;
+
+		for (Quote q : newList) {
+			if (q.OpportunityId != null && q.Global_Discount__c == null && discountByOppId.containsKey(q.OpportunityId)) {
+				q.Global_Discount__c = discountByOppId.get(q.OpportunityId);
+			}
+		}
+	}
+
 	public static void assignQuoteNumbers(List<Quote> newList) {
 		if (newList == null || newList.isEmpty()) return;
 
