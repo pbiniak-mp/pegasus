@@ -78,6 +78,7 @@ private class LeadTriggerHandlerTest {
 
 		Test.startTest();
 		l.Priority__c = 'Medium';
+		l.Discount__c = 10;
 		l.Status = 'Working';
 		update l;
 		Test.stopTest();

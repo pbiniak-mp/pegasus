@@ -6,6 +6,7 @@ public with sharing class QuoteLineItemTriggerHandler extends TriggerHandler {
 	public override void beforeInsert() {
 		try {
 			QuoteLineItemService.populateLineDescriptions(Trigger.new);
+			QuoteLineItemService.applyQuoteGlobalDiscount(Trigger.new);
 		} catch (Exception e) {
 			BoltErrorLogger.logError(
 				CLASS_NAME,
