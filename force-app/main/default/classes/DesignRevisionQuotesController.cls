@@ -38,11 +38,23 @@ public with sharing class DesignRevisionQuotesController {
 		}
 	}
 
+	@AuraEnabled
+	public static void setQuoteActive(Id quoteId) {
+		try {
+			// Activating this Quote deactivates the previously active Quote of the same
+			// type under the same Design Revision (handled by QuoteService on after update).
+			update new Quote(Id = quoteId, Active__c = true);
+		} catch (Exception e) {
+			throw new AuraHandledException(e.getMessage());
+		}
+	}
+
 	public class QuoteWrapper {
 		@AuraEnabled public Id id { get; set; }
 		@AuraEnabled public String name { get; set; }
 		@AuraEnabled public String status { get; set; }
 		@AuraEnabled public String quoteType { get; set; }
+		@AuraEnabled public Boolean active { get; set; }
 		@AuraEnabled public Decimal grandTotal { get; set; }
 		@AuraEnabled public Decimal pricePerWatt { get; set; }
 		@AuraEnabled public String recordUrl { get; set; }
@@ -57,6 +69,7 @@ public with sharing class DesignRevisionQuotesController {
 			this.name = q.Name;
 			this.status = q.Status;
 			this.quoteType = q.Quote_Type__c;
+			this.active = q.Active__c == true;
 			this.grandTotal = q.Quote_Grand_Total__c;
 			this.pricePerWatt = q.Price_Per_Watt__c;
 			this.recordUrl = '/lightning/r/Quote/' + q.Id + '/view';

@@ -299,176 +299,94 @@ private class QuoteServiceTest {
 		}
 	}
 
-	// ── Quote -> Opportunity field sync ─────────────────────────────────
-
-	private static final Decimal SYNC_WATTAGE_KW = 10;
-	private static final Decimal SYNC_QLI_QUANTITY = 2;
-	private static final Decimal SYNC_QLI_UNIT_PRICE = 500;
-	// 2 * 500 = 1000 -> Expected Revenue; 1000 / (10 * 1000) = 0.10 -> Price Per Watt
-	private static final Decimal SYNC_EXPECTED_REVENUE = 1000;
-	private static final Decimal SYNC_EXPECTED_PPW = 0.10;
-
-	private static Design_Revision__c insertDesignRevision(Id oppId, Decimal wattageKw) {
-		Design_Revision__c rev = new Design_Revision__c(
-			Opportunity__c = oppId,
-			Project_Wattage_kW__c = wattageKw,
-			Revision_Number__c = '00'
-		);
-		insert rev;
-		return rev;
-	}
-
-	private static Quote insertQuoteWithLineItem(Id oppId, Id designRevisionId) {
+	@IsTest
+	static void testApplyGlobalDiscount_zeroResetsLineItemDiscounts() {
 		Id pricebookId = Test.getStandardPricebookId();
+		Id oppId = getOpportunityId();
 
-		Product2 product = new Product2(Name = 'Sync Test Product ' + Crypto.getRandomLong(), IsActive = true);
+		Product2 product = new Product2(Name = 'GD Zero Product', IsActive = true);
 		insert product;
 
 		PricebookEntry pbe = new PricebookEntry(
 			Pricebook2Id = pricebookId,
 			Product2Id = product.Id,
-			UnitPrice = SYNC_QLI_UNIT_PRICE,
+			UnitPrice = 100,
 			IsActive = true
 		);
 		insert pbe;
 
 		Quote q = new Quote(
-			Name = 'Sync Quote',
+			Name = 'Zero Discount Quote',
 			OpportunityId = oppId,
 			Pricebook2Id = pricebookId,
 			ExpirationDate = Date.today().addDays(30),
-			Quote_Type__c = 'Material',
-			Design_Revision__c = designRevisionId
+			Quote_Type__c = 'Material'
 		);
 		insert q;
 
-		insert new QuoteLineItem(
-			QuoteId = q.Id,
-			PricebookEntryId = pbe.Id,
-			Product2Id = product.Id,
-			Quantity = SYNC_QLI_QUANTITY,
-			UnitPrice = SYNC_QLI_UNIT_PRICE
-		);
-
-		return q;
-	}
-
-	// IsSyncing is platform-controlled; setting Opportunity.SyncedQuoteId flips it to true.
-	private static void startSyncing(Id oppId, Id quoteId) {
-		update new Opportunity(Id = oppId, SyncedQuoteId = quoteId);
-	}
-
-	@IsTest
-	static void testSync_quoteStartsSyncing_copiesFieldsToOpportunity() {
-		Id oppId = getOpportunityId();
-		Design_Revision__c rev = insertDesignRevision(oppId, SYNC_WATTAGE_KW);
-		Quote q = insertQuoteWithLineItem(oppId, rev.Id);
-
-		Test.startTest();
-		startSyncing(oppId, q.Id);
-		Test.stopTest();
-
-		Opportunity opp = [SELECT Expected_Revenue__c, Price_Per_Watt__c FROM Opportunity WHERE Id = :oppId];
-		Assert.areEqual(SYNC_EXPECTED_REVENUE, opp.Expected_Revenue__c,
-			'Quote.TotalPrice should be copied to Opportunity.Expected_Revenue__c when the Quote starts syncing');
-		Assert.areEqual(SYNC_EXPECTED_PPW, opp.Price_Per_Watt__c,
-			'Quote.Price_Per_Watt__c should be copied to Opportunity.Price_Per_Watt__c when the Quote starts syncing');
-	}
-
-	@IsTest
-	static void testSync_quoteNeverSyncing_doesNotUpdate() {
-		Id oppId = getOpportunityId();
-		Design_Revision__c rev = insertDesignRevision(oppId, SYNC_WATTAGE_KW);
-		Quote q = insertQuoteWithLineItem(oppId, rev.Id);
-
-		Test.startTest();
-		q.Description = 'unrelated change';
-		update q;
-		Test.stopTest();
-
-		Opportunity opp = [SELECT Expected_Revenue__c, Price_Per_Watt__c FROM Opportunity WHERE Id = :oppId];
-		Assert.isNull(opp.Expected_Revenue__c,
-			'Opportunity should not be touched while the Quote is not syncing');
-		Assert.isNull(opp.Price_Per_Watt__c,
-			'Opportunity should not be touched while the Quote is not syncing');
-	}
-
-	@IsTest
-	static void testSync_alreadySyncing_doesNotResyncOnUnrelatedUpdate() {
-		Id oppId = getOpportunityId();
-		Design_Revision__c rev = insertDesignRevision(oppId, SYNC_WATTAGE_KW);
-		Quote q = insertQuoteWithLineItem(oppId, rev.Id);
-
-		// Start syncing once.
-		startSyncing(oppId, q.Id);
-
-		// Clear the Opp values to detect any unwanted resync.
-		update new Opportunity(Id = oppId, Expected_Revenue__c = null, Price_Per_Watt__c = null);
-
-		Test.startTest();
-		// Quote is still syncing; an unrelated change must NOT re-copy the fields.
-		q.Description = 'unrelated change';
-		update q;
-		Test.stopTest();
-
-		Opportunity opp = [SELECT Expected_Revenue__c, Price_Per_Watt__c FROM Opportunity WHERE Id = :oppId];
-		Assert.isNull(opp.Expected_Revenue__c,
-			'Sync should only fire when the Quote starts syncing, not on every update of a syncing quote');
-		Assert.isNull(opp.Price_Per_Watt__c,
-			'Sync should only fire when the Quote starts syncing, not on every update of a syncing quote');
-	}
-
-	@IsTest
-	static void testSync_nullList_isNoOp() {
-		Test.startTest();
-		QuoteService.syncQuoteFieldsToOpportunity(null, new Map<Id, Quote>());
-		QuoteService.syncQuoteFieldsToOpportunity(new List<Quote>(), new Map<Id, Quote>());
-		QuoteService.syncQuoteFieldsToOpportunity(new List<Quote>{ new Quote() }, null);
-		Test.stopTest();
-		// No DML, no exception expected.
-	}
-
-	@IsTest
-	static void testSync_bulk_multipleOpportunitiesUpdatedInSingleTransaction() {
-		Account acc = [SELECT Id FROM Account LIMIT 1];
-
-		List<Opportunity> opps = new List<Opportunity>();
-		for (Integer i = 0; i < 5; i++) {
-			opps.add(new Opportunity(
-				Name = 'Sync Bulk Opp ' + i,
-				AccountId = acc.Id,
-				StageName = 'Qualification',
-				CloseDate = Date.today().addDays(30),
-				Pricebook2Id = Test.getStandardPricebookId()
+		List<QuoteLineItem> qlis = new List<QuoteLineItem>();
+		for (Integer i = 0; i < 3; i++) {
+			qlis.add(new QuoteLineItem(
+				QuoteId = q.Id,
+				PricebookEntryId = pbe.Id,
+				Product2Id = product.Id,
+				Quantity = 2,
+				UnitPrice = 100
 			));
 		}
-		insert opps;
+		insert qlis;
 
-		Map<Id, Id> quoteIdByOppId = new Map<Id, Id>();
-		for (Opportunity opp : opps) {
-			Design_Revision__c rev = insertDesignRevision(opp.Id, SYNC_WATTAGE_KW);
-			Quote q = insertQuoteWithLineItem(opp.Id, rev.Id);
-			quoteIdByOppId.put(opp.Id, q.Id);
-		}
-
-		List<Opportunity> toSync = new List<Opportunity>();
-		for (Id oppId : quoteIdByOppId.keySet()) {
-			toSync.add(new Opportunity(Id = oppId, SyncedQuoteId = quoteIdByOppId.get(oppId)));
+		// First set a non-zero discount so there is something to reset.
+		q.Global_Discount__c = 40;
+		update q;
+		for (QuoteLineItem qli : [SELECT Discount FROM QuoteLineItem WHERE QuoteId = :q.Id]) {
+			Assert.areEqual(40, qli.Discount, 'Precondition: a positive Global Discount should propagate');
 		}
 
 		Test.startTest();
-		update toSync;
+		q.Global_Discount__c = 0;
+		update q;
 		Test.stopTest();
 
-		Map<Id, Opportunity> reloaded = new Map<Id, Opportunity>(
-			[SELECT Expected_Revenue__c, Price_Per_Watt__c FROM Opportunity WHERE Id IN :opps]
-		);
-		for (Opportunity o : reloaded.values()) {
-			Assert.areEqual(SYNC_EXPECTED_REVENUE, o.Expected_Revenue__c,
-				'Every Opportunity in the bulk sync should get Expected_Revenue__c');
-			Assert.areEqual(SYNC_EXPECTED_PPW, o.Price_Per_Watt__c,
-				'Every Opportunity in the bulk sync should get Price_Per_Watt__c');
+		List<QuoteLineItem> reloaded = [SELECT Discount FROM QuoteLineItem WHERE QuoteId = :q.Id];
+		Assert.areEqual(3, reloaded.size());
+		for (QuoteLineItem qli : reloaded) {
+			Assert.areEqual(0, qli.Discount, 'Setting Global Discount to 0 must reset every line item Discount to 0');
 		}
+	}
+
+	@IsTest
+	static void testApplyAccountDefaultDiscount_skipsStampType() {
+		Account acc = [SELECT Id FROM Account LIMIT 1];
+		update new Account(Id = acc.Id, Default_Discount__c = 25);
+		Id oppId = getOpportunityId();
+		Id pricebookId = Test.getStandardPricebookId();
+
+		Quote material = new Quote(
+			Name = 'Acct Material',
+			OpportunityId = oppId,
+			Pricebook2Id = pricebookId,
+			ExpirationDate = Date.today().addDays(30),
+			Quote_Type__c = 'Material'
+		);
+		Quote stamp = new Quote(
+			Name = 'Acct Stamp',
+			OpportunityId = oppId,
+			Pricebook2Id = pricebookId,
+			ExpirationDate = Date.today().addDays(30),
+			Quote_Type__c = 'Stamp'
+		);
+
+		Test.startTest();
+		insert new List<Quote>{ material, stamp };
+		Test.stopTest();
+
+		Quote reloadedMaterial = [SELECT Global_Discount__c FROM Quote WHERE Id = :material.Id];
+		Quote reloadedStamp = [SELECT Global_Discount__c FROM Quote WHERE Id = :stamp.Id];
+		Assert.areEqual(25, reloadedMaterial.Global_Discount__c,
+			'Material Quote should inherit the Account default discount');
+		Assert.isNull(reloadedStamp.Global_Discount__c,
+			'Stamp Quote must NOT inherit the Account default discount');
 	}
 
 	@IsTest
@@ -486,5 +404,260 @@ private class QuoteServiceTest {
 		Test.stopTest();
 
 		Assert.areEqual(26100, getSequence().Last_Number__c, 'Sequence must advance exactly once per insert (no recursion)');
+	}
+
+	// ── Active__c lifecycle: manual activation, deactivation & delete ────
+
+	private static final String TYPE_MATERIAL = 'Material';
+	private static final String TYPE_STAMP = 'Stamp';
+	private static final Decimal ACTIVE_WATTAGE_KW = 10;
+
+	private static Design_Revision__c createRevision(Id oppId) {
+		Design_Revision__c dr = new Design_Revision__c(
+			Opportunity__c = oppId,
+			Revision_Number__c = '00',
+			Project_Wattage_kW__c = ACTIVE_WATTAGE_KW,
+			Is_Active__c = false
+		);
+		insert dr;
+		return dr;
+	}
+
+	private static Quote createQuoteViaTrigger(Id oppId, Id drId, String type) {
+		Quote q = new Quote(
+			Name = 'Q ' + type,
+			OpportunityId = oppId,
+			Pricebook2Id = Test.getStandardPricebookId(),
+			ExpirationDate = Date.today().addDays(30),
+			Quote_Type__c = type,
+			Design_Revision__c = drId
+		);
+		insert q;
+		return q;
+	}
+
+	private static void addLineItem(Id quoteId, Decimal total) {
+		Id pbId = Test.getStandardPricebookId();
+		List<PricebookEntry> pbes = [SELECT Id, Product2Id FROM PricebookEntry WHERE Pricebook2Id = :pbId LIMIT 1];
+		PricebookEntry pbe;
+		if (pbes.isEmpty()) {
+			Product2 product = new Product2(Name = 'QS Active Product ' + Crypto.getRandomLong(), IsActive = true);
+			insert product;
+			pbe = new PricebookEntry(Pricebook2Id = pbId, Product2Id = product.Id, UnitPrice = 1, IsActive = true);
+			insert pbe;
+		} else {
+			pbe = pbes[0];
+		}
+		insert new QuoteLineItem(
+			QuoteId = quoteId,
+			PricebookEntryId = pbe.Id,
+			Product2Id = pbe.Product2Id,
+			Quantity = 1,
+			UnitPrice = total
+		);
+	}
+
+	private static Boolean isActive(Id quoteId) {
+		return [SELECT Active__c FROM Quote WHERE Id = :quoteId].Active__c;
+	}
+
+	@IsTest
+	static void testManualActivation_deactivatesOthers() {
+		Id oppId = getOpportunityId();
+		Design_Revision__c dr = createRevision(oppId);
+		Quote first = createQuoteViaTrigger(oppId, dr.Id, TYPE_MATERIAL);
+		Quote second = createQuoteViaTrigger(oppId, dr.Id, TYPE_MATERIAL);
+
+		Test.startTest();
+		update new Quote(Id = second.Id, Active__c = true);
+		Test.stopTest();
+
+		Assert.isFalse(isActive(first.Id), 'Activating the second Quote must deactivate the first of the same type/DR');
+		Assert.isTrue(isActive(second.Id), 'The newly activated Quote should be active');
+	}
+
+	@IsTest
+	static void testManualActivation_doesNotAffectOtherTypes() {
+		Id oppId = getOpportunityId();
+		Design_Revision__c dr = createRevision(oppId);
+		Quote material = createQuoteViaTrigger(oppId, dr.Id, TYPE_MATERIAL);
+		Quote stampA = createQuoteViaTrigger(oppId, dr.Id, TYPE_STAMP);
+		Quote stampB = createQuoteViaTrigger(oppId, dr.Id, TYPE_STAMP);
+
+		Test.startTest();
+		update new Quote(Id = stampB.Id, Active__c = true);
+		Test.stopTest();
+
+		Assert.isTrue(isActive(material.Id), 'Activating a Stamp Quote must not affect the Material Quote');
+		Assert.isFalse(isActive(stampA.Id), 'The previously active Stamp Quote should be deactivated');
+		Assert.isTrue(isActive(stampB.Id), 'The newly activated Stamp Quote should be active');
+	}
+
+	@IsTest
+	static void testManualActivation_doesNotAffectOtherDRs() {
+		Id oppId = getOpportunityId();
+		Design_Revision__c dr1 = createRevision(oppId);
+		Design_Revision__c dr2 = new Design_Revision__c(
+			Opportunity__c = oppId,
+			Revision_Number__c = '01',
+			Revision_Reason__c = 'Customer Revision',
+			Is_Active__c = false
+		);
+		insert dr2;
+
+		Quote dr1First = createQuoteViaTrigger(oppId, dr1.Id, TYPE_MATERIAL);
+		Quote dr1Second = createQuoteViaTrigger(oppId, dr1.Id, TYPE_MATERIAL);
+		Quote dr2Quote = createQuoteViaTrigger(oppId, dr2.Id, TYPE_MATERIAL);
+
+		Test.startTest();
+		update new Quote(Id = dr1Second.Id, Active__c = true);
+		Test.stopTest();
+
+		Assert.isFalse(isActive(dr1First.Id), 'The first DR1 Material Quote should be deactivated');
+		Assert.isTrue(isActive(dr1Second.Id), 'The newly activated DR1 Quote should be active');
+		Assert.isTrue(isActive(dr2Quote.Id), 'The DR2 Material Quote must be unaffected');
+	}
+
+	@IsTest
+	static void testDeactivation_doesNotRecalculate_ifDRNotActive() {
+		Id oppId = getOpportunityId();
+		Design_Revision__c dr = createRevision(oppId); // stays inactive
+		Quote first = createQuoteViaTrigger(oppId, dr.Id, TYPE_MATERIAL);
+		Quote second = createQuoteViaTrigger(oppId, dr.Id, TYPE_MATERIAL);
+
+		Test.startTest();
+		update new Quote(Id = second.Id, Active__c = true);
+		Test.stopTest();
+
+		Opportunity opp = [SELECT Amount_Material__c FROM Opportunity WHERE Id = :oppId];
+		Assert.isNull(opp.Amount_Material__c, 'No recalculation should occur while the parent DR is not active');
+		Assert.isFalse(isActive(first.Id), 'Deactivation of the superseded Quote should still happen');
+	}
+
+	@IsTest
+	static void testDeleteActiveQuote_amountDropsToZero() {
+		Id oppId = getOpportunityId();
+		Design_Revision__c dr = createRevision(oppId);
+		Quote active = createQuoteViaTrigger(oppId, dr.Id, TYPE_MATERIAL);
+		addLineItem(active.Id, 1000);
+
+		// Activating the DR links it to the Opportunity and recalculates amounts.
+		update new Design_Revision__c(Id = dr.Id, Is_Active__c = true);
+		Opportunity before = [SELECT Amount_Material__c FROM Opportunity WHERE Id = :oppId];
+		Assert.areEqual(1000, before.Amount_Material__c, 'Precondition: active Quote total should be reflected');
+
+		Test.startTest();
+		delete active;
+		Test.stopTest();
+
+		Opportunity after = [SELECT Amount_Material__c FROM Opportunity WHERE Id = :oppId];
+		Assert.areEqual(0, after.Amount_Material__c, 'Deleting the only active Material Quote should drop the amount to zero');
+	}
+
+	@IsTest
+	static void testDeleteInactiveQuote_noRecalc() {
+		Id oppId = getOpportunityId();
+		Design_Revision__c dr = createRevision(oppId);
+		Quote active = createQuoteViaTrigger(oppId, dr.Id, TYPE_MATERIAL);
+		Quote inactive = createQuoteViaTrigger(oppId, dr.Id, TYPE_MATERIAL);
+		addLineItem(active.Id, 1000);
+		addLineItem(inactive.Id, 500);
+
+		update new Design_Revision__c(Id = dr.Id, Is_Active__c = true);
+		Opportunity before = [SELECT Amount_Material__c FROM Opportunity WHERE Id = :oppId];
+		Assert.areEqual(1000, before.Amount_Material__c, 'Precondition: only the active Quote contributes');
+
+		Test.startTest();
+		delete inactive;
+		Test.stopTest();
+
+		Opportunity after = [SELECT Amount_Material__c FROM Opportunity WHERE Id = :oppId];
+		Assert.areEqual(1000, after.Amount_Material__c, 'Deleting an inactive Quote must not change the amount');
+	}
+
+	@IsTest
+	static void testNoBypassRecursion() {
+		Id oppId = getOpportunityId();
+		Design_Revision__c dr = createRevision(oppId);
+		Quote first = createQuoteViaTrigger(oppId, dr.Id, TYPE_MATERIAL);
+		Quote second = createQuoteViaTrigger(oppId, dr.Id, TYPE_MATERIAL);
+
+		Test.startTest();
+		// If the bypass did not work, the internal deactivation update would re-enter
+		// the handler and could leave the data inconsistent or hit limits.
+		update new Quote(Id = second.Id, Active__c = true);
+		Test.stopTest();
+
+		Integer activeCount = [
+			SELECT COUNT()
+			FROM Quote
+			WHERE Design_Revision__c = :dr.Id AND Quote_Type__c = :TYPE_MATERIAL AND Active__c = true
+		];
+		Assert.areEqual(1, activeCount, 'Exactly one Material Quote may remain active after the bypassed deactivation');
+		Assert.isFalse(isActive(first.Id), 'The superseded Quote should be deactivated exactly once');
+	}
+
+	// ── Line item & global discount changes re-sync the Opportunity ─────
+
+	private static Decimal oppMaterial(Id oppId) {
+		return [SELECT Amount_Material__c FROM Opportunity WHERE Id = :oppId].Amount_Material__c;
+	}
+
+	private static Decimal oppPricePerWatt(Id oppId) {
+		return [SELECT Price_Per_Watt__c FROM Opportunity WHERE Id = :oppId].Price_Per_Watt__c;
+	}
+
+	@IsTest
+	static void testLineItemInsert_recalculatesOpportunity() {
+		Id oppId = getOpportunityId();
+		Design_Revision__c dr = createRevision(oppId); // wattage 10 kW
+		Quote q = createQuoteViaTrigger(oppId, dr.Id, TYPE_MATERIAL);
+		addLineItem(q.Id, 1000);
+		update new Design_Revision__c(Id = dr.Id, Is_Active__c = true);
+		Assert.areEqual(1000, oppMaterial(oppId), 'Precondition: 1000 after activation');
+		Assert.areEqual(0.10, oppPricePerWatt(oppId), 'Precondition: 1000 / 10000 W = 0.10');
+
+		Test.startTest();
+		addLineItem(q.Id, 500); // TotalPrice -> 1500
+		Test.stopTest();
+
+		Assert.areEqual(1500, oppMaterial(oppId), 'Adding a line item must re-sync Amount Material');
+		Assert.areEqual(0.15, oppPricePerWatt(oppId), '1500 / 10000 W = 0.15');
+	}
+
+	@IsTest
+	static void testLineItemDelete_recalculatesOpportunity() {
+		Id oppId = getOpportunityId();
+		Design_Revision__c dr = createRevision(oppId);
+		Quote q = createQuoteViaTrigger(oppId, dr.Id, TYPE_MATERIAL);
+		addLineItem(q.Id, 1000);
+		addLineItem(q.Id, 500);
+		update new Design_Revision__c(Id = dr.Id, Is_Active__c = true);
+		Assert.areEqual(1500, oppMaterial(oppId), 'Precondition: 1500 after activation');
+
+		Test.startTest();
+		delete [SELECT Id FROM QuoteLineItem WHERE QuoteId = :q.Id AND UnitPrice = 500 LIMIT 1];
+		Test.stopTest();
+
+		Assert.areEqual(1000, oppMaterial(oppId), 'Deleting a line item must re-sync Amount Material');
+		Assert.areEqual(0.10, oppPricePerWatt(oppId), '1000 / 10000 W = 0.10');
+	}
+
+	@IsTest
+	static void testGlobalDiscountChange_recalculatesOpportunity() {
+		Id oppId = getOpportunityId();
+		Design_Revision__c dr = createRevision(oppId);
+		Quote q = createQuoteViaTrigger(oppId, dr.Id, TYPE_MATERIAL);
+		addLineItem(q.Id, 1000);
+		update new Design_Revision__c(Id = dr.Id, Is_Active__c = true);
+		Assert.areEqual(1000, oppMaterial(oppId), 'Precondition: 1000 before discount');
+
+		Test.startTest();
+		update new Quote(Id = q.Id, Global_Discount__c = 50); // 50% off -> TotalPrice 500
+		Test.stopTest();
+
+		Assert.areEqual(500, oppMaterial(oppId),
+			'A global discount change must re-sync the Opportunity even though the QLI trigger is bypassed');
+		Assert.areEqual(0.05, oppPricePerWatt(oppId), '500 / 10000 W = 0.05');
 	}
 }

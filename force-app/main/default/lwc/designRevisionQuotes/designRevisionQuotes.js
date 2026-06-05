@@ -3,6 +3,7 @@ import { refreshApex } from '@salesforce/apex';
 import getQuotesByRevision from '@salesforce/apex/DesignRevisionQuotesController.getQuotesByRevision';
 import getQuoteStatusPicklistValues from '@salesforce/apex/DesignRevisionQuotesController.getQuoteStatusPicklistValues';
 import updateQuoteStatus from '@salesforce/apex/DesignRevisionQuotesController.updateQuoteStatus';
+import setQuoteActive from '@salesforce/apex/DesignRevisionQuotesController.setQuoteActive';
 import { NavigationMixin } from 'lightning/navigation';
 
 const STATUS_BADGE_MAP = {
@@ -38,14 +39,18 @@ const USD_PPW = new Intl.NumberFormat('en-US', {
 
 const EMPTY_MODAL = { visible: false, quoteId: null, quoteName: null, currentStatus: null, newStatus: null };
 
+const TYPE_ORDER = ['Material', 'Stamp', 'Extra'];
+
 export default class DesignRevisionQuotes extends NavigationMixin(LightningElement) {
 	@api recordId;
 
 	quotes = [];
 	statusOptions = [];
 	isLoading = true;
+	isSaving = false;
 	errorMessage;
 	confirmModal = { ...EMPTY_MODAL };
+	selectedType = TYPE_ORDER[0];
 	_wiredQuotesResult;
 
 	@wire(getQuoteStatusPicklistValues)
@@ -79,12 +84,14 @@ export default class DesignRevisionQuotes extends NavigationMixin(LightningEleme
 					quantity: li.quantity,
 					unitPrice: li.unitPrice != null ? USD.format(li.unitPrice) : '—'
 				})),
+				active: q.active === true,
 				linesExpanded: false,
 				chevronClass: 'chevron-icon',
 				isExpiringSoon: q.expirationDate
 					? (new Date(q.expirationDate) - new Date()) / (1000 * 60 * 60 * 24) < 30
 					: false,
-				cardClass: STATUS_BORDER_MAP[q.status] || 'quote-card border-draft',
+				cardClass: (STATUS_BORDER_MAP[q.status] || 'quote-card border-draft')
+					+ (q.active === true ? ' is-active' : ''),
 				expiryDotClass: (() => {
 					const expiring = q.expirationDate &&
 						(new Date(q.expirationDate) - new Date()) / (1000 * 60 * 60 * 24) < 30;
@@ -96,6 +103,7 @@ export default class DesignRevisionQuotes extends NavigationMixin(LightningEleme
 					return expiring ? 'expiry-warn' : 'expiry-ok';
 				})()
 			}));
+			this.ensureValidSelection();
 		} else if (error) {
 			this.errorMessage = error.body?.message || 'Failed to load quotes.';
 		}
@@ -123,6 +131,20 @@ export default class DesignRevisionQuotes extends NavigationMixin(LightningEleme
 			currentStatus: quote.status,
 			newStatus: quote.status
 		};
+	}
+
+	handleSetActive(event) {
+		event.stopPropagation();
+		const quoteId = event.currentTarget.dataset.quoteid;
+		this.isSaving = true;
+		setQuoteActive({ quoteId })
+			.then(() => refreshApex(this._wiredQuotesResult))
+			.catch(error => {
+				this.errorMessage = error.body?.message || 'Failed to set the active quote.';
+			})
+			.finally(() => {
+				this.isSaving = false;
+			});
 	}
 
 	handleModalStatusChange(event) {
@@ -162,24 +184,45 @@ export default class DesignRevisionQuotes extends NavigationMixin(LightningEleme
 		return this.confirmModal.newStatus === this.confirmModal.currentStatus;
 	}
 
-	get materialQuotes() {
-		return this.quotes.filter(q => q.quoteType === 'Material');
+	get typeTabs() {
+		return TYPE_ORDER.map(type => {
+			const count = this.quotes.filter(q => q.quoteType === type).length;
+			const active = type === this.selectedType;
+			return {
+				type,
+				label: type,
+				count,
+				tabClass: active ? 'type-tab type-tab--active' : 'type-tab',
+				countClass: active ? 'tab-count tab-count--active' : 'tab-count'
+			};
+		});
 	}
 
-	get stampQuotes() {
-		return this.quotes.filter(q => q.quoteType === 'Stamp');
+	get filteredQuotes() {
+		return this.quotes.filter(q => q.quoteType === this.selectedType);
 	}
 
-	get noMaterial() {
-		return this.materialQuotes.length === 0;
+	get noQuotesOfType() {
+		return this.filteredQuotes.length === 0;
 	}
 
-	get noStamp() {
-		return this.stampQuotes.length === 0;
+	get selectedTypeLabel() {
+		return this.selectedType;
 	}
 
-	get materialCount() { return this.materialQuotes.length; }
-	get stampCount() { return this.stampQuotes.length; }
+	handleSelectType(event) {
+		this.selectedType = event.currentTarget.dataset.type;
+	}
+
+	// Keep the visible tab on a type that actually has quotes, without overriding a
+	// manual selection that is still populated (e.g. after a status-change refresh).
+	ensureValidSelection() {
+		const hasSelected = this.quotes.some(q => q.quoteType === this.selectedType);
+		if (!hasSelected) {
+			const firstWithQuotes = TYPE_ORDER.find(type => this.quotes.some(q => q.quoteType === type));
+			this.selectedType = firstWithQuotes || TYPE_ORDER[0];
+		}
+	}
 
 	get hasError() {
 		return !!this.errorMessage;

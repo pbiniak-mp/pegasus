@@ -1522,6 +1522,22 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <field>Opportunity.Amount_Material__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <field>Opportunity.Amount_Stamp__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <field>Opportunity.Amount_Extra__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <field>Opportunity.Quotes_Total__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>true</editable>
         <field>Opportunity.Priority__c</field>
         <readable>true</readable>
@@ -2149,6 +2165,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Quote.Quote_Type__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Quote.Active__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

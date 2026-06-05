@@ -56,6 +56,9 @@ public class Constants {
 	// Quote
 	public static final String QUOTE_HANDLER_NAME = 'QuoteTriggerHandler';
 	public static final String QUOTE_STATUS_PRESENTED = 'Presented';
+	public static final String QUOTE_TYPE_MATERIAL = 'Material';
+	public static final String QUOTE_TYPE_STAMP = 'Stamp';
+	public static final String QUOTE_TYPE_EXTRA = 'Extra';
 
 	// Quote Line Item
 	public static final String QUOTE_LINE_ITEM_HANDLER_NAME = 'QuoteLineItemTriggerHandler';
