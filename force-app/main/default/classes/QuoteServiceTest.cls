@@ -500,6 +500,7 @@ private class QuoteServiceTest {
 		Design_Revision__c dr2 = new Design_Revision__c(
 			Opportunity__c = oppId,
 			Revision_Number__c = '01',
+			Revision_Reason__c = 'Customer Revision',
 			Is_Active__c = false
 		);
 		insert dr2;

@@ -43,6 +43,7 @@ private class DesignRevisionQuoteIntegrationTest {
 		Design_Revision__c dr2 = new Design_Revision__c(
 			Opportunity__c = opp.Id,
 			Revision_Number__c = '01',
+			Revision_Reason__c = 'Customer Revision',
 			Project_Wattage_kW__c = WATTAGE_KW,
 			Is_Active__c = false
 		);

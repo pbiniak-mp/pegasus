@@ -89,6 +89,8 @@ public with sharing class OpportunityAmountService {
 		if (amountMaterial == null || amountMaterial == 0 || wattageKw == null || wattageKw == 0) {
 			return null;
 		}
-		return amountMaterial / (wattageKw * WATTS_PER_KW);
+		// Round to cents (HALF_UP) so the value matches the Quote.Price_Per_Watt__c
+		// formula field instead of leaving the raw high-scale division result.
+		return (amountMaterial / (wattageKw * WATTS_PER_KW)).setScale(2, System.RoundingMode.HALF_UP);
 	}
 }
