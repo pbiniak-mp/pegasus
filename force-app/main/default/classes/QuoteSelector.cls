@@ -121,6 +121,7 @@ public inherited sharing class QuoteSelector {
 				OpportunityId,
 				Status,
 				Quote_Type__c,
+				Active__c,
 				Quote_Grand_Total__c,
 				Price_Per_Watt__c,
 				ExpirationDate,
@@ -170,14 +171,37 @@ public inherited sharing class QuoteSelector {
 		return discountByQuoteId;
 	}
 
-	public static List<Quote> getSyncFieldsByIds(Set<Id> quoteIds, Set<Schema.SObjectField> sourceFields) {
-		Set<String> fieldNames = new Set<String>{ 'Id', 'OpportunityId' };
-		for (Schema.SObjectField sourceField : sourceFields) {
-			fieldNames.add(sourceField.getDescribe().getName());
-		}
-		String soql =
-			'SELECT ' + String.join(new List<String>(fieldNames), ', ') +
-			' FROM Quote WHERE Id IN :quoteIds';
-		return Database.query(soql);
+	public static List<Quote> getActiveQuotesByDRIds(Set<Id> drIds) {
+		return [
+			SELECT
+				Id,
+				TotalPrice,
+				Quote_Type__c,
+				Design_Revision__c,
+				OpportunityId,
+				Active__c
+			FROM Quote
+			WHERE Design_Revision__c IN :drIds
+				AND Active__c = true
+		];
+	}
+
+	public static List<Quote> getActiveQuotesByIds(Set<Id> quoteIds) {
+		return [
+			SELECT Id, Design_Revision__c
+			FROM Quote
+			WHERE Id IN :quoteIds
+				AND Active__c = true
+				AND Design_Revision__c != null
+		];
+	}
+
+	public static List<AggregateResult> countByDRAndType(Set<Id> drIds) {
+		return [
+			SELECT Design_Revision__c drId, Quote_Type__c quoteType, COUNT(Id) total
+			FROM Quote
+			WHERE Design_Revision__c IN :drIds
+			GROUP BY Design_Revision__c, Quote_Type__c
+		];
 	}
 }

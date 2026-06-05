@@ -44,6 +44,15 @@ public with sharing class DesignRevisionService {
 		deactivateOtherRevisions(allRevisions, activeRevisionIds);
 		relinkFiles(oppIds, oppIdToActiveRevision, activeRevisionIds, allRevisionIds);
 		updateOpportunities(oppIdToActiveRevision);
+
+		// (f) Recalculate Quote amounts on the Opportunity. Runs last so that
+		// Opportunity.Design_Revision__c already points at the newly active revision
+		// before OpportunityAmountService queries it.
+		try {
+			OpportunityAmountService.recalculate(new Set<Id>(oppIds));
+		} catch (Exception e) {
+			throw e;
+		}
 	}
 
 	private static Map<Id, Design_Revision__c> buildOppToRevisionMap(List<Design_Revision__c> revisions) {
