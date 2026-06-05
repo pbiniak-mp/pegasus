@@ -123,21 +123,34 @@ private class QuoteTriggerHandlerTest {
 
 	@IsTest
 	static void testBulkInsert_differentDRs() {
-		Id oppId = getOppId();
+		Id accountId = [SELECT Id FROM Account LIMIT 1].Id;
+
+		// One Opportunity + one REV00 revision each, so every revision can use the
+		// restricted "00" picklist value without a Revision Reason.
+		List<Opportunity> opps = new List<Opportunity>();
+		for (Integer i = 0; i < 50; i++) {
+			opps.add(new Opportunity(
+				Name = 'QTH Bulk Opp ' + i,
+				AccountId = accountId,
+				StageName = 'Qualification',
+				CloseDate = Date.today().addDays(30)
+			));
+		}
+		insert opps;
 
 		List<Design_Revision__c> revisions = new List<Design_Revision__c>();
-		for (Integer i = 0; i < 50; i++) {
+		for (Opportunity opp : opps) {
 			revisions.add(new Design_Revision__c(
-				Opportunity__c = oppId,
-				Revision_Number__c = String.valueOf(100 + i),
+				Opportunity__c = opp.Id,
+				Revision_Number__c = '00',
 				Is_Active__c = false
 			));
 		}
 		insert revisions;
 
 		List<Quote> quotes = new List<Quote>();
-		for (Design_Revision__c dr : revisions) {
-			quotes.add(buildQuote(oppId, dr.Id, TYPE_MATERIAL));
+		for (Integer i = 0; i < revisions.size(); i++) {
+			quotes.add(buildQuote(opps[i].Id, revisions[i].Id, TYPE_MATERIAL));
 		}
 
 		Test.startTest();
