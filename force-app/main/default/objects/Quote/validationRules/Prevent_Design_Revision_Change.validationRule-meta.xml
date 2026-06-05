@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Prevent_Design_Revision_Change</fullName>
+    <active>true</active>
+    <description>The Design Revision anchors the active-Quote uniqueness rules and the Opportunity amount aggregation, so it must be fixed once the Quote is created.</description>
+    <errorConditionFormula>AND(NOT(ISNEW()), ISCHANGED(Design_Revision__c))</errorConditionFormula>
+    <errorDisplayField>Design_Revision__c</errorDisplayField>
+    <errorMessage>Design Revision cannot be changed after the Quote has been created.</errorMessage>
+</ValidationRule>

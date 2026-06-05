@@ -23,23 +23,28 @@ public with sharing class QuoteLineItemTriggerHandler extends TriggerHandler {
 	}
 
 	public override void afterInsert() {
-		QuoteLineItemService.recalculateQuoteTotalWeight(collectQuoteIds(Trigger.new));
+		Set<Id> quoteIds = collectQuoteIds(Trigger.new);
+		QuoteLineItemService.recalculateQuoteTotalWeight(quoteIds);
+		QuoteService.recalculateOpportunityForQuotes(quoteIds);
 	}
 
 	public override void afterUpdate() {
 		Set<Id> quoteIds = collectQuoteIds(Trigger.new);
 		quoteIds.addAll(collectQuoteIds(Trigger.old));
 		QuoteLineItemService.recalculateQuoteTotalWeight(quoteIds);
+		QuoteService.recalculateOpportunityForQuotes(quoteIds);
 	}
 
 	public override void afterDelete() {
-		QuoteLineItemService.recalculateQuoteTotalWeight(
-			collectQuoteIds(Trigger.old)
-		);
+		Set<Id> quoteIds = collectQuoteIds(Trigger.old);
+		QuoteLineItemService.recalculateQuoteTotalWeight(quoteIds);
+		QuoteService.recalculateOpportunityForQuotes(quoteIds);
 	}
 
 	public override void afterUndelete() {
-		QuoteLineItemService.recalculateQuoteTotalWeight(collectQuoteIds(Trigger.new));
+		Set<Id> quoteIds = collectQuoteIds(Trigger.new);
+		QuoteLineItemService.recalculateQuoteTotalWeight(quoteIds);
+		QuoteService.recalculateOpportunityForQuotes(quoteIds);
 	}
 
 	private static Set<Id> collectQuoteIds(List<QuoteLineItem> records) {

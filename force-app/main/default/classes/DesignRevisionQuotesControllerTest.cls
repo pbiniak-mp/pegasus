@@ -104,4 +104,45 @@ private class DesignRevisionQuotesControllerTest {
 
 		Assert.areEqual(0, result.size(), 'Should return empty list for revision with no quotes');
 	}
+
+	@IsTest
+	static void testGetQuotesByRevision_exposesActiveFlag() {
+		Design_Revision__c revision = [SELECT Id FROM Design_Revision__c LIMIT 1];
+
+		Test.startTest();
+		List<DesignRevisionQuotesController.QuoteWrapper> result =
+			DesignRevisionQuotesController.getQuotesByRevision(revision.Id);
+		Test.stopTest();
+
+		// The first Quote of each type is auto-activated on insert, so both are active.
+		for (DesignRevisionQuotesController.QuoteWrapper w : result) {
+			Assert.isTrue(w.active, 'The auto-activated first quote of each type should be exposed as active');
+		}
+	}
+
+	@IsTest
+	static void testSetQuoteActive_deactivatesPreviousOfSameType() {
+		Design_Revision__c revision = [SELECT Id FROM Design_Revision__c LIMIT 1];
+		Opportunity opp = [SELECT Id FROM Opportunity LIMIT 1];
+		Quote firstMaterial = [SELECT Id FROM Quote WHERE Quote_Type__c = 'Material' LIMIT 1];
+
+		Quote secondMaterial = new Quote(
+			Name = 'Material Quote 2',
+			OpportunityId = opp.Id,
+			Pricebook2Id = Test.getStandardPricebookId(),
+			Design_Revision__c = revision.Id,
+			Quote_Type__c = 'Material',
+			Status = 'Draft'
+		);
+		insert secondMaterial; // inactive: a Material quote already exists for this DR
+
+		Test.startTest();
+		DesignRevisionQuotesController.setQuoteActive(secondMaterial.Id);
+		Test.stopTest();
+
+		Quote reloadedSecond = [SELECT Active__c FROM Quote WHERE Id = :secondMaterial.Id];
+		Quote reloadedFirst = [SELECT Active__c FROM Quote WHERE Id = :firstMaterial.Id];
+		Assert.isTrue(reloadedSecond.Active__c, 'The newly activated Quote should be active');
+		Assert.isFalse(reloadedFirst.Active__c, 'The previously active Material Quote should be deactivated');
+	}
 }

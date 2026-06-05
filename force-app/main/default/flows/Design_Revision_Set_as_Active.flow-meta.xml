@@ -89,7 +89,7 @@
         </connector>
         <fields>
             <name>Text_Are_You_Sure</name>
-            <fieldText>&lt;p&gt;You are about to set {!Get_Design_Revision.Name} as the active revision.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;This will update the following fields on the Opportunity:&lt;/p&gt;&lt;p&gt;- Module Quantity, Module Wattage, Project Wattage&lt;/p&gt;&lt;p&gt;- System Type, Panel Tilt, Panel Orientation&lt;/p&gt;&lt;p&gt;- Product Line, System Configuration&lt;/p&gt;&lt;p&gt;- Roof Surface, Roof Pitch&lt;/p&gt;&lt;p&gt;- And other technical parameters&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Are you sure you want to continue?&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;You are about to set {!Get_Design_Revision.Name} as the active revision for this Opportunity.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;This makes the revision the single source of truth for the Opportunity. When you continue, we&apos;ll:&lt;/p&gt;&lt;p&gt;- Sync the revision&apos;s technical design details (module, system, roof and structural parameters) onto the Opportunity.&lt;/p&gt;&lt;p&gt;- Move the revision&apos;s design files over to the Opportunity.&lt;/p&gt;&lt;p&gt;- Roll up the pricing from this revision&apos;s active quotes - the Material, Stamp and Extra quote totals, and the resulting price per watt, are written to the Opportunity.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Any previously active revision is deactivated automatically.&lt;/p&gt;&lt;p&gt;Are you sure you want to continue?&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
             <styleProperties>
                 <verticalAlignment>

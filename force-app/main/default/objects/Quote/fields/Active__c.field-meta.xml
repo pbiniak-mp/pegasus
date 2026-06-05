@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Active__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Marks this Quote as the active Quote of its Quote Type under its Design Revision. Only one Quote per Quote Type can be active per Design Revision. Drives the Opportunity amount aggregation.</description>
+    <inlineHelpText>Only one Quote of each Quote Type can be active per Design Revision. Activating this Quote deactivates the previously active Quote of the same type.</inlineHelpText>
+    <label>Active</label>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>
