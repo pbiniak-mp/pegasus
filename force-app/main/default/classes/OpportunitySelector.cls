@@ -38,4 +38,15 @@ public inherited sharing class OpportunitySelector {
 		List<Opportunity> records = getOpportunitiesByIds(new Set<Id>{ id });
 		return records.isEmpty() ? null : records[0];
 	}
+
+	public static List<Opportunity> getActiveRevisionInfoByIds(Set<Id> ids) {
+		return [
+			SELECT
+				Id,
+				Design_Revision__c,
+				Design_Revision__r.Project_Wattage_kW__c
+			FROM Opportunity
+			WHERE Id IN :ids
+		];
+	}
 }
