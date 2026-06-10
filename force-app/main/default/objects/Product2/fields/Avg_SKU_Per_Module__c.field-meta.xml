@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Avg_SKU_Per_Module__c</fullName>
+    <description>Average of OpportunityLineItem.SKU_Per_Module__c across every opportunity where this product appears. Refreshed nightly by ModuleCoverageBatch (scheduled via ModuleCoverageScheduler). Serves as the denominator for Module Coverage. Blank when the product has no opportunity line items with a ratio.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Average units of this SKU consumed per solar module, averaged across all opportunities. Refreshed nightly.</inlineHelpText>
+    <label>Avg SKU Per Module</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <trackHistory>false</trackHistory>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

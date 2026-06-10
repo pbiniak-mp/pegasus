@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Module_Coverage__c</fullName>
+    <description>How many solar modules worth of this SKU the current available inventory can cover: Available / Avg SKU Per Module. Blank when Avg SKU Per Module is zero or blank.</description>
+    <externalId>false</externalId>
+    <formula>IF(Avg_SKU_Per_Module__c &gt; 0, Available__c / Avg_SKU_Per_Module__c, null)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <inlineHelpText>Number of solar modules the current available inventory of this SKU can cover (Available divided by Avg SKU Per Module).</inlineHelpText>
+    <label>Module Coverage</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>
