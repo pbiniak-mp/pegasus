@@ -4,12 +4,18 @@ public inherited sharing class DesignRevisionSelector {
 		return [
 			SELECT
 				Id,
+				Array_Azimuth__c,
 				Assign_To__c,
+				Ballast_Block_Specification__c,
 				Building_Height_ft__c,
 				Code_Standard__c,
+				DesignPreference__c,
+				Distributor__c,
 				Existing_or_new_construction__c,
 				Exposure_Category__c,
+				Ground_Slope__c,
 				Is_Active__c,
+				Landfill_Location__c,
 				Maximum_System_Weight_Limit_lbs__c,
 				Module_Length_mm__c,
 				Module_Manufacturer__c,
@@ -28,6 +34,7 @@ public inherited sharing class DesignRevisionSelector {
 				Point_Load_Limit_psf__c,
 				Priority__c,
 				Product_Line__c,
+				ProjectName__c,
 				Project_Notes__c,
 				Project_Wattage_kW__c,
 				Revision_Number__c,
@@ -41,6 +48,7 @@ public inherited sharing class DesignRevisionSelector {
 				System_Configuration__c,
 				System_Type__c,
 				Total_Attachments__c,
+				UL_3741_compliance__c,
 				Wind_Speed_mph__c
 			FROM Design_Revision__c
 			WHERE Id IN :ids
