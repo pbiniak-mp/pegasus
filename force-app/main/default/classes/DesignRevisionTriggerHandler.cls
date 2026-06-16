@@ -21,6 +21,7 @@ public with sharing class DesignRevisionTriggerHandler extends TriggerHandler {
 		if (!activated.isEmpty()) {
 			DesignRevisionService.handleActivation(activated);
 		}
+		DesignRevisionService.syncActiveRevisionFieldChanges(Trigger.new, (Map<Id, Design_Revision__c>) Trigger.oldMap);
 		DesignRevisionService.syncOpportunityStageOnStatusChange(Trigger.new, (Map<Id, Design_Revision__c>) Trigger.oldMap);
 	}
 }
