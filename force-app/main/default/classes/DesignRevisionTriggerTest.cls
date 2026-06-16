@@ -270,6 +270,52 @@ private class DesignRevisionTriggerTest {
 	}
 
 	@IsTest
+	static void testActiveRevisionEdit_propagatesSyncedFieldsToOpportunity() {
+		// Reproduces the reported bug: module dimensions are populated on a revision
+		// AFTER it was set active and must still flow through to the Opportunity.
+		Opportunity opp = getOpp();
+		Design_Revision__c rev = buildRevision(opp.Id, 10.0);
+		rev.Is_Active__c = true;
+		insert rev;
+
+		Opportunity afterActivation = [
+			SELECT Module_Length_mm__c, Module_Width_mm__c, Module_Weight_lbs__c
+			FROM Opportunity WHERE Id = :opp.Id
+		];
+		Assert.areEqual(null, afterActivation.Module_Length_mm__c, 'Dimensions should be empty before being filled');
+
+		Test.startTest();
+		rev.Module_Length_mm__c = 2278;
+		rev.Module_Width_mm__c = 1134;
+		rev.Module_Weight_lbs__c = 70.11;
+		update rev;
+		Test.stopTest();
+
+		Opportunity afterEdit = [
+			SELECT Module_Length_mm__c, Module_Width_mm__c, Module_Weight_lbs__c
+			FROM Opportunity WHERE Id = :opp.Id
+		];
+		Assert.areEqual(2278, afterEdit.Module_Length_mm__c, 'Module Length should propagate after edit');
+		Assert.areEqual(1134, afterEdit.Module_Width_mm__c, 'Module Width should propagate after edit');
+		Assert.areEqual(70.11, afterEdit.Module_Weight_lbs__c, 'Module Weight should propagate after edit');
+	}
+
+	@IsTest
+	static void testInactiveRevisionEdit_doesNotPropagate() {
+		Opportunity opp = getOpp();
+		Design_Revision__c rev = buildRevision(opp.Id, 10.0);
+		insert rev;
+
+		Test.startTest();
+		rev.Module_Length_mm__c = 2278;
+		update rev;
+		Test.stopTest();
+
+		Opportunity result = [SELECT Module_Length_mm__c FROM Opportunity WHERE Id = :opp.Id];
+		Assert.areEqual(null, result.Module_Length_mm__c, 'Edits to an inactive revision must not propagate');
+	}
+
+	@IsTest
 	static void testBuildNames_setsNameOnInsertAndRevisionNumberChange() {
 		Opportunity opp = getOpp();
 
