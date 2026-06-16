@@ -12,6 +12,48 @@ public with sharing class DesignRevisionService {
 		Constants.DESIGN_REVISION_STATUS_CLOSED => Constants.OPPORTUNITY_STAGE_OFFERED
 	};
 
+	// Technical fields mirrored from the active Design Revision onto its Opportunity.
+	// Keep this set in sync with the assignments in buildOpportunity().
+	private static final Set<String> SYNCED_FIELDS = new Set<String>{
+		'Array_Azimuth__c',
+		'Ballast_Block_Specification__c',
+		'Building_Height_ft__c',
+		'Code_Standard__c',
+		'DesignPreference__c',
+		'Existing_or_new_construction__c',
+		'Exposure_Category__c',
+		'Ground_Slope__c',
+		'Landfill_Location__c',
+		'Maximum_System_Weight_Limit_lbs__c',
+		'Module_Length_mm__c',
+		'Module_Manufacturer__c',
+		'Module_Model_Number__c',
+		'Module_Wattage__c',
+		'Module_Wattage_W__c',
+		'Module_Weight_lbs__c',
+		'Module_Width_mm__c',
+		'Panel_Orientation__c',
+		'Panel_Tilt__c',
+		'Parapet_Height_in__c',
+		'Parapet_Width_in__c',
+		'Planned_Install_Date__c',
+		'Point_Load_Limit_psf__c',
+		'Priority__c',
+		'Product_Line__c',
+		'ProjectName__c',
+		'Project_Wattage_kW__c',
+		'Risk_Category__c',
+		'Roof_Pitch__c',
+		'Roof_Surface__c',
+		'Setback_Distance_ft__c',
+		'Structural_Load_Limit_psf__c',
+		'System_Configuration__c',
+		'System_Type__c',
+		'Total_Attachments__c',
+		'UL_3741_compliance__c',
+		'Wind_Speed_mph__c'
+	};
+
 	public static List<Design_Revision__c> filterActivated(
 		List<Design_Revision__c> newList,
 		Map<Id, Design_Revision__c> oldMap
@@ -53,6 +95,34 @@ public with sharing class DesignRevisionService {
 		} catch (Exception e) {
 			throw e;
 		}
+	}
+
+	// Mirrors technical field edits made on an ALREADY-active revision onto its
+	// Opportunity. Activation itself (false -> true) is fully handled by
+	// handleActivation; this covers the case where synced fields are populated or
+	// changed on a revision that was already active, e.g. module dimensions filled
+	// in after the revision was set active.
+	public static void syncActiveRevisionFieldChanges(
+		List<Design_Revision__c> revisions,
+		Map<Id, Design_Revision__c> oldMap
+	) {
+		if (oldMap == null) return;
+		Map<Id, Design_Revision__c> oppIdToRevision = new Map<Id, Design_Revision__c>();
+		for (Design_Revision__c rev : revisions) {
+			Design_Revision__c oldRev = oldMap.get(rev.Id);
+			Boolean stayedActive = rev.Is_Active__c == true && oldRev.Is_Active__c == true;
+			if (!stayedActive || rev.Opportunity__c == null) continue;
+			for (String f : SYNCED_FIELDS) {
+				if (rev.get(f) != oldRev.get(f)) {
+					oppIdToRevision.put(rev.Opportunity__c, rev);
+					break;
+				}
+			}
+		}
+		if (oppIdToRevision.isEmpty()) return;
+
+		updateOpportunities(oppIdToRevision);
+		OpportunityAmountService.recalculate(new Set<Id>(oppIdToRevision.keySet()));
 	}
 
 	private static Map<Id, Design_Revision__c> buildOppToRevisionMap(List<Design_Revision__c> revisions) {
@@ -198,10 +268,15 @@ public with sharing class DesignRevisionService {
 		return new Opportunity(
 			Id = oppId,
 			Design_Revision__c = dr.Id,
+			Array_Azimuth__c = dr.Array_Azimuth__c,
+			Ballast_Block_Specification__c = dr.Ballast_Block_Specification__c,
 			Building_Height_ft__c = dr.Building_Height_ft__c,
 			Code_Standard__c = dr.Code_Standard__c,
+			DesignPreference__c = dr.DesignPreference__c,
 			Existing_or_new_construction__c = dr.Existing_or_new_construction__c,
 			Exposure_Category__c = dr.Exposure_Category__c,
+			Ground_Slope__c = dr.Ground_Slope__c,
+			Landfill_Location__c = dr.Landfill_Location__c,
 			Maximum_System_Weight_Limit_lbs__c = dr.Maximum_System_Weight_Limit_lbs__c,
 			Module_Length_mm__c = dr.Module_Length_mm__c,
 			Module_Manufacturer__c = dr.Module_Manufacturer__c,
@@ -218,7 +293,7 @@ public with sharing class DesignRevisionService {
 			Point_Load_Limit_psf__c = dr.Point_Load_Limit_psf__c,
 			Priority__c = dr.Priority__c,
 			Product_Line__c = dr.Product_Line__c,
-			Project_Notes__c = dr.Project_Notes__c,
+			ProjectName__c = dr.ProjectName__c,
 			Project_Wattage_kW__c = dr.Project_Wattage_kW__c,
 			Risk_Category__c = dr.Risk_Category__c,
 			Roof_Pitch__c = dr.Roof_Pitch__c,
@@ -228,6 +303,7 @@ public with sharing class DesignRevisionService {
 			System_Configuration__c = dr.System_Configuration__c,
 			System_Type__c = dr.System_Type__c,
 			Total_Attachments__c = dr.Total_Attachments__c,
+			UL_3741_compliance__c = dr.UL_3741_compliance__c,
 			Wind_Speed_mph__c = dr.Wind_Speed_mph__c
 		);
 	}
@@ -338,10 +414,16 @@ public with sharing class DesignRevisionService {
 				Is_Active__c = false,
 				Status__c = Constants.DESIGN_REVISION_STATUS_NEW,
 				Assign_To__c = current.Assign_To__c,
+				Array_Azimuth__c = current.Array_Azimuth__c,
+				Ballast_Block_Specification__c = current.Ballast_Block_Specification__c,
 				Building_Height_ft__c = current.Building_Height_ft__c,
 				Code_Standard__c = current.Code_Standard__c,
+				DesignPreference__c = current.DesignPreference__c,
+				Distributor__c = current.Distributor__c,
 				Existing_or_new_construction__c = current.Existing_or_new_construction__c,
 				Exposure_Category__c = current.Exposure_Category__c,
+				Ground_Slope__c = current.Ground_Slope__c,
+				Landfill_Location__c = current.Landfill_Location__c,
 				Maximum_System_Weight_Limit_lbs__c = current.Maximum_System_Weight_Limit_lbs__c,
 				Module_Length_mm__c = current.Module_Length_mm__c,
 				Module_Manufacturer__c = current.Module_Manufacturer__c,
@@ -358,6 +440,7 @@ public with sharing class DesignRevisionService {
 				Point_Load_Limit_psf__c = current.Point_Load_Limit_psf__c,
 				Priority__c = current.Priority__c,
 				Product_Line__c = current.Product_Line__c,
+				ProjectName__c = current.ProjectName__c,
 				Project_Wattage_kW__c = current.Project_Wattage_kW__c,
 				Risk_Category__c = current.Risk_Category__c,
 				Roof_Pitch__c = current.Roof_Pitch__c,
@@ -367,6 +450,7 @@ public with sharing class DesignRevisionService {
 				System_Configuration__c = current.System_Configuration__c,
 				System_Type__c = current.System_Type__c,
 				Total_Attachments__c = current.Total_Attachments__c,
+				UL_3741_compliance__c = current.UL_3741_compliance__c,
 				Wind_Speed_mph__c = current.Wind_Speed_mph__c
 			);
 
