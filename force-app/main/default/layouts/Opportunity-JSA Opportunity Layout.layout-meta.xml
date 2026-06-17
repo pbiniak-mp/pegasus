@@ -324,6 +324,10 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
+                <field>Module_Thickness_mm__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
                 <field>Module_Width_mm__c</field>
             </layoutItems>
             <layoutItems>
@@ -499,7 +503,6 @@
         <fields>QUOTE.QUOTENUMBER</fields>
         <fields>Quote_Number__c</fields>
         <fields>QUOTE.NAME</fields>
-        <fields>QUOTE.ISSYNCING</fields>
         <fields>QUOTE.EXPIRATIONDATE</fields>
         <fields>QUOTE.SUBTOTAL</fields>
         <fields>QUOTE.TOTALPRICE</fields>

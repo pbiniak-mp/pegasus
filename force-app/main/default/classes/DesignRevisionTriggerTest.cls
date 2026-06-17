@@ -279,7 +279,7 @@ private class DesignRevisionTriggerTest {
 		insert rev;
 
 		Opportunity afterActivation = [
-			SELECT Module_Length_mm__c, Module_Width_mm__c, Module_Weight_lbs__c
+			SELECT Module_Length_mm__c, Module_Width_mm__c, Module_Weight_lbs__c, Module_Thickness_mm__c
 			FROM Opportunity WHERE Id = :opp.Id
 		];
 		Assert.areEqual(null, afterActivation.Module_Length_mm__c, 'Dimensions should be empty before being filled');
@@ -288,16 +288,18 @@ private class DesignRevisionTriggerTest {
 		rev.Module_Length_mm__c = 2278;
 		rev.Module_Width_mm__c = 1134;
 		rev.Module_Weight_lbs__c = 70.11;
+		rev.Module_Thickness_mm__c = 3.25;
 		update rev;
 		Test.stopTest();
 
 		Opportunity afterEdit = [
-			SELECT Module_Length_mm__c, Module_Width_mm__c, Module_Weight_lbs__c
+			SELECT Module_Length_mm__c, Module_Width_mm__c, Module_Weight_lbs__c, Module_Thickness_mm__c
 			FROM Opportunity WHERE Id = :opp.Id
 		];
 		Assert.areEqual(2278, afterEdit.Module_Length_mm__c, 'Module Length should propagate after edit');
 		Assert.areEqual(1134, afterEdit.Module_Width_mm__c, 'Module Width should propagate after edit');
 		Assert.areEqual(70.11, afterEdit.Module_Weight_lbs__c, 'Module Weight should propagate after edit');
+		Assert.areEqual(3.25, afterEdit.Module_Thickness_mm__c, 'Module Thickness should propagate after edit');
 	}
 
 	@IsTest
