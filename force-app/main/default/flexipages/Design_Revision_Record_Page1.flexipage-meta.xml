@@ -93,6 +93,16 @@
             <fieldInstance>
                 <fieldInstanceProperties>
                     <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Name</fieldItem>
+                <identifier>RecordNameField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
                     <value>required</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.Opportunity__c</fieldItem>
@@ -619,6 +629,16 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.Module_Length_mm__c</fieldItem>
                 <identifier>RecordModule_Length_mm_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Module_Thickness_mm__c</fieldItem>
+                <identifier>RecordModule_Thickness_mm__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
