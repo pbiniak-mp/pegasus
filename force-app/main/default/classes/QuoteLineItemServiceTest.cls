@@ -159,4 +159,50 @@ private class QuoteLineItemServiceTest {
 				'Each Quote should be summed independently in a bulk recalculation');
 		}
 	}
+
+	@IsTest
+	static void testApplyQuoteGlobalDiscount_skipsFixedPriceProductsOnInsert() {
+		Id pricebookId = Test.getStandardPricebookId();
+
+		Quote q = new Quote(
+			Name = 'QLIW Fixed Price Quote',
+			OpportunityId = getOpportunityId(),
+			Pricebook2Id = pricebookId,
+			ExpirationDate = Date.today().addDays(30),
+			Quote_Type__c = 'Material',
+			Global_Discount__c = 50
+		);
+		insert q;
+
+		Product2 normalProduct = new Product2(Name = 'QLIW Normal Product', IsActive = true);
+		Product2 fixedProduct = new Product2(
+			Name = 'QLIW Fixed Price Product',
+			Family = Constants.PRODUCT_FAMILY_FIXED_PRICE,
+			IsActive = true
+		);
+		insert new List<Product2>{ normalProduct, fixedProduct };
+
+		PricebookEntry normalPbe = new PricebookEntry(
+			Pricebook2Id = pricebookId, Product2Id = normalProduct.Id, UnitPrice = 100, IsActive = true
+		);
+		PricebookEntry fixedPbe = new PricebookEntry(
+			Pricebook2Id = pricebookId, Product2Id = fixedProduct.Id, UnitPrice = 100, IsActive = true
+		);
+		insert new List<PricebookEntry>{ normalPbe, fixedPbe };
+
+		Test.startTest();
+		insert new List<QuoteLineItem>{
+			new QuoteLineItem(QuoteId = q.Id, PricebookEntryId = normalPbe.Id, Product2Id = normalProduct.Id, Quantity = 2, UnitPrice = 100),
+			new QuoteLineItem(QuoteId = q.Id, PricebookEntryId = fixedPbe.Id, Product2Id = fixedProduct.Id, Quantity = 2, UnitPrice = 100)
+		};
+		Test.stopTest();
+
+		for (QuoteLineItem qli : [SELECT Discount, Product2.Family FROM QuoteLineItem WHERE QuoteId = :q.Id]) {
+			if (qli.Product2.Family == Constants.PRODUCT_FAMILY_FIXED_PRICE) {
+				Assert.isNull(qli.Discount, 'Fixed-price products must not inherit the Quote Global Discount on insert');
+			} else {
+				Assert.areEqual(50, qli.Discount, 'Non fixed-price products should inherit the Quote Global Discount on insert');
+			}
+		}
+	}
 }
