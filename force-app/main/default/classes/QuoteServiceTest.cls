@@ -356,6 +356,55 @@ private class QuoteServiceTest {
 	}
 
 	@IsTest
+	static void testApplyGlobalDiscount_skipsFixedPriceProducts() {
+		Id pricebookId = Test.getStandardPricebookId();
+		Id oppId = getOpportunityId();
+
+		Product2 normalProduct = new Product2(Name = 'GD Normal Product', IsActive = true);
+		Product2 fixedProduct = new Product2(
+			Name = 'GD Fixed Price Product',
+			Family = Constants.PRODUCT_FAMILY_FIXED_PRICE,
+			IsActive = true
+		);
+		insert new List<Product2>{ normalProduct, fixedProduct };
+
+		PricebookEntry normalPbe = new PricebookEntry(
+			Pricebook2Id = pricebookId, Product2Id = normalProduct.Id, UnitPrice = 100, IsActive = true
+		);
+		PricebookEntry fixedPbe = new PricebookEntry(
+			Pricebook2Id = pricebookId, Product2Id = fixedProduct.Id, UnitPrice = 100, IsActive = true
+		);
+		insert new List<PricebookEntry>{ normalPbe, fixedPbe };
+
+		Quote q = new Quote(
+			Name = 'Fixed Price Discount Quote',
+			OpportunityId = oppId,
+			Pricebook2Id = pricebookId,
+			ExpirationDate = Date.today().addDays(30),
+			Quote_Type__c = 'Material'
+		);
+		insert q;
+
+		insert new List<QuoteLineItem>{
+			new QuoteLineItem(QuoteId = q.Id, PricebookEntryId = normalPbe.Id, Product2Id = normalProduct.Id, Quantity = 2, UnitPrice = 100),
+			new QuoteLineItem(QuoteId = q.Id, PricebookEntryId = fixedPbe.Id, Product2Id = fixedProduct.Id, Quantity = 2, UnitPrice = 100)
+		};
+
+		Test.startTest();
+		q.Global_Discount__c = 50;
+		update q;
+		Test.stopTest();
+
+		for (QuoteLineItem qli : [SELECT Discount, Product2.Family FROM QuoteLineItem WHERE QuoteId = :q.Id]) {
+			if (qli.Product2.Family == Constants.PRODUCT_FAMILY_FIXED_PRICE) {
+				Assert.isNull(qli.Discount, 'Fixed-price products must not receive the Global Discount');
+			} else {
+				Assert.areEqual(50, qli.Discount, 'Non fixed-price products should receive the Global Discount');
+			}
+		}
+	}
+
+	@IsTest
 	static void testApplyAccountDefaultDiscount_skipsStampType() {
 		Account acc = [SELECT Id FROM Account LIMIT 1];
 		update new Account(Id = acc.Id, Default_Discount__c = 25);
