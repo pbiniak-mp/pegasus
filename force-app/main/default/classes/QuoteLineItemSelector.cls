@@ -25,7 +25,7 @@ public inherited sharing class QuoteLineItemSelector {
 
 	public static List<QuoteLineItem> getLineItemsForDiscountUpdate(Set<Id> quoteIds) {
 		return [
-			SELECT Id, QuoteId, Discount
+			SELECT Id, QuoteId, Discount, Product2.Family
 			FROM QuoteLineItem
 			WHERE QuoteId IN :quoteIds
 		];
