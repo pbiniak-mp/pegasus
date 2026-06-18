@@ -31,9 +31,13 @@ public with sharing class QuoteLineItemService {
 		// Only consider new lines without an explicitly set discount, so a
 		// manually entered per-line discount is never overwritten.
 		Set<Id> quoteIds = new Set<Id>();
+		Set<Id> pricebookEntryIds = new Set<Id>();
 		for (QuoteLineItem qli : newList) {
 			if (qli.QuoteId != null && qli.Discount == null) {
 				quoteIds.add(qli.QuoteId);
+				if (qli.PricebookEntryId != null) {
+					pricebookEntryIds.add(qli.PricebookEntryId);
+				}
 			}
 		}
 
@@ -42,11 +46,26 @@ public with sharing class QuoteLineItemService {
 		Map<Id, Decimal> discountByQuoteId = QuoteSelector.getGlobalDiscountByQuoteIds(quoteIds);
 		if (discountByQuoteId.isEmpty()) return;
 
+		// Fixed-price products are excluded from any automatic discount.
+		Set<Id> fixedPriceEntryIds = getFixedPriceEntryIds(pricebookEntryIds);
+
 		for (QuoteLineItem qli : newList) {
-			if (qli.QuoteId != null && qli.Discount == null && discountByQuoteId.containsKey(qli.QuoteId)) {
+			if (qli.QuoteId != null && qli.Discount == null && discountByQuoteId.containsKey(qli.QuoteId) && !fixedPriceEntryIds.contains(qli.PricebookEntryId)) {
 				qli.Discount = discountByQuoteId.get(qli.QuoteId);
 			}
 		}
+	}
+
+	private static Set<Id> getFixedPriceEntryIds(Set<Id> pricebookEntryIds) {
+		Set<Id> fixedPriceEntryIds = new Set<Id>();
+		if (pricebookEntryIds.isEmpty()) return fixedPriceEntryIds;
+
+		for (PricebookEntry pbe : PricebookEntrySelector.getEntriesByIds(pricebookEntryIds)) {
+			if (pbe.Product2 != null && pbe.Product2.Family == Constants.PRODUCT_FAMILY_FIXED_PRICE) {
+				fixedPriceEntryIds.add(pbe.Id);
+			}
+		}
+		return fixedPriceEntryIds;
 	}
 
 	public static void recalculateQuoteTotalWeight(Set<Id> quoteIds) {

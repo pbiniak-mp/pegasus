@@ -63,6 +63,9 @@ public class Constants {
 	// Quote Line Item
 	public static final String QUOTE_LINE_ITEM_HANDLER_NAME = 'QuoteLineItemTriggerHandler';
 
+	// Product
+	public static final String PRODUCT_FAMILY_FIXED_PRICE = 'FIXED PRICED PRODUCTS';
+
 	// Lead
 	public static final String LEAD_HANDLER_NAME = 'LeadTriggerHandler';
 	public static final Integer LEAD_CONVERSION_NEW_ACCOUNT_WINDOW_SECONDS = 30;

@@ -5,7 +5,8 @@ public inherited sharing class PricebookEntrySelector {
 			SELECT
 				Id,
 				Product2Id,
-				Product2.Description
+				Product2.Description,
+				Product2.Family
 			FROM PricebookEntry
 			WHERE Id IN :entryIds
 		];
