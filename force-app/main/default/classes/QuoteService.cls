@@ -95,6 +95,11 @@ public with sharing class QuoteService {
 
 		List<QuoteLineItem> toUpdate = new List<QuoteLineItem>();
 		for (QuoteLineItem qli : lineItems) {
+			// Fixed-price products are excluded from automatic Global Discount;
+			// only a manually entered per-line discount applies to them.
+			if (qli.Product2 != null && qli.Product2.Family == Constants.PRODUCT_FAMILY_FIXED_PRICE) {
+				continue;
+			}
 			Decimal discount = discountByQuoteId.get(qli.QuoteId);
 			if (qli.Discount != discount) {
 				toUpdate.add(new QuoteLineItem(Id = qli.Id, Discount = discount));
