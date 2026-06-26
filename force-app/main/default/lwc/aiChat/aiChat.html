@@ -1,0 +1,72 @@
+<template>
+	<lightning-card title="Ask your AI Agent" icon-name="utility:chat">
+		<lightning-button-icon
+			slot="actions"
+			icon-name="utility:delete"
+			variant="border-filled"
+			alternative-text="Clear conversation"
+			title="Clear conversation"
+			disabled={isClearDisabled}
+			onclick={handleClear}></lightning-button-icon>
+
+		<div class="chat">
+			<div class="messages" lwc:ref="messages" onclick={handleMessagesClick}>
+				<template lwc:if={isEmpty}>
+					<div class="empty">
+						<p class="empty-title">Ask a question about your Salesforce data.</p>
+						<div class="suggestions">
+							<template for:each={suggestions} for:item="s">
+								<button key={s} class="chip" data-q={s} onclick={handleSuggestion}>{s}</button>
+							</template>
+						</div>
+					</div>
+				</template>
+
+				<template for:each={messages} for:item="m">
+					<div key={m.id} class={m.rowClass}>
+						<div class={m.wrapClass}>
+							<div class="msg-time">{m.time}</div>
+							<div class={m.bubbleClass}>
+								<template lwc:if={m.isUser}>
+									<div class="bubble-text">{m.text}</div>
+								</template>
+								<template lwc:else>
+									<div class="rich" data-id={m.id} lwc:dom="manual"></div>
+								</template>
+							</div>
+						</div>
+					</div>
+				</template>
+
+				<template lwc:if={isLoading}>
+					<div class="row row-assistant">
+						<div class="wrap wrap-assistant">
+							<div class="bubble bubble-assistant bubble-thinking">
+								<span class="spinner"></span>
+								<span class="thinking-text">Thinking&hellip;</span>
+							</div>
+						</div>
+					</div>
+				</template>
+			</div>
+
+			<div class="composer">
+				<textarea
+					class="composer-input"
+					lwc:ref="input"
+					value={draft}
+					placeholder="Ask anything about your data&hellip;"
+					rows="1"
+					disabled={isLoading}
+					oninput={handleInput}
+					onkeydown={handleKeyDown}></textarea>
+				<lightning-button
+					label="Send"
+					variant="brand"
+					icon-name="utility:send"
+					disabled={isSendDisabled}
+					onclick={handleSendClick}></lightning-button>
+			</div>
+		</div>
+	</lightning-card>
+</template>
