@@ -3,7 +3,7 @@
     "Salesforce DX": {
       "type": "stdio",
       "command": "npx",
-      "args": ["-y", "@salesforce/mcp", "--orgs", "dev1", "--toolsets", "orgs,metadata,data,users"],
+      "args": ["-y", "@salesforce/mcp", "--orgs", "dev1,UAT-pegasus,PROD-pegasus", "--toolsets", "orgs,metadata,data,users"],
       "env": {}
     }
   }

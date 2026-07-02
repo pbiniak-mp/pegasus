@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>AI Chat Agent User</label>
+    <description>Grants access to the read-only AI chat agent (Apex controller). Also map this permission set to the Anthropic_API external credential principal so callouts are authorized.</description>
+    <hasActivationRequired>false</hasActivationRequired>
+    <classAccesses>
+        <apexClass>AiChatController</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <externalCredentialPrincipalAccesses>
+        <enabled>true</enabled>
+        <externalCredentialPrincipal>Anthropic_API_Credential-Anthropic_Principal</externalCredentialPrincipal>
+    </externalCredentialPrincipalAccesses>
+</PermissionSet>
