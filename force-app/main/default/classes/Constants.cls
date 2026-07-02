@@ -117,4 +117,14 @@ public class Constants {
 	public static final Integer INTEGRATION_CALLOUT_CHUNK_SIZE = 90;
 
 	public static final String INTEGRATION_ERROR_CATEGORY = 'Outbound Integration';
+
+	// --- AI Chat agent (read-only Claude assistant) ---
+	public static final String ANTHROPIC_NAMED_CREDENTIAL = 'Anthropic_API';
+	public static final String ANTHROPIC_MESSAGES_PATH = '/v1/messages';
+	public static final String ANTHROPIC_MODEL = 'claude-sonnet-4-6';
+	public static final Integer ANTHROPIC_MAX_TOKENS = 1024;
+	public static final Integer AGENT_MAX_ITERATIONS = 5;
+	public static final Integer AGENT_DEFAULT_QUERY_LIMIT = 200;
+	public static final String AGENT_TOOL_NAME = 'run_soql';
+	public static final String AGENT_ERROR_CATEGORY = 'AI Chat Agent';
 }
