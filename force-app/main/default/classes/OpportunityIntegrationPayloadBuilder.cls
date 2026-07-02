@@ -5,10 +5,10 @@
  */
 public with sharing class OpportunityIntegrationPayloadBuilder implements IIntegrationPayloadBuilder {
 
-	private static final String KEY_OPPORTUNITY_ID = 'opportunityId';
+	private static final String KEY_OPPORTUNITY_ID = 'salesforce_id';
 	private static final String KEY_NAME = 'name';
-	private static final String KEY_STAGE_NAME = 'stageName';
-	private static final String KEY_WATTAGE_KW = 'projectWattageKw';
+	private static final String KEY_STAGE_NAME = 'stage_name';
+	private static final String KEY_WATTAGE_KW = 'project_wattage_kw';
 	private static final String KEY_EVENT_TYPE = 'eventType';
 	private static final String KEY_EVENT_TIMESTAMP = 'eventTimestamp';
 

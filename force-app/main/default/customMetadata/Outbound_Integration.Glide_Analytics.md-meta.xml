@@ -8,14 +8,14 @@
     </values>
     <values>
         <field>Endpoint_Path__c</field>
-        <value xsi:nil="true"/>
+        <value xsi:type="xsd:string">/opportunities</value>
     </values>
     <values>
         <field>HTTP_Method__c</field>
-        <value xsi:type="xsd:string">POST</value>
+        <value xsi:nil="true"/>
     </values>
     <values>
         <field>Named_Credential__c</field>
-        <value xsi:nil="true"/>
+        <value xsi:type="xsd:string">Glide_Analytics</value>
     </values>
 </CustomMetadata>
