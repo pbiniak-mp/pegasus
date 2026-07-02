@@ -70,3 +70,5 @@ CLAUDE.md
 .claude
 dev/
 .mcp.json
+.agents
+skills-lock.json
