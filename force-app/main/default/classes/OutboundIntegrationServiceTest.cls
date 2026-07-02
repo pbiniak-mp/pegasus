@@ -93,8 +93,10 @@ private class OutboundIntegrationServiceTest {
 
 		Map<String, Object> body = (Map<String, Object>) JSON.deserializeUntyped(log.Request_Body__c);
 		Assert.areEqual('Opp Success', (String) body.get('name'));
-		Assert.areEqual(STAGE_INITIAL, (String) body.get('stageName'));
-		Assert.areEqual(12.50, Decimal.valueOf(String.valueOf(body.get('projectWattageKw'))).setScale(2),
+		Assert.areEqual(log.Source_Record_Id__c, (String) body.get('salesforce_id'),
+			'Glide keys on the Salesforce Id sent in the body');
+		Assert.areEqual(STAGE_INITIAL, (String) body.get('stage_name'));
+		Assert.areEqual(12.50, Decimal.valueOf(String.valueOf(body.get('project_wattage_kw'))).setScale(2),
 			'Created payload carries project wattage');
 
 		Opportunity stamped = [
@@ -177,8 +179,8 @@ private class OutboundIntegrationServiceTest {
 			'PATCH targets the record by Salesforce Id in the URL');
 
 		Map<String, Object> body = (Map<String, Object>) JSON.deserializeUntyped(log.Request_Body__c);
-		Assert.areEqual(STAGE_NEXT, (String) body.get('stageName'));
-		Assert.isFalse(body.containsKey('projectWattageKw'), 'Stage-change payload omits wattage');
+		Assert.areEqual(STAGE_NEXT, (String) body.get('stage_name'));
+		Assert.isFalse(body.containsKey('project_wattage_kw'), 'Stage-change payload omits wattage');
 	}
 
 	@IsTest

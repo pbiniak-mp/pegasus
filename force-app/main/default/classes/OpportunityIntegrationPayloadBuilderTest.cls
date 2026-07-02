@@ -23,10 +23,10 @@ private class OpportunityIntegrationPayloadBuilderTest {
 
 		Map<String, Object> body = (Map<String, Object>) JSON.deserializeUntyped(payloadJson);
 		Assert.areEqual('P1', (String) body.get('name'));
-		Assert.areEqual('Qualification', (String) body.get('stageName'));
+		Assert.areEqual('Qualification', (String) body.get('stage_name'));
 		Assert.areEqual(Constants.INTEGRATION_EVENT_OPP_CREATED, (String) body.get('eventType'));
-		Assert.areEqual('9.25', String.valueOf(body.get('projectWattageKw')));
-		Assert.isNotNull(body.get('opportunityId'));
+		Assert.areEqual('9.25', String.valueOf(body.get('project_wattage_kw')));
+		Assert.isNotNull(body.get('salesforce_id'));
 		Assert.isNotNull(body.get('eventTimestamp'));
 	}
 
@@ -43,8 +43,8 @@ private class OpportunityIntegrationPayloadBuilderTest {
 		String payloadJson = builder.buildPayload(opp, Constants.INTEGRATION_EVENT_OPP_STAGE_CHANGED, Datetime.now());
 
 		Map<String, Object> body = (Map<String, Object>) JSON.deserializeUntyped(payloadJson);
-		Assert.isFalse(body.containsKey('projectWattageKw'), 'Stage-change contract has no wattage');
-		Assert.areEqual(Constants.OPPORTUNITY_STAGE_QUOTE, (String) body.get('stageName'));
+		Assert.isFalse(body.containsKey('project_wattage_kw'), 'Stage-change contract has no wattage');
+		Assert.areEqual(Constants.OPPORTUNITY_STAGE_QUOTE, (String) body.get('stage_name'));
 		Assert.areEqual(Constants.INTEGRATION_EVENT_OPP_STAGE_CHANGED, (String) body.get('eventType'));
 	}
 }
