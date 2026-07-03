@@ -83,4 +83,48 @@ public class Constants {
 	public static final String DESIGN_REVISION_UNKNOWN_ACCOUNT = 'Unknown';
 	public static final String DESIGN_REVISION_RECORD_URL_BASE = '/lightning/r/Design_Revision__c/';
 	public static final String RECORD_URL_VIEW_SUFFIX = '/view';
+
+	// Outbound Integration
+	public static final String OPPORTUNITY_HANDLER_NAME = 'OpportunityTriggerHandler';
+
+	public static final String INTEGRATION_GLIDE_ANALYTICS = 'Glide_Analytics';
+	public static final String INTEGRATION_SOURCE_OBJECT_OPPORTUNITY = 'Opportunity';
+
+	public static final String INTEGRATION_EVENT_OPP_CREATED = 'Opportunity Created';
+	public static final String INTEGRATION_EVENT_OPP_STAGE_CHANGED = 'Opportunity Stage Changed';
+
+	public static final String INTEGRATION_LOG_RT_OUTBOUND = 'Outbound';
+	public static final String INTEGRATION_LOG_RT_INBOUND = 'Inbound';
+
+	public static final String INTEGRATION_STATUS_QUEUED = 'Queued';
+	public static final String INTEGRATION_STATUS_SENT = 'Sent';
+	public static final String INTEGRATION_STATUS_FAILED = 'Failed';
+
+	public static final String OPP_INTEGRATION_STATUS_PENDING = 'Pending';
+	public static final String OPP_INTEGRATION_STATUS_SENT = 'Sent';
+	public static final String OPP_INTEGRATION_STATUS_FAILED = 'Failed';
+
+	public static final String INTEGRATION_HTTP_METHOD_POST = 'POST';
+	public static final String INTEGRATION_HTTP_METHOD_PATCH = 'PATCH';
+	public static final String INTEGRATION_LOG_DEBUG_PREFIX = 'OutboundIntegration: ';
+	public static final String HTTP_CONTENT_TYPE_JSON = 'application/json';
+	public static final String HTTP_HEADER_ACCEPT = 'Accept';
+	public static final String HTTP_HEADER_AUTHORIZATION = 'Authorization';
+	public static final String INTEGRATION_MASKED_VALUE = '****';
+	public static final String CALLOUT_PREFIX = 'callout:';
+
+	public static final Integer INTEGRATION_CALLOUT_TIMEOUT_MS = 120000;
+	public static final Integer INTEGRATION_CALLOUT_CHUNK_SIZE = 90;
+
+	public static final String INTEGRATION_ERROR_CATEGORY = 'Outbound Integration';
+
+	// --- AI Chat agent (read-only Claude assistant) ---
+	public static final String ANTHROPIC_NAMED_CREDENTIAL = 'Anthropic_API';
+	public static final String ANTHROPIC_MESSAGES_PATH = '/v1/messages';
+	public static final String ANTHROPIC_MODEL = 'claude-sonnet-4-6';
+	public static final Integer ANTHROPIC_MAX_TOKENS = 1024;
+	public static final Integer AGENT_MAX_ITERATIONS = 5;
+	public static final Integer AGENT_DEFAULT_QUERY_LIMIT = 200;
+	public static final String AGENT_TOOL_NAME = 'run_soql';
+	public static final String AGENT_ERROR_CATEGORY = 'AI Chat Agent';
 }
