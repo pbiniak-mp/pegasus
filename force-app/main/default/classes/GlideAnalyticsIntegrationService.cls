@@ -8,7 +8,7 @@
  *   - Created      -> POST  {NC}{path}                 (Salesforce Id in the body)
  *   - Stage change -> PATCH {NC}{path}/{opportunityId}  (Salesforce Id in the URL)
  */
-public with sharing class OutboundIntegrationService {
+public with sharing class GlideAnalyticsIntegrationService {
 
 	private static final IIntegrationPayloadBuilder OPPORTUNITY_BUILDER = new OpportunityIntegrationPayloadBuilder();
 

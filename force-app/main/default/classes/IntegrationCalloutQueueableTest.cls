@@ -21,7 +21,7 @@ private class IntegrationCalloutQueueableTest {
 	 * own logs — these tests drive the Queueable directly.
 	 */
 	private static Opportunity makeOpp() {
-		OutboundIntegrationService.configOverride = new Outbound_Integration__mdt(Active__c = false);
+		GlideAnalyticsIntegrationService.configOverride = new Outbound_Integration__mdt(Active__c = false);
 		Account acc = new Account(Name = 'Queueable Acc');
 		insert acc;
 		Opportunity opp = new Opportunity(

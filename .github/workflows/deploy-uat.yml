@@ -50,7 +50,7 @@ jobs:
             sf project deploy start \
               --manifest package/package.xml \
               --post-destructive-changes destructiveChanges/destructiveChanges.xml \
-              --test-level RunLocalTests \
+              --test-level RunRelevantTests \
               --api-version 66.0 \
               --wait 300 \
               --verbose \
