@@ -1,5 +1,5 @@
 @IsTest
-private class OutboundIntegrationServiceTest {
+private class GlideAnalyticsIntegrationServiceTest {
 
 	private static final String NC = 'Glide_Analytics';
 	private static final String PATH = '/opportunities';
@@ -9,7 +9,7 @@ private class OutboundIntegrationServiceTest {
 	// --- helpers ---------------------------------------------------------
 
 	private static void activateIntegration() {
-		OutboundIntegrationService.configOverride = new Outbound_Integration__mdt(
+		GlideAnalyticsIntegrationService.configOverride = new Outbound_Integration__mdt(
 			Named_Credential__c = NC,
 			Endpoint_Path__c = PATH,
 			HTTP_Method__c = Constants.INTEGRATION_HTTP_METHOD_POST,
@@ -18,7 +18,7 @@ private class OutboundIntegrationServiceTest {
 	}
 
 	private static void deactivateIntegration() {
-		OutboundIntegrationService.configOverride = new Outbound_Integration__mdt(
+		GlideAnalyticsIntegrationService.configOverride = new Outbound_Integration__mdt(
 			Named_Credential__c = NC,
 			Endpoint_Path__c = PATH,
 			Active__c = false
