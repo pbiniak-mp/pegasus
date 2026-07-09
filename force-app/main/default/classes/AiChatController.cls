@@ -10,6 +10,12 @@ public with sharing class AiChatController {
 
 	@AuraEnabled
 	public static AiChatResult ask(String question, String history) {
+		// Gate on the custom permission so a user without the AI_Chat_Agent_User
+		// permission set gets a clear message rather than a raw access error. The
+		// LWC hides the UI too, but this guards direct Apex calls.
+		if (!FeatureManagement.checkPermission(Constants.AGENT_ACCESS_CUSTOM_PERMISSION)) {
+			return new AiChatResult(null, true, Constants.AGENT_NO_ACCESS_MESSAGE);
+		}
 		if (String.isBlank(question)) {
 			return new AiChatResult(null, true, 'Please enter a question.');
 		}
@@ -21,6 +27,10 @@ public with sharing class AiChatController {
 				: (List<ChatTurn>) JSON.deserialize(history, List<ChatTurn>.class);
 			String answer = ClaudeAgentService.ask(question, priorTurns);
 			return new AiChatResult(answer, false, null);
+		} catch (ClaudeAgentService.ApiKeyNotConfiguredException e) {
+			// Not a code failure — the org just has no valid API key yet. Tell the
+			// user how to fix it; no BoltErrorLogger entry is warranted.
+			return new AiChatResult(null, true, e.getMessage());
 		} catch (Exception e) {
 			BoltErrorLogger.logError(
 				CLASS_NAME,
