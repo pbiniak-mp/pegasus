@@ -236,3 +236,18 @@
 	border-color: #0176d3;
 	box-shadow: 0 0 0 1px #0176d3;
 }
+
+.no-access {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	text-align: center;
+	gap: 0.5rem;
+	padding: 2rem 1.5rem;
+	color: #444;
+}
+
+.no-access-hint {
+	font-size: 0.8125rem;
+	color: #706e6b;
+}

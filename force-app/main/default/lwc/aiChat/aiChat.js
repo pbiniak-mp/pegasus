@@ -1,6 +1,10 @@
 import { LightningElement } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 import ask from '@salesforce/apex/AiChatController.ask';
+// True only when the running user has the AI_Chat_Agent_Access custom permission
+// (granted by the "AI Chat Agent User" permission set). Resolved at load time, so
+// we can gate the UI without a server round-trip.
+import hasChatAccess from '@salesforce/customPermission/AI_Chat_Agent_Access';
 
 const MAX_TEXTAREA_HEIGHT = 160;
 const SUGGESTIONS = [
@@ -149,6 +153,14 @@ export default class AiChat extends NavigationMixin(LightningElement) {
 	suggestions = SUGGESTIONS;
 	_seq = 0;
 	_renderedIds = new Set();
+
+	get hasAccess() {
+		return hasChatAccess === true;
+	}
+
+	get noAccess() {
+		return !this.hasAccess;
+	}
 
 	get isEmpty() {
 		return this.messages.length === 0;

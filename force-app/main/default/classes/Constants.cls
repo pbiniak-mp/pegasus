@@ -127,4 +127,18 @@ public class Constants {
 	public static final Integer AGENT_DEFAULT_QUERY_LIMIT = 200;
 	public static final String AGENT_TOOL_NAME = 'run_soql';
 	public static final String AGENT_ERROR_CATEGORY = 'AI Chat Agent';
+	// Shown to the user when Anthropic rejects the callout with HTTP 401 — i.e. the
+	// API key in the External Credential is missing, empty, expired or invalid.
+	public static final Integer ANTHROPIC_UNAUTHORIZED_STATUS = 401;
+	public static final String AGENT_API_KEY_MISSING_MESSAGE =
+		'The AI assistant is not available yet because no valid Anthropic API key is configured. ' +
+		'Please ask your Salesforce administrator to add a valid API key to the "Anthropic API Credential" ' +
+		'external credential (the "ApiKey" parameter) under Setup → Named Credentials, then try again.';
+	// Custom Permission that gates access to the AI chat (granted by the
+	// AI_Chat_Agent_User permission set). Checked in the LWC to hide the UI and in
+	// the controller as a server-side guard.
+	public static final String AGENT_ACCESS_CUSTOM_PERMISSION = 'AI_Chat_Agent_Access';
+	public static final String AGENT_NO_ACCESS_MESSAGE =
+		'You do not have permission to use the AI Chat. Please ask your Salesforce administrator ' +
+		'to assign you the "AI Chat Agent User" permission set.';
 }
