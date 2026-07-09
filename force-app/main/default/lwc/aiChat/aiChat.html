@@ -1,15 +1,28 @@
 <template>
 	<lightning-card title="Ask your AI Agent" icon-name="utility:chat">
-		<lightning-button-icon
-			slot="actions"
-			icon-name="utility:delete"
-			variant="border-filled"
-			alternative-text="Clear conversation"
-			title="Clear conversation"
-			disabled={isClearDisabled}
-			onclick={handleClear}></lightning-button-icon>
+		<template lwc:if={hasAccess}>
+			<lightning-button-icon
+				slot="actions"
+				icon-name="utility:delete"
+				variant="border-filled"
+				alternative-text="Clear conversation"
+				title="Clear conversation"
+				disabled={isClearDisabled}
+				onclick={handleClear}></lightning-button-icon>
+		</template>
 
-		<div class="chat">
+		<template lwc:if={noAccess}>
+			<div class="no-access">
+				<lightning-icon icon-name="utility:lock" size="small" alternative-text="No access"></lightning-icon>
+				<p>You do not have permission to use the AI Chat.</p>
+				<p class="no-access-hint">
+					Please ask your Salesforce administrator to assign you the
+					&ldquo;AI Chat Agent User&rdquo; permission set.
+				</p>
+			</div>
+		</template>
+
+		<div lwc:if={hasAccess} class="chat">
 			<div class="messages" lwc:ref="messages" onclick={handleMessagesClick}>
 				<template lwc:if={isEmpty}>
 					<div class="empty">
