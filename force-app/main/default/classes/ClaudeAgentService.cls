@@ -16,6 +16,14 @@ public with sharing class ClaudeAgentService {
 
 	private static final String CLASS_NAME = 'ClaudeAgentService';
 
+	/**
+	 * Raised when Anthropic rejects the callout with HTTP 401 — the API key in the
+	 * `Anthropic_API` Named Credential is missing, empty, expired or invalid. Kept
+	 * distinct from a generic failure so the controller can surface a specific,
+	 * actionable message instead of the generic error.
+	 */
+	public class ApiKeyNotConfiguredException extends Exception {}
+
 	private static final String SYSTEM_PROMPT =
 		'You are a helpful, read-only data assistant embedded in a Salesforce org.\n' +
 		'Answer the user\'s questions about their CRM data by querying it with the run_soql tool.\n\n' +
@@ -106,6 +114,12 @@ public with sharing class ClaudeAgentService {
 		);
 
 		if (!res.isSuccess) {
+			// A 401 means the API key is missing/invalid — hand the caller a
+			// dedicated exception so it can tell the user to configure the token,
+			// rather than logging it as an unexpected code failure.
+			if (res.statusCode == Constants.ANTHROPIC_UNAUTHORIZED_STATUS) {
+				throw new ApiKeyNotConfiguredException(Constants.AGENT_API_KEY_MISSING_MESSAGE);
+			}
 			throw new CalloutException('Anthropic API error (HTTP ' + res.statusCode + '): ' + res.responseBody);
 		}
 		return (Map<String, Object>) JSON.deserializeUntyped(res.responseBody);

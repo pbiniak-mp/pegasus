@@ -7,6 +7,10 @@
         <apexClass>AiChatController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
+    <customPermissions>
+        <enabled>true</enabled>
+        <name>AI_Chat_Agent_Access</name>
+    </customPermissions>
     <externalCredentialPrincipalAccesses>
         <enabled>true</enabled>
         <externalCredentialPrincipal>Anthropic_API_Credential-Anthropic_Principal</externalCredentialPrincipal>
