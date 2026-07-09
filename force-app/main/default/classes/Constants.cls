@@ -130,6 +130,7 @@ public class Constants {
 	// Shown to the user when Anthropic rejects the callout with HTTP 401 — i.e. the
 	// API key in the External Credential is missing, empty, expired or invalid.
 	public static final Integer ANTHROPIC_UNAUTHORIZED_STATUS = 401;
+	public static final Integer ANTHROPIC_FORBIDDEN_STATUS = 403;
 	public static final String AGENT_API_KEY_MISSING_MESSAGE =
 		'The AI assistant is not available yet because no valid Anthropic API key is configured. ' +
 		'Please ask your Salesforce administrator to add a valid API key to the "Anthropic API Credential" ' +

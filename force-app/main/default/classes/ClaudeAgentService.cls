@@ -114,15 +114,39 @@ public with sharing class ClaudeAgentService {
 		);
 
 		if (!res.isSuccess) {
-			// A 401 means the API key is missing/invalid — hand the caller a
-			// dedicated exception so it can tell the user to configure the token,
-			// rather than logging it as an unexpected code failure.
-			if (res.statusCode == Constants.ANTHROPIC_UNAUTHORIZED_STATUS) {
+			// A missing/invalid API key surfaces two different ways, both meaning
+			// "configure the token" — so we raise the same actionable exception.
+			if (isApiKeyConfigFailure(res)) {
 				throw new ApiKeyNotConfiguredException(Constants.AGENT_API_KEY_MISSING_MESSAGE);
 			}
-			throw new CalloutException('Anthropic API error (HTTP ' + res.statusCode + '): ' + res.responseBody);
+			// Fall back to errorMessage when there is no HTTP body (the callout never
+			// completed), so the log carries something useful instead of "null".
+			String detail = res.responseBody != null ? res.responseBody : res.errorMessage;
+			throw new CalloutException('Anthropic API error (HTTP ' + res.statusCode + '): ' + detail);
 		}
 		return (Map<String, Object>) JSON.deserializeUntyped(res.responseBody);
+	}
+
+	/**
+	 * True when a failed callout means the Anthropic API key is not configured:
+	 *  - the key is present but blank/wrong → the request reaches Anthropic and
+	 *    comes back 401/403;
+	 *  - the External Credential or its ApiKey parameter does not exist → Salesforce
+	 *    throws BEFORE sending, so there is no HTTP status, only a credential-config
+	 *    error message (e.g. "Field Anthropic_API_Credential.ApiKey does not exist").
+	 */
+	private static Boolean isApiKeyConfigFailure(IntegrationCalloutService.CalloutResult res) {
+		if (res.statusCode == Constants.ANTHROPIC_UNAUTHORIZED_STATUS
+			|| res.statusCode == Constants.ANTHROPIC_FORBIDDEN_STATUS) {
+			return true;
+		}
+		if (res.statusCode == null) {
+			String err = (res.errorMessage == null ? '' : res.errorMessage).toLowerCase();
+			return err.contains('credential')
+				|| err.contains('apikey')
+				|| err.contains(Constants.ANTHROPIC_NAMED_CREDENTIAL.toLowerCase());
+		}
+		return false;
 	}
 
 	private static Object buildTool() {
