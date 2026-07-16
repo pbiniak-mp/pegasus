@@ -8,6 +8,12 @@ public with sharing class QuotePDFController {
 	// TotalPrice: round(TotalPrice / Quantity, 2). Keyed by QuoteLineItem Id.
 	public Map<Id, Decimal> displayUnitPriceByLineId { get; private set; }
 
+	// Line total shown on the PDF: displayUnitPrice * Quantity. Recomputed from
+	// the rounded 2-decimal unit price (not Salesforce's full-precision TotalPrice)
+	// so every line multiplies exactly as the customer will recalculate it.
+	// PDF totals may therefore differ from Quote.TotalPrice by a few cents.
+	public Map<Id, Decimal> displayCostTotalByLineId { get; private set; }
+
 	public static final String EMPTY_STRING = '';
 	public static final String DATE_FORMAT = 'MMMM dd, yyyy';
 	public static final String FREIGHT_TBD = 'TBD';
@@ -29,6 +35,7 @@ public with sharing class QuotePDFController {
 
 	private void buildDisplayUnitPrices() {
 		displayUnitPriceByLineId = new Map<Id, Decimal>();
+		displayCostTotalByLineId = new Map<Id, Decimal>();
 		if (lineItems == null) return;
 		for (QuoteLineItem li : lineItems) {
 			Decimal displayPrice;
@@ -40,6 +47,12 @@ public with sharing class QuotePDFController {
 					.setScale(2, System.RoundingMode.HALF_UP);
 			}
 			displayUnitPriceByLineId.put(li.Id, displayPrice);
+
+			Decimal quantity = li.Quantity != null ? li.Quantity : 0;
+			displayCostTotalByLineId.put(
+				li.Id,
+				(displayPrice * quantity).setScale(2, System.RoundingMode.HALF_UP)
+			);
 		}
 	}
 
@@ -59,12 +72,22 @@ public with sharing class QuotePDFController {
 		return dt.format(DATE_FORMAT);
 	}
 
+	// Sums the recomputed display line totals so Sub Total / Racking Total /
+	// $/Watt stay consistent with the line amounts printed on the PDF.
 	public Decimal getTotalPrice() {
 		Decimal total = 0;
 		if (lineItems == null) return total;
 		for (QuoteLineItem li : lineItems) {
-			total += (li.TotalPrice != null ? li.TotalPrice : 0);
+			Decimal lineTotal = displayCostTotalByLineId.get(li.Id);
+			total += (lineTotal != null ? lineTotal : 0);
 		}
+		return total;
+	}
+
+	public Decimal getGrandTotalDisplay() {
+		Decimal total = getTotalPrice();
+		if (quote != null && quote.Tax != null) total += quote.Tax;
+		if (quote != null && quote.ShippingHandling != null) total += quote.ShippingHandling;
 		return total;
 	}
 

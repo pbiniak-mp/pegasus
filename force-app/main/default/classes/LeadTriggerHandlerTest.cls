@@ -60,13 +60,15 @@ private class LeadTriggerHandlerTest {
 		Assert.isNull(acc.BillingLongitude);
 
 		Opportunity opp = [
-			SELECT Project_Street__c, Project_City__c, Project_State__c, Project_PostalCode__c, Project_Country__c
+			SELECT Project_Street__c, Project_City__c, Project_State__c, Project_State_Code__c,
+				Project_PostalCode__c, Project_Country__c
 			FROM Opportunity
 			WHERE Id = :result.getOpportunityId()
 		];
 		Assert.areEqual(LEAD_STREET, opp.Project_Street__c);
 		Assert.areEqual(LEAD_CITY, opp.Project_City__c);
 		Assert.areEqual(LEAD_STATE, opp.Project_State__c);
+		Assert.areEqual('AZ', opp.Project_State_Code__c, 'State code should be copied from Lead.StateCode on conversion');
 		Assert.areEqual(LEAD_POSTAL, opp.Project_PostalCode__c);
 		Assert.areEqual(LEAD_COUNTRY, opp.Project_Country__c);
 	}

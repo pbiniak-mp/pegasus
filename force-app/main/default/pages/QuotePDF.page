@@ -156,7 +156,7 @@
 				</td>
 				<td class="prod-num">
 					$&nbsp;<apex:outputText value="{0, number, #,##0.00}">
-						<apex:param value="{!li.TotalPrice}"/>
+						<apex:param value="{!displayCostTotalByLineId[li.Id]}"/>
 					</apex:outputText>
 				</td>
 			</tr>
@@ -173,7 +173,7 @@
 			<td class="totals-label">Sub Total:</td>
 			<td class="totals-value">
 				$<apex:outputText value="{0, number, #,##0.00}">
-					<apex:param value="{!quote.GrandTotal}"/>
+					<apex:param value="{!grandTotalDisplay}"/>
 				</apex:outputText>
 			</td>
 		</tr>
@@ -181,7 +181,7 @@
 			<td class="totals-label">Racking Total:</td>
 			<td class="totals-value">
 				$<apex:outputText value="{0, number, #,##0.00}">
-					<apex:param value="{!quote.TotalPrice}"/>
+					<apex:param value="{!totalPrice}"/>
 				</apex:outputText>
 			</td>
 		</tr>
