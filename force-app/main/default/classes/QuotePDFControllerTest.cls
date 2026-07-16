@@ -130,6 +130,57 @@ private class QuotePDFControllerTest {
 	}
 
 	@IsTest
+	static void testDisplayTotalsRecomputedFromRoundedUnitPrice() {
+		Opportunity opp = [SELECT Id FROM Opportunity LIMIT 1];
+		Contact con = [SELECT Id FROM Contact LIMIT 1];
+		PricebookEntry pbe = [SELECT Id, Product2Id FROM PricebookEntry LIMIT 1];
+
+		Quote roundingQuote = new Quote(
+			Name = 'Rounding Quote',
+			OpportunityId = opp.Id,
+			Pricebook2Id = Test.getStandardPricebookId(),
+			ContactId = con.Id,
+			Quote_Type__c = 'Material'
+		);
+		insert roundingQuote;
+
+		// 0.93 * 100 * (1 - 0.603) = 36.921 in Salesforce; the PDF must show
+		// 0.37 unit price and 0.37 * 100 = 37.00 line total instead
+		QuoteLineItem qli = new QuoteLineItem(
+			QuoteId = roundingQuote.Id,
+			Product2Id = pbe.Product2Id,
+			PricebookEntryId = pbe.Id,
+			Quantity = 100,
+			UnitPrice = 0.93,
+			Discount = 60.3
+		);
+		insert qli;
+
+		QuotePDFController ctrl = buildController(roundingQuote.Id);
+
+		Assert.areEqual(0.37, ctrl.displayUnitPriceByLineId.get(qli.Id),
+			'Display unit price should be TotalPrice / Quantity rounded to 2 decimals');
+		Assert.areEqual(37.00, ctrl.displayCostTotalByLineId.get(qli.Id),
+			'Display cost total should be rounded unit price * quantity, not Salesforce TotalPrice');
+		Assert.areEqual(37.00, ctrl.getTotalPrice(),
+			'Total should sum the recomputed display line totals');
+		Assert.areEqual(37.00, ctrl.getGrandTotalDisplay(),
+			'Grand total should equal display total when tax and shipping are empty');
+	}
+
+	@IsTest
+	static void testGetGrandTotalDisplayIncludesShipping() {
+		Quote q = getTestQuote();
+		q.ShippingHandling = 25.50;
+		update q;
+
+		QuotePDFController ctrl = buildController(q.Id);
+
+		Assert.areEqual(225.50, ctrl.getGrandTotalDisplay(),
+			'Grand total should be display line totals (200.00) plus shipping (25.50)');
+	}
+
+	@IsTest
 	static void testGetFormattedDate() {
 		Quote q = getTestQuote();
 		QuotePDFController ctrl = buildController(q.Id);
