@@ -159,6 +159,10 @@
                 <behavior>Edit</behavior>
                 <field>Project_State__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>Project_State_Code__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>

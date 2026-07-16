@@ -1574,6 +1574,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>Opportunity.Project_State_Code__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>Opportunity.Project_Wattage_kW__c</field>
         <readable>true</readable>
     </fieldPermissions>

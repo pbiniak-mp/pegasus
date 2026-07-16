@@ -72,6 +72,7 @@ public with sharing class LeadService {
 			Project_Street__c = l.Street,
 			Project_City__c = l.City,
 			Project_State__c = l.State,
+			Project_State_Code__c = String.isNotBlank(l.StateCode) ? l.StateCode : StateCodeService.getCode(l.State),
 			Project_PostalCode__c = l.PostalCode,
 			Project_Country__c = l.Country
 		);

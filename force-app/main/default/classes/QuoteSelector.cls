@@ -17,6 +17,7 @@ public inherited sharing class QuoteSelector {
 				Id,
 				Name,
 				ShippingHandling,
+				Tax,
 				OpportunityId,
 				QuoteNumber,
 				Quote_Number__c,
