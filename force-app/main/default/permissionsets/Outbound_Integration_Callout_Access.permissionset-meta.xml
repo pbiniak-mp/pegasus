@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>Outbound Integration Callout Access</label>
+    <description>Grants access to the Glide Analytics External Credential Principal so outbound integration callouts (enqueued in the running user's context when an Opportunity is created or its stage changes) succeed. No object/field access — that stays in Integration_Admin.</description>
+    <hasActivationRequired>false</hasActivationRequired>
+    <externalCredentialPrincipalAccesses>
+        <externalCredentialPrincipal>Glide_Analytics_Credential-Glide_Principal</externalCredentialPrincipal>
+        <enabled>true</enabled>
+    </externalCredentialPrincipalAccesses>
+</PermissionSet>
