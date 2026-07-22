@@ -36,6 +36,7 @@ private class OpportunitySelectorTest {
 
 	@IsTest
 	static void testGetOpportunitiesByIds_deletedId_returnsEmpty() {
+		GlideAnalyticsIntegrationService.configOverride = new Outbound_Integration__mdt(Active__c = false);
 		Opportunity temp = new Opportunity(
 			Name      = 'Temp Delete Opp',
 			StageName = OPP_STAGE,
@@ -68,6 +69,7 @@ private class OpportunitySelectorTest {
 
 	@IsTest
 	static void testGetOpportunityById_deletedId_returnsNull() {
+		GlideAnalyticsIntegrationService.configOverride = new Outbound_Integration__mdt(Active__c = false);
 		Opportunity temp = new Opportunity(
 			Name      = 'Temp Delete Opp 2',
 			StageName = OPP_STAGE,
