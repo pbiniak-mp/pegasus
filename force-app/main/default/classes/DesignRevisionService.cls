@@ -43,6 +43,7 @@ public with sharing class DesignRevisionService {
 		'Product_Line__c',
 		'ProjectName__c',
 		'Project_Wattage_kW__c',
+		'Revision_Number__c',
 		'Risk_Category__c',
 		'Roof_Pitch__c',
 		'Roof_Surface__c',
@@ -297,6 +298,9 @@ public with sharing class DesignRevisionService {
 			Product_Line__c = dr.Product_Line__c,
 			ProjectName__c = dr.ProjectName__c,
 			Project_Wattage_kW__c = dr.Project_Wattage_kW__c,
+			// RR segment of Project_Code__c; ProjectCodeService reads it in the
+			// Opportunity before-update trigger this DML fires.
+			Active_Revision_Number__c = dr.Revision_Number__c,
 			Risk_Category__c = dr.Risk_Category__c,
 			Roof_Pitch__c = dr.Roof_Pitch__c,
 			Roof_Surface__c = dr.Roof_Surface__c,

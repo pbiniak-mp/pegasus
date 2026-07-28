@@ -84,6 +84,22 @@ public class Constants {
 	public static final String DESIGN_REVISION_RECORD_URL_BASE = '/lightning/r/Design_Revision__c/';
 	public static final String RECORD_URL_VIEW_SUFFIX = '/view';
 
+	// Project Code (TT-PPPPP-SS-KWW-RR)
+	public static final String PROJECT_CODE_SEGMENT_SEPARATOR = '-';
+	public static final String PROJECT_CODE_REVISION_PREFIX = 'R';
+	public static final Integer PROJECT_SHORT_NAME_LENGTH = 5;
+	// Product Line -> TT acronym (Product_Line_Code__c). Placeholder values pending
+	// Charles's approval; a new Product Line value needs an entry here AND a
+	// matching value on the Product_Line_Code__c picklist.
+	public static final Map<String, String> PRODUCT_LINE_TO_CODE = new Map<String, String>{
+		'Flat FX' => 'FX',
+		'Flat S' => 'FS',
+		'S-Base' => 'SB',
+		'SN2' => 'SN',
+		'G-Base' => 'GB',
+		'Scale' => 'SC'
+	};
+
 	// Outbound Integration
 	public static final String OPPORTUNITY_HANDLER_NAME = 'OpportunityTriggerHandler';
 
