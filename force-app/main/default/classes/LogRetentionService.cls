@@ -11,6 +11,10 @@ public without sharing class LogRetentionService {
 	public class PurgeResult {
 		public Integer deleted = 0;
 		public Integer failed = 0;
+		// True once the recycle bin has actually been emptied for this scope. Emptying it
+		// is invisible to a query — ALL ROWS keeps returning the rows either way, inside a
+		// test as well as outside — so this flag is the only way to confirm it happened.
+		public Boolean recycleBinEmptied = false;
 		public List<String> errors = new List<String>();
 	}
 
@@ -83,6 +87,7 @@ public without sharing class LogRetentionService {
 		if (hardDelete == true && !deletedRecords.isEmpty()) {
 			try {
 				Database.emptyRecycleBin(deletedRecords);
+				result.recycleBinEmptied = true;
 			} catch (Exception e) {
 				// The records are deleted either way — they just linger in the recycle bin,
 				// and in storage, for another 15 days. Worth reporting, not worth failing on.

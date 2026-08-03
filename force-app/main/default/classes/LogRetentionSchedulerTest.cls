@@ -25,6 +25,10 @@ private class LogRetentionSchedulerTest {
 
 	@IsTest
 	static void registersOnTheNightlyMidnightExpression() {
+		// This test is about the schedule itself, so no policy is active — the deployed
+		// metadata is exercised in LogRetentionPolicySelectorTest instead.
+		LogRetentionPolicySelector.policyOverride = new List<Log_Retention_Policy__mdt>();
+
 		Test.startTest();
 		String jobId = System.schedule(
 			Constants.LOG_RETENTION_JOB_NAME,

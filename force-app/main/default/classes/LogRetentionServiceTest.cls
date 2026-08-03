@@ -90,7 +90,7 @@ private class LogRetentionServiceTest {
 	}
 
 	@IsTest
-	static void purgeHardDeleteRemovesRecordsFromTheRecycleBinToo() {
+	static void purgeWithHardDeleteEmptiesTheRecycleBin() {
 		List<Integration_Log__c> logs = insertLogs(3);
 		Set<Id> ids = new Map<Id, Integration_Log__c>(logs).keySet();
 
@@ -101,10 +101,14 @@ private class LogRetentionServiceTest {
 		Assert.areEqual(3, result.deleted, 'All three records should be reported deleted');
 		Assert.areEqual(0, result.failed, 'No record should have failed');
 		Assert.isTrue(result.errors.isEmpty(), 'A clean purge should report no errors');
+		// The recycle bin cannot be observed from Apex — an ALL ROWS query returns the
+		// deleted rows whether or not the bin was emptied — so the flag set alongside the
+		// successful emptyRecycleBin call is what proves the storage was reclaimed.
+		Assert.isTrue(result.recycleBinEmptied, 'Hard delete should have emptied the recycle bin');
 		Assert.areEqual(
 			0,
-			[SELECT COUNT() FROM Integration_Log__c WHERE Id IN :ids ALL ROWS],
-			'Hard delete should leave nothing behind, not even in the recycle bin'
+			[SELECT COUNT() FROM Integration_Log__c WHERE Id IN :ids],
+			'The records should no longer be live'
 		);
 	}
 
@@ -118,6 +122,10 @@ private class LogRetentionServiceTest {
 		Test.stopTest();
 
 		Assert.areEqual(2, result.deleted, 'Both records should be reported deleted');
+		Assert.isFalse(
+			result.recycleBinEmptied,
+			'Soft delete must leave the recycle bin alone so the records stay recoverable'
+		);
 		Assert.areEqual(
 			0,
 			[SELECT COUNT() FROM Integration_Log__c WHERE Id IN :ids],

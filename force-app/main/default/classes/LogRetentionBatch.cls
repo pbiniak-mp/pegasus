@@ -17,11 +17,6 @@ public without sharing class LogRetentionBatch implements Database.Batchable<SOb
 
 	private static final String CLASS_NAME = 'LogRetentionBatch';
 
-	// Lets a test force several small chunks so the Stateful counters are proven to
-	// accumulate across execute() calls, without having to age hundreds of records.
-	@TestVisible
-	private static Integer batchSizeOverride;
-
 	private final Log_Retention_Policy__mdt policy;
 	private final List<Log_Retention_Policy__mdt> remaining;
 
@@ -50,10 +45,10 @@ public without sharing class LogRetentionBatch implements Database.Batchable<SOb
 			String problem = LogRetentionService.validate(next);
 
 			if (problem == null) {
-				Integer scopeSize = (batchSizeOverride != null)
-					? batchSizeOverride
-					: Constants.LOG_RETENTION_BATCH_SIZE;
-				return Database.executeBatch(new LogRetentionBatch(next, queue), scopeSize);
+				return Database.executeBatch(
+					new LogRetentionBatch(next, queue),
+					Constants.LOG_RETENTION_BATCH_SIZE
+				);
 			}
 
 			logError('run', 'Skipping policy ' + next.DeveloperName + ' - ' + problem);
