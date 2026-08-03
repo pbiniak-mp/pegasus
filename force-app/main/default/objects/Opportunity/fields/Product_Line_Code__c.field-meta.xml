@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Product_Line_Code__c</fullName>
+    <description>Product line acronym (TT segment) derived from Product_Line__c. Set automatically by ProjectCodeService whenever Product_Line__c changes; not user-editable.</description>
+    <inlineHelpText>Auto-populated acronym for the Product Line (e.g. Flat FX -> FX). Used as the TT segment of the project code. Maintained automatically from Product Line.</inlineHelpText>
+    <label>Product Line Code</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>FX</fullName>
+                <default>false</default>
+                <label>FX</label>
+            </value>
+            <value>
+                <fullName>FS</fullName>
+                <default>false</default>
+                <label>FS</label>
+            </value>
+            <value>
+                <fullName>SB</fullName>
+                <default>false</default>
+                <label>SB</label>
+            </value>
+            <value>
+                <fullName>SN</fullName>
+                <default>false</default>
+                <label>SN</label>
+            </value>
+            <value>
+                <fullName>GB</fullName>
+                <default>false</default>
+                <label>GB</label>
+            </value>
+            <value>
+                <fullName>SC</fullName>
+                <default>false</default>
+                <label>SC</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

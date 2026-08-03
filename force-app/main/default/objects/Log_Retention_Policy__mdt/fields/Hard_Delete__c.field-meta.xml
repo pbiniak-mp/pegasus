@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Hard_Delete__c</fullName>
+    <defaultValue>true</defaultValue>
+    <externalId>false</externalId>
+    <fieldManageability>SubscriberControlled</fieldManageability>
+    <inlineHelpText>Empty the recycle bin after deleting. Leave checked to reclaim storage immediately; uncheck to keep a 15-day safety net.</inlineHelpText>
+    <label>Hard Delete</label>
+    <type>Checkbox</type>
+</CustomField>
