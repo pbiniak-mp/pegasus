@@ -34,6 +34,10 @@
                     <value>false</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
+                    <name>hideSlackAction</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
                     <name>numVisibleActions</name>
                     <value>3</value>
                 </componentInstanceProperties>
@@ -129,6 +133,16 @@
                 <identifier>RecordWeight__cField</identifier>
             </fieldInstance>
         </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Primary_Stock_Unit__c</fieldItem>
+                <identifier>RecordPrimary_Stock_Unit__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
         <name>Facet-498c691c-8f74-4106-8f8e-1cbf58fdde41</name>
         <type>Facet</type>
     </flexiPageRegions>
@@ -181,6 +195,16 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.Tax_Schedule__c</fieldItem>
                 <identifier>RecordTax_Schedule_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Primary_Unit_Type__c</fieldItem>
+                <identifier>RecordPrimary_Unit_Type__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-f0aad33a-243f-48e2-86d3-29d6677358c8</name>
@@ -281,18 +305,8 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.Primary_Unit_Type__c</fieldItem>
-                <identifier>RecordPrimary_Unit_Type__cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.Primary_Stock_Unit__c</fieldItem>
-                <identifier>RecordPrimary_Stock_Unit__cField</identifier>
+                <fieldItem>Record.Back_Ordered__c</fieldItem>
+                <identifier>RecordBack_Ordered_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-2d4f4749-df44-48f1-ad42-4592eda0fc8f</name>
@@ -445,7 +459,7 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>label</name>
-                    <value>Warehouse Information</value>
+                    <value>Stock Information</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:fieldSection</componentName>
                 <identifier>flexipage_fieldSection4</identifier>

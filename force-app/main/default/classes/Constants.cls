@@ -84,6 +84,22 @@ public class Constants {
 	public static final String DESIGN_REVISION_RECORD_URL_BASE = '/lightning/r/Design_Revision__c/';
 	public static final String RECORD_URL_VIEW_SUFFIX = '/view';
 
+	// Project Code (TT-PPPPP-SS-KWW-RR)
+	public static final String PROJECT_CODE_SEGMENT_SEPARATOR = '-';
+	public static final String PROJECT_CODE_REVISION_PREFIX = 'R';
+	public static final Integer PROJECT_SHORT_NAME_LENGTH = 5;
+	// Product Line -> TT acronym (Product_Line_Code__c). Placeholder values pending
+	// Charles's approval; a new Product Line value needs an entry here AND a
+	// matching value on the Product_Line_Code__c picklist.
+	public static final Map<String, String> PRODUCT_LINE_TO_CODE = new Map<String, String>{
+		'Flat FX' => 'FX',
+		'Flat S' => 'FS',
+		'S-Base' => 'SB',
+		'SN2' => 'SN',
+		'G-Base' => 'GB',
+		'Scale' => 'SC'
+	};
+
 	// Outbound Integration
 	public static final String OPPORTUNITY_HANDLER_NAME = 'OpportunityTriggerHandler';
 
@@ -117,6 +133,18 @@ public class Constants {
 	public static final Integer INTEGRATION_CALLOUT_CHUNK_SIZE = 90;
 
 	public static final String INTEGRATION_ERROR_CATEGORY = 'Outbound Integration';
+
+	// --- Log retention (nightly purge of ageing log records) ---
+	// Records are always aged on CreatedDate: it exists on every object, is always
+	// populated and cannot be edited afterwards, so "how old is this record" has
+	// exactly one answer.
+	public static final String LOG_RETENTION_DATE_FIELD = 'CreatedDate';
+	public static final Integer LOG_RETENTION_BATCH_SIZE = 200;
+	public static final Integer LOG_RETENTION_MAX_TRACKED_ERRORS = 20;
+	public static final String LOG_RETENTION_ERROR_CATEGORY = 'Log Retention';
+	public static final String LOG_RETENTION_DEBUG_PREFIX = 'LogRetention: ';
+	public static final String LOG_RETENTION_JOB_NAME = 'Log Retention Nightly';
+	public static final String LOG_RETENTION_CRON_MIDNIGHT = '0 0 0 * * ?';
 
 	// --- AI Chat agent (read-only Claude assistant) ---
 	public static final String ANTHROPIC_NAMED_CREDENTIAL = 'Anthropic_API';
