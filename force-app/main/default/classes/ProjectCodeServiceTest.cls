@@ -3,6 +3,8 @@ private class ProjectCodeServiceTest {
 
 	private static final String REV_00 = '00';
 	private static final String REV_01 = '01';
+	// Revision_Reason_Required blocks '--' on anything past REV 00.
+	private static final String REV_REASON = 'Pegasus Revision';
 
 	private static Id cachedAccountId;
 
@@ -220,7 +222,7 @@ private class ProjectCodeServiceTest {
 		Design_Revision__c rev = new Design_Revision__c(
 			Opportunity__c = opp.Id,
 			Revision_Number__c = REV_01,
-			Revision_Reason__c = '--',
+			Revision_Reason__c = REV_REASON,
 			Product_Line__c = 'SN2',
 			ProjectName__c = 'Market Place',
 			Project_Wattage_kW__c = 1200.4
@@ -263,6 +265,7 @@ private class ProjectCodeServiceTest {
 
 		Test.startTest();
 		rev.Revision_Number__c = REV_01;
+		rev.Revision_Reason__c = REV_REASON; // required once the revision moves past REV 00
 		update rev;
 		Test.stopTest();
 
