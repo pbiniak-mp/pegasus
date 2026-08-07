@@ -84,10 +84,12 @@ public class Constants {
 	public static final String DESIGN_REVISION_RECORD_URL_BASE = '/lightning/r/Design_Revision__c/';
 	public static final String RECORD_URL_VIEW_SUFFIX = '/view';
 
-	// Project Code (TT-PPPPP-SS-KWW-RR)
+	// Project Code (CCC-TT-PPPPP-RR-SS-KWW)
 	public static final String PROJECT_CODE_SEGMENT_SEPARATOR = '-';
-	public static final String PROJECT_CODE_REVISION_PREFIX = 'R';
 	public static final Integer PROJECT_SHORT_NAME_LENGTH = 5;
+	// Stripped from every free-text segment so nothing can smuggle a separator
+	// (or any other punctuation) into the code and break a parser splitting on '-'.
+	public static final String PROJECT_CODE_INVALID_CHARS = '[^a-zA-Z0-9]';
 	// Product Line -> TT acronym (Product_Line_Code__c). Placeholder values pending
 	// Charles's approval; a new Product Line value needs an entry here AND a
 	// matching value on the Product_Line_Code__c picklist.
