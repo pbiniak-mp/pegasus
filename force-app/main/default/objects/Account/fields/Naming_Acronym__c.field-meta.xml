@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Naming_Acronym__c</fullName>
+    <description>Customer acronym (CCC segment) used to build Opportunity.Project_Code__c. Read live from the Opportunity&apos;s Account by ProjectCodeService, so a change here reaches an Opportunity on its next save (or via the project code backfill). Branch accounts of the same customer share an acronym (e.g. every Greentech office).</description>
+    <externalId>false</externalId>
+    <inlineHelpText>3-letter customer code used as the CCC segment of the project code (e.g. GTR for Greentech Renewables). Without it the Opportunity gets no project code.</inlineHelpText>
+    <label>Naming Acronym</label>
+    <length>3</length>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>
