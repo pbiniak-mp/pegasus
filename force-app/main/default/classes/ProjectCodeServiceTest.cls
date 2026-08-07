@@ -120,7 +120,7 @@ private class ProjectCodeServiceTest {
 	@IsTest
 	static void buildCode_stripsPunctuationFromEverySegment() {
 		Assert.areEqual(
-			'GTR-FX-STLU-01-HI-450',
+			'GTR-FX-STLU-R01-HI-450',
 			ProjectCodeService.buildCode('gt.r', 'FX', 'ST.LU', 'R-01', 'hi', 450),
 			'No segment may smuggle a separator into the code'
 		);
