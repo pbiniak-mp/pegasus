@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Project_Code__c</fullName>
-    <description>Assembled project code TT-PPPPP-SS-KWW-RR (product line, short name, state code, rounded kW, active revision). Maintained by ProjectCodeService; blank until every segment is available. Frozen once the Opportunity is Won.</description>
+    <description>Assembled project code CCC-TT-PPPPP-RR-SS-KWW (customer acronym, product line, short name, active revision, state code, rounded kW). Maintained by ProjectCodeService; blank until every segment is available. Frozen once the Opportunity is Won.</description>
     <externalId>false</externalId>
-    <inlineHelpText>Auto-generated project code (TT-PPPPP-SS-KWW-RR). Blank until all parts are filled; frozen after the Opportunity is Won.</inlineHelpText>
+    <inlineHelpText>Auto-generated project code (CCC-TT-PPPPP-RR-SS-KWW). Blank until all parts are filled; frozen after the Opportunity is Won.</inlineHelpText>
     <label>Project Code</label>
     <length>40</length>
     <required>false</required>

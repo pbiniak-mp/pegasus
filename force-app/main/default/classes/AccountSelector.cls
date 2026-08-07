@@ -17,4 +17,12 @@ public inherited sharing class AccountSelector {
 			WHERE Id IN :ids
 		];
 	}
+
+	public static List<Account> getNamingAcronymsByIds(Set<Id> ids) {
+		return [
+			SELECT Id, Naming_Acronym__c
+			FROM Account
+			WHERE Id IN :ids
+		];
+	}
 }
