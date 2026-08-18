@@ -14,6 +14,14 @@ public with sharing class QuotePDFController {
 	// PDF totals may therefore differ from Quote.TotalPrice by a few cents.
 	public Map<Id, Decimal> displayCostTotalByLineId { get; private set; }
 
+	// PDF labels with no value behind them. The page refuses to render the quote
+	// while this is non-empty, so a hand-typed /apex/QuotePDF?id=... URL cannot
+	// produce a document with holes in it either.
+	public List<String> missingFields { get; private set; }
+	public Boolean isIncomplete {
+		get { return missingFields != null && !missingFields.isEmpty(); }
+	}
+
 	public static final String EMPTY_STRING = '';
 	public static final String DATE_FORMAT = 'MMMM dd, yyyy';
 	public static final String FREIGHT_TBD = 'TBD';
@@ -21,14 +29,20 @@ public with sharing class QuotePDFController {
 	public QuotePDFController(ApexPages.StandardController stdController) {
 		Id quoteId = stdController.getId();
 		quote = QuoteSelector.getQuoteById(quoteId);
+		missingFields = new List<String>();
 
-		if (quote == null) return;
+		if (quote == null) {
+			missingFields.add(QuotePDFValidationService.MSG_QUOTE_NOT_FOUND);
+			return;
+		}
 
 		opp = quote.Opportunity;
 
 		contact = ContactSelector.getContactById(quote.ContactId);
 
 		lineItems = QuoteLineItemSelector.getLineItemsByQuoteId(quoteId);
+
+		missingFields = QuotePDFValidationService.getMissingFields(quote, contact, lineItems);
 
 		buildDisplayUnitPrices();
 	}
