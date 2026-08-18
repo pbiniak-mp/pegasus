@@ -6,7 +6,9 @@ private class ProjectCodeServiceTest {
 	// Revision_Reason_Required blocks '--' on anything past REV 00.
 	private static final String REV_REASON = 'Pegasus Revision';
 
-	private static final String ACRONYM = 'GTR';
+	// Greentech_Requires_GTR_Acronym reserves 'GTR' for Accounts named Greentech,
+	// so these tests use a neutral acronym.
+	private static final String ACRONYM = 'PCS';
 	private static final String ACCOUNT_WITH_ACRONYM = 'PCS Test Account';
 	private static final String ACCOUNT_WITHOUT_ACRONYM = 'PCS Unknown Customer';
 
@@ -98,10 +100,10 @@ private class ProjectCodeServiceTest {
 
 	@IsTest
 	static void buildCode_assemblesAllSegmentsAndRoundsHalfUp() {
-		Assert.areEqual('GTR-FX-HILTO-00-HI-450', ProjectCodeService.buildCode(ACRONYM, 'FX', 'HILTO', REV_00, 'HI', 449.6));
-		Assert.areEqual('GTR-FX-HILTO-01-HI-450', ProjectCodeService.buildCode(ACRONYM, 'FX', 'HILTO', REV_01, 'HI', 449.5));
-		Assert.areEqual('GTR-FX-HILTO-00-HI-449', ProjectCodeService.buildCode(ACRONYM, 'FX', 'HILTO', REV_00, 'HI', 449.4));
-		Assert.areEqual('GTR-FX-HILTO-00-HI-1877', ProjectCodeService.buildCode(ACRONYM, 'FX', 'HILTO', REV_00, 'HI', 1876.68));
+		Assert.areEqual('PCS-FX-HILTO-00-HI-450', ProjectCodeService.buildCode(ACRONYM, 'FX', 'HILTO', REV_00, 'HI', 449.6));
+		Assert.areEqual('PCS-FX-HILTO-01-HI-450', ProjectCodeService.buildCode(ACRONYM, 'FX', 'HILTO', REV_01, 'HI', 449.5));
+		Assert.areEqual('PCS-FX-HILTO-00-HI-449', ProjectCodeService.buildCode(ACRONYM, 'FX', 'HILTO', REV_00, 'HI', 449.4));
+		Assert.areEqual('PCS-FX-HILTO-00-HI-1877', ProjectCodeService.buildCode(ACRONYM, 'FX', 'HILTO', REV_00, 'HI', 1876.68));
 	}
 
 	@IsTest
@@ -120,8 +122,8 @@ private class ProjectCodeServiceTest {
 	@IsTest
 	static void buildCode_stripsPunctuationFromEverySegment() {
 		Assert.areEqual(
-			'GTR-FX-STLU-R01-HI-450',
-			ProjectCodeService.buildCode('gt.r', 'FX', 'ST.LU', 'R-01', 'hi', 450),
+			'PCS-FX-STLU-R01-HI-450',
+			ProjectCodeService.buildCode('pc.s', 'FX', 'ST.LU', 'R-01', 'hi', 450),
 			'No segment may smuggle a separator into the code'
 		);
 	}
@@ -145,7 +147,7 @@ private class ProjectCodeServiceTest {
 		Assert.areEqual('FX', opp.Product_Line_Code__c);
 		Assert.areEqual('HILTO', opp.Short_Project_Name__c);
 		Assert.areEqual('HI', opp.Project_State_Code__c);
-		Assert.areEqual('GTR-FX-HILTO-00-HI-450', opp.Project_Code__c);
+		Assert.areEqual('PCS-FX-HILTO-00-HI-450', opp.Project_Code__c);
 	}
 
 	@IsTest
@@ -189,7 +191,7 @@ private class ProjectCodeServiceTest {
 
 		opp = [SELECT Project_Code__c, Short_Project_Name__c FROM Opportunity WHERE Id = :opp.Id];
 		Assert.areEqual('CUST', opp.Short_Project_Name__c, 'Manually entered short name is preserved');
-		Assert.areEqual('GTR-FX-CUST-00-HI-450', opp.Project_Code__c);
+		Assert.areEqual('PCS-FX-CUST-00-HI-450', opp.Project_Code__c);
 	}
 
 	@IsTest
@@ -204,7 +206,7 @@ private class ProjectCodeServiceTest {
 
 		opp = [SELECT Project_Code__c, Short_Project_Name__c FROM Opportunity WHERE Id = :opp.Id];
 		Assert.areEqual('STLU', opp.Short_Project_Name__c, 'A hand-typed override is stripped of punctuation too');
-		Assert.areEqual('GTR-FX-STLU-00-HI-450', opp.Project_Code__c);
+		Assert.areEqual('PCS-FX-STLU-00-HI-450', opp.Project_Code__c);
 	}
 
 	@IsTest
@@ -235,7 +237,7 @@ private class ProjectCodeServiceTest {
 		Test.stopTest();
 
 		opp = [SELECT Project_Code__c FROM Opportunity WHERE Id = :opp.Id];
-		Assert.areEqual('GTR-GB-HILTO-01-HI-1000', opp.Project_Code__c);
+		Assert.areEqual('PCS-GB-HILTO-01-HI-1000', opp.Project_Code__c);
 	}
 
 	@IsTest
@@ -251,7 +253,7 @@ private class ProjectCodeServiceTest {
 
 		opp = [SELECT Project_Code__c, Short_Project_Name__c FROM Opportunity WHERE Id = :opp.Id];
 		Assert.areEqual('MARKE', opp.Short_Project_Name__c, 'Short name follows a changed project name');
-		Assert.areEqual('GTR-FX-MARKE-00-HI-450', opp.Project_Code__c);
+		Assert.areEqual('PCS-FX-MARKE-00-HI-450', opp.Project_Code__c);
 	}
 
 	@IsTest
@@ -263,7 +265,7 @@ private class ProjectCodeServiceTest {
 		Test.startTest();
 		update new Account(Id = accountId(ACCOUNT_WITH_ACRONYM), Naming_Acronym__c = 'ABC');
 		Assert.areEqual(
-			'GTR-FX-HILTO-00-HI-450',
+			'PCS-FX-HILTO-00-HI-450',
 			[SELECT Project_Code__c FROM Opportunity WHERE Id = :opp.Id].Project_Code__c,
 			'Recoding the Account does not reach the Opportunity on its own'
 		);
@@ -285,7 +287,7 @@ private class ProjectCodeServiceTest {
 		opp.StageName = 'Closed Won';
 		update opp;
 		String wonCode = [SELECT Project_Code__c FROM Opportunity WHERE Id = :opp.Id].Project_Code__c;
-		Assert.areEqual('GTR-FX-HILTO-00-HI-450', wonCode);
+		Assert.areEqual('PCS-FX-HILTO-00-HI-450', wonCode);
 
 		Test.startTest();
 		// Post-win change must NOT alter the frozen code.
@@ -335,7 +337,7 @@ private class ProjectCodeServiceTest {
 		Assert.areEqual(REV_01, result.Active_Revision_Number__c, 'Revision number is mirrored from the active revision');
 		Assert.areEqual('SN', result.Product_Line_Code__c);
 		Assert.areEqual('MARKE', result.Short_Project_Name__c);
-		Assert.areEqual('GTR-SN-MARKE-01-HI-1200', result.Project_Code__c);
+		Assert.areEqual('PCS-SN-MARKE-01-HI-1200', result.Project_Code__c);
 	}
 
 	@IsTest
@@ -364,7 +366,7 @@ private class ProjectCodeServiceTest {
 
 		Opportunity result = [SELECT Project_Code__c, Active_Revision_Number__c FROM Opportunity WHERE Id = :opp.Id];
 		Assert.areEqual(REV_01, result.Active_Revision_Number__c);
-		Assert.areEqual('GTR-FX-HILTO-01-HI-450', result.Project_Code__c);
+		Assert.areEqual('PCS-FX-HILTO-01-HI-450', result.Project_Code__c);
 	}
 
 	@IsTest
@@ -383,7 +385,7 @@ private class ProjectCodeServiceTest {
 
 		Integer coded = 0;
 		for (Opportunity opp : [SELECT Project_Code__c FROM Opportunity WHERE Id IN :opps]) {
-			if (opp.Project_Code__c == 'GTR-FX-HILTO-00-HI-450') coded++;
+			if (opp.Project_Code__c == 'PCS-FX-HILTO-00-HI-450') coded++;
 		}
 		Assert.areEqual(200, coded);
 		Assert.isTrue(queriesUsed <= 5, 'Acronyms are read in one bulk query, not one per record (used ' + queriesUsed + ')');
