@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Greentech_Requires_GTR_Acronym</fullName>
+    <active>true</active>
+    <description>Ties the shared GTR customer code to the Greentech family, both ways: an Account whose Name contains Greentech must have Naming_Acronym__c = GTR (blank fails too, or its Opportunities get no project code), and no other Account may use GTR.</description>
+    <errorConditionFormula>OR(
+  AND(
+    CONTAINS(UPPER(Name), &apos;GREENTECH&apos;),
+    UPPER(Naming_Acronym__c) &lt;&gt; &apos;GTR&apos;
+  ),
+  AND(
+    NOT(CONTAINS(UPPER(Name), &apos;GREENTECH&apos;)),
+    UPPER(Naming_Acronym__c) = &apos;GTR&apos;
+  )
+)</errorConditionFormula>
+    <errorDisplayField>Naming_Acronym__c</errorDisplayField>
+    <errorMessage>Greentech accounts must use the naming acronym GTR, and GTR is reserved for Greentech accounts only.</errorMessage>
+</ValidationRule>

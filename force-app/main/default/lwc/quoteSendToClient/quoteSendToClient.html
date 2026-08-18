@@ -1,0 +1,131 @@
+<template>
+	<div class="send-panel">
+		<template lwc:if={isSaving}>
+			<lightning-spinner alternative-text="Saving" size="small"></lightning-spinner>
+		</template>
+
+		<template lwc:if={isLoading}>
+			<lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+		</template>
+
+		<template lwc:elseif={hasError}>
+			<p class="error-msg">{errorMessage}</p>
+		</template>
+
+		<!-- ALREADY SENT -->
+		<template lwc:elseif={isSent}>
+			<div class="sent-card">
+				<div class="sent-head">
+					<span class="sent-tick">✓</span>
+					<span class="sent-title">Sent to client</span>
+				</div>
+				<dl class="sent-facts">
+					<dt>When</dt>
+					<dd>{sentAtLabel}</dd>
+					<dt>By</dt>
+					<dd>{state.sentByName}</dd>
+					<dt>Document</dt>
+					<dd>{sentDocumentLabel}</dd>
+					<dt>Amount sent</dt>
+					<dd class="sent-amount">{sentAmountLabel}</dd>
+				</dl>
+
+				<template lwc:if={state.amountDrifted}>
+					<div class="warn-box">
+						<strong>This quote no longer matches what the client received.</strong>
+						<span>The client was sent {sentAmountLabel}. This record now totals {currentAmountLabel}.</span>
+					</div>
+				</template>
+
+				<p class="sent-hint">
+					Need a different price? Clone this quote — the copy starts as a fresh draft
+					you can reprice, and this record stays as the proof of what went out.
+				</p>
+			</div>
+		</template>
+
+		<!-- NOT SENT YET -->
+		<template lwc:else>
+			<div class="price-line">
+				<span class="price-label">This quote is currently</span>
+				<span class="price-value">{currentAmountLabel}</span>
+				<template lwc:if={pricePerWattLabel}>
+					<span class="price-ppw">{pricePerWattLabel}/W</span>
+				</template>
+			</div>
+
+			<template lwc:if={hasDocuments}>
+				<p class="pick-label">Which PDF did you send?</p>
+
+				<div class="doc-list" role="radiogroup">
+					<template for:each={documentRows} for:item="doc">
+						<button
+							key={doc.contentVersionId}
+							type="button"
+							role="radio"
+							aria-checked={doc.checked}
+							class={doc.rowClass}
+							data-id={doc.contentVersionId}
+							onclick={handleSelectDocument}>
+							<span class={doc.markClass}></span>
+							<span class="doc-body">
+								<span class="doc-title">{doc.title}</span>
+								<span class="doc-meta">{doc.metaLabel}</span>
+							</span>
+							<template lwc:if={doc.stale}>
+								<span class="doc-stale">outdated price</span>
+							</template>
+						</button>
+					</template>
+				</div>
+
+				<template lwc:if={selectedIsStale}>
+					<div class="warn-box">
+						<strong>This PDF was generated before the current price.</strong>
+						<span>
+							It was created {selectedCreatedLabel}, and the total on this quote last
+							changed {lastPriceChangeLabel}. The figures on that document are not the
+							figures on this record.
+						</span>
+					</div>
+				</template>
+
+				<template lwc:if={showConfirm}>
+					<div class="confirm-box">
+						<p class="confirm-text">
+							This records {currentAmountLabel} as the price the client received and
+							locks the quote. Repricing after this means cloning it.
+						</p>
+						<div class="confirm-actions">
+							<button type="button" class="btn btn-ghost" onclick={handleCancel}>Cancel</button>
+							<button type="button" class="btn btn-primary" onclick={handleConfirm}>Yes, mark as sent</button>
+						</div>
+					</div>
+				</template>
+
+				<template lwc:else>
+					<button
+						type="button"
+						class="btn btn-primary btn-block"
+						disabled={sendDisabled}
+						onclick={handleSendClick}>
+						Send to client
+					</button>
+				</template>
+			</template>
+
+			<template lwc:else>
+				<div class="empty-box">
+					<p class="empty-title">No quote PDF yet</p>
+					<p class="empty-text">
+						Generate the quote PDF first — you can only mark as sent a document
+						that actually exists on this record.
+					</p>
+				</div>
+				<button type="button" class="btn btn-primary btn-block" disabled>
+					Send to client
+				</button>
+			</template>
+		</template>
+	</div>
+</template>
