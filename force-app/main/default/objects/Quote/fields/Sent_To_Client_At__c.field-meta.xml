@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Sent_To_Client_At__c</fullName>
+    <description>Stamped by the Send to Client component when a user declares that the Quote PDF has gone out. This is the moment the pricing is considered final.</description>
+    <inlineHelpText>Set automatically when the Quote is marked as sent to the client.</inlineHelpText>
+    <label>Sent To Client At</label>
+    <required>false</required>
+    <trackHistory>true</trackHistory>
+    <type>DateTime</type>
+</CustomField>

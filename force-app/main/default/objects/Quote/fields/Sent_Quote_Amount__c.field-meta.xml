@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Sent_Quote_Amount__c</fullName>
+    <description>Snapshot of Total Price at the moment the Quote was marked as sent, so the figure the client received stays readable even if the record changes later.</description>
+    <inlineHelpText>The Total Price at the moment this Quote was marked as sent.</inlineHelpText>
+    <label>Sent Quote Amount</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <trackHistory>true</trackHistory>
+    <type>Currency</type>
+</CustomField>
