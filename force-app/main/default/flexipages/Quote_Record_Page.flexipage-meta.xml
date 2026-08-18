@@ -73,6 +73,12 @@
     <flexiPageRegions>
         <itemInstances>
             <componentInstance>
+                <componentName>quoteSendToClient</componentName>
+                <identifier>quoteSendToClient</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
                 <componentInstanceProperties>
                     <name>parentFieldApiName</name>
                     <value>Quote.Id</value>
