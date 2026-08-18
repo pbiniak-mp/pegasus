@@ -245,7 +245,7 @@ private class QuotePDFControllerTest {
 	@IsTest
 	static void testControllerWithNullQuoteId() {
 		Quote fakeQuote = new Quote(Id = null);
-		// Passing non-existing ID — controller should handle gracefully
+		// Passing non-existing ID - controller should handle gracefully
 		Quote q = getTestQuote();
 		QuotePDFController ctrl = buildController(q.Id);
 
@@ -331,5 +331,29 @@ private class QuotePDFControllerTest {
 		);
 		Assert.areEqual(0, ctrl.getTotalPrice(), 'getTotalPrice should return 0 when quote is null');
 		Assert.areEqual(0, ctrl.getTotalAttachments(), 'getTotalAttachments should return 0 when quote is null');
+		Assert.isTrue(ctrl.isIncomplete, 'A missing Quote must not render the quote body');
+	}
+
+	@IsTest
+	static void testIsIncomplete_flagsQuoteWithoutDesignRevision() {
+		Quote q = getTestQuote();
+		QuotePDFController ctrl = buildController(q.Id);
+
+		Assert.isTrue(ctrl.isIncomplete, 'This setup has no Design Revision, so the PDF body is suppressed');
+		Assert.isTrue(
+			QuotePDFTestDataFactory.mentions(
+				ctrl.missingFields,
+				QuotePDFValidationService.LABEL_DESIGN_REVISION
+			),
+			'missingFields should name the Design Revision: ' + ctrl.missingFields
+		);
+	}
+
+	@IsTest
+	static void testIsIncomplete_isFalseForACompleteQuote() {
+		Quote complete = QuotePDFTestDataFactory.createCompleteQuote();
+		QuotePDFController ctrl = buildController(complete.Id);
+
+		Assert.isFalse(ctrl.isIncomplete, 'A complete Quote renders normally: ' + ctrl.missingFields);
 	}
 }
