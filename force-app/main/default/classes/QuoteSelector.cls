@@ -142,6 +142,35 @@ public inherited sharing class QuoteSelector {
 		return quotes.isEmpty() ? null : quotes[0];
 	}
 
+	/**
+	 * Sharing-aware read used by the Send to Client component. Keeping it separate
+	 * from getQuotesByIds means the PDF rendering path is untouched, and a null
+	 * result is a clean signal that the running user cannot see this Quote.
+	 *
+	 * @param quoteId the Quote being sent
+	 * @return the Quote with its send-state fields, or null when not visible
+	 */
+	public static Quote getQuoteForSend(Id quoteId) {
+		List<Quote> quotes = [
+			SELECT
+				Id,
+				Name,
+				Status,
+				Quote_Number__c,
+				TotalPrice,
+				Price_Per_Watt__c,
+				Sent_To_Client_At__c,
+				Sent_To_Client_By__c,
+				Sent_To_Client_By__r.Name,
+				Sent_Quote_Document__c,
+				Sent_Quote_Amount__c,
+				Design_Revision__r.Revision_Number__c
+			FROM Quote
+			WHERE Id = :quoteId
+		];
+		return quotes.isEmpty() ? null : quotes[0];
+	}
+
 	public static Map<Id, Decimal> getAccountDefaultDiscountByOpportunityIds(Set<Id> opportunityIds) {
 		List<Opportunity> opps = [
 			SELECT Id, Account.Default_Discount__c
