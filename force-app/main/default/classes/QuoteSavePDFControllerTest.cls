@@ -3,29 +3,8 @@ private class QuoteSavePDFControllerTest {
 
 	@TestSetup
 	static void setup() {
-		Account acc = new Account(Name = 'Test Account');
-		insert acc;
-
-		Opportunity opp = new Opportunity(
-			Name = 'Test Opportunity',
-			AccountId = acc.Id,
-			StageName = 'Qualification',
-			CloseDate = Date.today().addDays(30)
-		);
-		insert opp;
-
-		insert new Quote_Sequence__c(
-			SetupOwnerId = UserInfo.getOrganizationId(),
-			Last_Number__c = 26099
-		);
-
-		Quote quote = new Quote(
-			Name = 'Test Quote',
-			OpportunityId = opp.Id,
-			Pricebook2Id = Test.getStandardPricebookId(),
-			Quote_Type__c = 'Material'
-		);
-		insert quote;
+		// Complete by design - savePDF refuses to render a Quote with blanks on it.
+		QuotePDFTestDataFactory.createCompleteQuote();
 	}
 
 	private static Quote getTestQuote() {
@@ -95,6 +74,51 @@ private class QuoteSavePDFControllerTest {
 			ctrl.savedFileName.endsWith(QuoteSavePDFController.PDF_EXTENSION),
 			'savedFileName should have .pdf extension'
 		);
+	}
+
+	@IsTest
+	static void testSavePDF_withIncompleteQuote_blocksGeneration() {
+		Design_Revision__c revision = [SELECT Id FROM Design_Revision__c LIMIT 1];
+		revision.Total_Attachments__c = null;
+		update revision;
+
+		Quote q = getTestQuote();
+		ApexPages.StandardController sc = new ApexPages.StandardController(q);
+		QuoteSavePDFController ctrl = new QuoteSavePDFController(sc);
+
+		Test.startTest();
+		ctrl.savePDF();
+		Test.stopTest();
+
+		Assert.isTrue(ctrl.showIncomplete, 'showIncomplete should be true for a Quote with blanks');
+		Assert.isFalse(ctrl.showSuccess, 'No PDF should be produced');
+		Assert.isTrue(
+			QuotePDFTestDataFactory.mentions(
+				ctrl.missingFields,
+				QuotePDFValidationService.LABEL_TOTAL_ATTACHMENTS
+			),
+			'The empty field should be listed: ' + ctrl.missingFields
+		);
+
+		List<ContentDocumentLink> links = [
+			SELECT ContentDocumentId
+			FROM ContentDocumentLink
+			WHERE LinkedEntityId = :q.Id
+		];
+		Assert.areEqual(0, links.size(), 'No file should be attached to an incomplete Quote');
+	}
+
+	@IsTest
+	static void testSavePDF_withCompleteQuote_reportsNoMissingFields() {
+		Quote q = getTestQuote();
+		ApexPages.StandardController sc = new ApexPages.StandardController(q);
+		QuoteSavePDFController ctrl = new QuoteSavePDFController(sc);
+
+		Test.startTest();
+		ctrl.savePDF();
+		Test.stopTest();
+
+		Assert.isFalse(ctrl.showIncomplete, 'A complete Quote should not be blocked: ' + ctrl.missingFields);
 	}
 
 	@IsTest
