@@ -7,6 +7,24 @@
 
 	<apex:stylesheet value="{!$Resource.PegasusQuoteCSS}"/>
 
+	<!-- INCOMPLETE QUOTE - never print a quote with blanks on it -->
+	<apex:outputPanel rendered="{!isIncomplete}" layout="none">
+		<div style="font-family: Arial, sans-serif; padding: 40px;">
+			<h1 style="font-size: 18px; color: #b06000;">Quote Is Not Complete</h1>
+			<p style="font-size: 12px; color: #444;">
+				This quote cannot be issued yet. The following values would print blank -
+				each line names the record and field to fill in:
+			</p>
+			<ul style="font-size: 12px; color: #444;">
+				<apex:repeat value="{!missingFields}" var="field">
+					<li><apex:outputText value="{!field}"/></li>
+				</apex:repeat>
+			</ul>
+		</div>
+	</apex:outputPanel>
+
+	<apex:outputPanel rendered="{!NOT(isIncomplete)}" layout="none">
+
 	<!-- LOGO -->
 	<div class="logo-wrap">
 		<apex:image value="{!$Resource.PegasusLogo}" alt="Pegasus Logo" styleClass="logo"/>
@@ -198,7 +216,7 @@
 		<p>Credit card transactions incur a convenience fee.</p>
 	</div>
 
-	<!-- SIGNATURE — dwie linie rozdzielone spacją -->
+	<!-- SIGNATURE - dwie linie rozdzielone spacją -->
 	<table class="signature-table">
 		<tr>
 			<td class="sig-line-cell"><div class="sig-line-div"></div></td>
@@ -226,7 +244,7 @@
 		written consent.
 	</div>
 
-	<!-- COMPANY ADDRESS — linia na całej szerokości -->
+	<!-- COMPANY ADDRESS - linia na całej szerokości -->
 	<table class="company-footer-table">
 		<tr>
 			<td class="company-footer-cell">
@@ -236,5 +254,7 @@
 			</td>
 		</tr>
 	</table>
+
+	</apex:outputPanel>
 
 </apex:page>
