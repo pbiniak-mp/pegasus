@@ -37,6 +37,10 @@
                     <value>false</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
+                    <name>hideSlackAction</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
                     <name>numVisibleActions</name>
                     <value>4</value>
                 </componentInstanceProperties>
@@ -282,6 +286,38 @@
                 </componentInstanceProperties>
                 <componentName>flexipage:tabset</componentName>
                 <identifier>flexipage_tabset</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>deleteFlowName</name>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>editFlowName</name>
+                    <value>Opportunity_Closed_Stage_Additional_Details</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>fieldChange</name>
+                    <value>StageName</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>fieldValue</name>
+                    <value>Closed Won</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>launchMode</name>
+                    <value>Modal</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>loadFlowName</name>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>modalHeader</name>
+                    <value>Additional Details</value>
+                </componentInstanceProperties>
+                <componentName>detectAndLaunch</componentName>
+                <identifier>c_detectAndLaunch</identifier>
             </componentInstance>
         </itemInstances>
         <name>main</name>

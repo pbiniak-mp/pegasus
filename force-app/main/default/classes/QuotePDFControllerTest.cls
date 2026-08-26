@@ -84,6 +84,7 @@ private class QuotePDFControllerTest {
 
 	@IsTest
 	static void testControllerLoadsQuote() {
+		QuotePDFTestDataFactory.grantPDFPermission();
 		Quote q = getTestQuote();
 		QuotePDFController ctrl = buildController(q.Id);
 
@@ -93,6 +94,7 @@ private class QuotePDFControllerTest {
 
 	@IsTest
 	static void testControllerLoadsOpportunity() {
+		QuotePDFTestDataFactory.grantPDFPermission();
 		Quote q = getTestQuote();
 		QuotePDFController ctrl = buildController(q.Id);
 
@@ -102,6 +104,7 @@ private class QuotePDFControllerTest {
 
 	@IsTest
 	static void testControllerLoadsContact() {
+		QuotePDFTestDataFactory.grantPDFPermission();
 		Quote q = getTestQuote();
 		QuotePDFController ctrl = buildController(q.Id);
 
@@ -112,6 +115,7 @@ private class QuotePDFControllerTest {
 
 	@IsTest
 	static void testControllerLoadsLineItems() {
+		QuotePDFTestDataFactory.grantPDFPermission();
 		Quote q = getTestQuote();
 		QuotePDFController ctrl = buildController(q.Id);
 
@@ -121,6 +125,7 @@ private class QuotePDFControllerTest {
 
 	@IsTest
 	static void testGetTotalPrice() {
+		QuotePDFTestDataFactory.grantPDFPermission();
 		Quote q = getTestQuote();
 		QuotePDFController ctrl = buildController(q.Id);
 
@@ -131,6 +136,7 @@ private class QuotePDFControllerTest {
 
 	@IsTest
 	static void testDisplayTotalsRecomputedFromRoundedUnitPrice() {
+		QuotePDFTestDataFactory.grantPDFPermission();
 		Opportunity opp = [SELECT Id FROM Opportunity LIMIT 1];
 		Contact con = [SELECT Id FROM Contact LIMIT 1];
 		PricebookEntry pbe = [SELECT Id, Product2Id FROM PricebookEntry LIMIT 1];
@@ -170,6 +176,7 @@ private class QuotePDFControllerTest {
 
 	@IsTest
 	static void testGetGrandTotalDisplayIncludesShipping() {
+		QuotePDFTestDataFactory.grantPDFPermission();
 		Quote q = getTestQuote();
 		q.ShippingHandling = 25.50;
 		update q;
@@ -182,6 +189,7 @@ private class QuotePDFControllerTest {
 
 	@IsTest
 	static void testGetFormattedDate() {
+		QuotePDFTestDataFactory.grantPDFPermission();
 		Quote q = getTestQuote();
 		QuotePDFController ctrl = buildController(q.Id);
 
@@ -192,6 +200,7 @@ private class QuotePDFControllerTest {
 
 	@IsTest
 	static void testGetFormattedExpirationDate() {
+		QuotePDFTestDataFactory.grantPDFPermission();
 		Quote q = getTestQuote();
 		QuotePDFController ctrl = buildController(q.Id);
 
@@ -202,6 +211,7 @@ private class QuotePDFControllerTest {
 
 	@IsTest
 	static void testGetFormattedExpirationDateWhenNull() {
+		QuotePDFTestDataFactory.grantPDFPermission();
 		// Create quote without expiration date
 		Account acc = [SELECT Id FROM Account LIMIT 1];
 		Opportunity opp = [SELECT Id FROM Opportunity LIMIT 1];
@@ -225,6 +235,7 @@ private class QuotePDFControllerTest {
 
 	@IsTest
 	static void testGetTotalPriceWithNoLineItems() {
+		QuotePDFTestDataFactory.grantPDFPermission();
 		Account acc = [SELECT Id FROM Account LIMIT 1];
 		Opportunity opp = [SELECT Id FROM Opportunity LIMIT 1];
 		Id standardPricebookId = Test.getStandardPricebookId();
@@ -244,6 +255,7 @@ private class QuotePDFControllerTest {
 
 	@IsTest
 	static void testControllerWithNullQuoteId() {
+		QuotePDFTestDataFactory.grantPDFPermission();
 		Quote fakeQuote = new Quote(Id = null);
 		// Passing non-existing ID - controller should handle gracefully
 		Quote q = getTestQuote();
@@ -255,6 +267,7 @@ private class QuotePDFControllerTest {
 
 	@IsTest
 	static void testControllerWithNoContact() {
+		QuotePDFTestDataFactory.grantPDFPermission();
 		Account acc = [SELECT Id FROM Account LIMIT 1];
 		Opportunity opp = [SELECT Id FROM Opportunity LIMIT 1];
 		Id standardPricebookId = Test.getStandardPricebookId();
@@ -275,6 +288,7 @@ private class QuotePDFControllerTest {
 
 	@IsTest
 	static void testOpportunityFieldsLoaded() {
+		QuotePDFTestDataFactory.grantPDFPermission();
 		Quote q = getTestQuote();
 		QuotePDFController ctrl = buildController(q.Id);
 
@@ -285,6 +299,7 @@ private class QuotePDFControllerTest {
 
 	@IsTest
 	static void testGetTotalAttachments() {
+		QuotePDFTestDataFactory.grantPDFPermission();
 		Quote q = getTestQuote();
 		QuotePDFController ctrl = buildController(q.Id);
 
@@ -295,6 +310,7 @@ private class QuotePDFControllerTest {
 
 	@IsTest
 	static void testGetTotalAttachments_withNoLineItems() {
+		QuotePDFTestDataFactory.grantPDFPermission();
 		Account acc = [SELECT Id FROM Account LIMIT 1];
 		Opportunity opp = [SELECT Id FROM Opportunity LIMIT 1];
 
@@ -313,6 +329,7 @@ private class QuotePDFControllerTest {
 
 	@IsTest
 	static void testControllerWithMissingQuote_handlesNullGracefully() {
+		QuotePDFTestDataFactory.grantPDFPermission();
 		// Passing an unsaved Quote (no Id) causes getQuoteById to return null → early return
 		ApexPages.StandardController sc = new ApexPages.StandardController(new Quote());
 		QuotePDFController ctrl = new QuotePDFController(sc);
@@ -336,6 +353,7 @@ private class QuotePDFControllerTest {
 
 	@IsTest
 	static void testIsIncomplete_flagsQuoteWithoutDesignRevision() {
+		QuotePDFTestDataFactory.grantPDFPermission();
 		Quote q = getTestQuote();
 		QuotePDFController ctrl = buildController(q.Id);
 
@@ -351,9 +369,35 @@ private class QuotePDFControllerTest {
 
 	@IsTest
 	static void testIsIncomplete_isFalseForACompleteQuote() {
+		QuotePDFTestDataFactory.grantPDFPermission();
 		Quote complete = QuotePDFTestDataFactory.createCompleteQuote();
 		QuotePDFController ctrl = buildController(complete.Id);
 
 		Assert.isFalse(ctrl.isIncomplete, 'A complete Quote renders normally: ' + ctrl.missingFields);
+	}
+
+	@IsTest
+	static void testConstructor_withoutPermission_refusesToRenderTheQuote() {
+		QuotePDFTestDataFactory.revokePDFPermission();
+		Quote q = getTestQuote();
+
+		QuotePDFController ctrl = buildController(q.Id);
+
+		Assert.isTrue(ctrl.isUnauthorized, 'An ungranted user must not render the quote');
+		Assert.isFalse(ctrl.showQuote, 'The quote body must stay suppressed');
+		Assert.isNull(ctrl.quote, 'An ungranted render must not read the Quote at all');
+		Assert.isNotNull(ctrl.noPermissionMessage, 'The page needs a message to render');
+	}
+
+	@IsTest
+	static void testShowQuote_requiresBothPermissionAndACompleteQuote() {
+		QuotePDFTestDataFactory.grantPDFPermission();
+		Quote complete = QuotePDFTestDataFactory.createCompleteQuote();
+
+		QuotePDFController ctrl = buildController(complete.Id);
+
+		Assert.isFalse(ctrl.isUnauthorized, 'A granted user is authorized');
+		Assert.isFalse(ctrl.isIncomplete, 'A complete Quote has nothing missing: ' + ctrl.missingFields);
+		Assert.isTrue(ctrl.showQuote, 'A granted user with a complete Quote should see the quote body');
 	}
 }
