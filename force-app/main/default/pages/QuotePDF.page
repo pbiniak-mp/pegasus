@@ -7,8 +7,18 @@
 
 	<apex:stylesheet value="{!$Resource.PegasusQuoteCSS}"/>
 
+	<!-- NOT AUTHORIZED - publishing a quote is gated on Generate_Quote_PDF -->
+	<apex:outputPanel rendered="{!isUnauthorized}" layout="none">
+		<div style="font-family: Arial, sans-serif; padding: 40px;">
+			<h1 style="font-size: 18px; color: #b5322c;">Not Authorized</h1>
+			<p style="font-size: 12px; color: #444;">
+				<apex:outputText value="{!noPermissionMessage}"/>
+			</p>
+		</div>
+	</apex:outputPanel>
+
 	<!-- INCOMPLETE QUOTE - never print a quote with blanks on it -->
-	<apex:outputPanel rendered="{!isIncomplete}" layout="none">
+	<apex:outputPanel rendered="{!AND(NOT(isUnauthorized), isIncomplete)}" layout="none">
 		<div style="font-family: Arial, sans-serif; padding: 40px;">
 			<h1 style="font-size: 18px; color: #b06000;">Quote Is Not Complete</h1>
 			<p style="font-size: 12px; color: #444;">
@@ -23,7 +33,7 @@
 		</div>
 	</apex:outputPanel>
 
-	<apex:outputPanel rendered="{!NOT(isIncomplete)}" layout="none">
+	<apex:outputPanel rendered="{!showQuote}" layout="none">
 
 	<!-- LOGO -->
 	<div class="logo-wrap">
