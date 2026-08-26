@@ -135,4 +135,18 @@ public class QuotePDFTestDataFactory {
 		}
 		return null;
 	}
+
+	/**
+	 * Starts a test method from "this user may publish", the same way the
+	 * factory starts it from "this Quote is complete". Controller tests that
+	 * care about the gate itself revoke explicitly.
+	 */
+	public static void grantPDFPermission() {
+		QuotePDFAccessService.permissionOverride = true;
+	}
+
+	/** Puts the running test user back outside the Generate_Quote_PDF gate. */
+	public static void revokePDFPermission() {
+		QuotePDFAccessService.permissionOverride = false;
+	}
 }
