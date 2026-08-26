@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>Quote PDF Generation</label>
+    <description>Grants the ability to publish a Quote as a PDF to the client. This is the only place the Generate_Quote_PDF custom permission should be granted - keep it off profiles so the assignment list stays the single answer to "who can send a quote out".</description>
+    <hasActivationRequired>false</hasActivationRequired>
+    <customPermissions>
+        <enabled>true</enabled>
+        <name>Generate_Quote_PDF</name>
+    </customPermissions>
+    <classAccesses>
+        <apexClass>QuotePDFAccessService</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>QuotePDFController</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>QuotePDFValidationService</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>QuoteSavePDFController</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <pageAccesses>
+        <apexPage>QuotePDF</apexPage>
+        <enabled>true</enabled>
+    </pageAccesses>
+    <pageAccesses>
+        <apexPage>QuoteSavePDF</apexPage>
+        <enabled>true</enabled>
+    </pageAccesses>
+</PermissionSet>
