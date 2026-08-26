@@ -7,6 +7,14 @@ public with sharing class QuoteSavePDFController {
 	public String savedFileName { get; private set; }
 	public String errorMessage { get; private set; }
 
+	// Set when the running user lacks the Generate_Quote_PDF custom permission.
+	// Kept apart from showError so the page can explain who to ask instead of
+	// showing a failure the user cannot act on.
+	public Boolean showNoPermission { get; private set; }
+	public String noPermissionMessage {
+		get { return QuotePDFAccessService.MSG_NO_PERMISSION; }
+	}
+
 	// Empty PDF labels blocking generation; rendered as a list on the page.
 	public List<String> missingFields { get; private set; }
 	public Boolean showIncomplete {
@@ -17,11 +25,20 @@ public with sharing class QuoteSavePDFController {
 		this.quote = QuoteSelector.getQuoteById(stdController.getId());
 		this.showSuccess = false;
 		this.showError = false;
+		this.showNoPermission = false;
 		this.missingFields = new List<String>();
 	}
 
 	public PageReference savePDF() {
 		try {
+			// Answered before the completeness check, so an ungranted user gets
+			// the one thing they can act on rather than a to-do list for a quote
+			// they may not send. Nothing is rendered or filed either way.
+			if (!QuotePDFAccessService.canGeneratePDF()) {
+				this.showNoPermission = true;
+				return null;
+			}
+
 			if (quote == null) {
 				throw new QuotePDFValidationService.IncompleteQuoteException(
 					QuotePDFValidationService.MSG_QUOTE_NOT_FOUND

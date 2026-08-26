@@ -22,14 +22,34 @@ public with sharing class QuotePDFController {
 		get { return missingFields != null && !missingFields.isEmpty(); }
 	}
 
+	// Set when the running user lacks the Generate_Quote_PDF custom permission.
+	// The page prints a refusal instead of the quote, which is what stops a
+	// hand-typed /apex/QuotePDF?id=... URL from being a way around the button.
+	public Boolean isUnauthorized { get; private set; }
+	public String noPermissionMessage {
+		get { return QuotePDFAccessService.MSG_NO_PERMISSION; }
+	}
+
+	// The quote itself prints only when the user may publish it and nothing on
+	// it would render blank.
+	public Boolean showQuote {
+		get { return !isUnauthorized && !isIncomplete; }
+	}
+
 	public static final String EMPTY_STRING = '';
 	public static final String DATE_FORMAT = 'MMMM dd, yyyy';
 	public static final String FREIGHT_TBD = 'TBD';
 
 	public QuotePDFController(ApexPages.StandardController stdController) {
+		missingFields = new List<String>();
+		isUnauthorized = !QuotePDFAccessService.canGeneratePDF();
+
+		// Refuse before reading the Quote, so an unauthorized user cannot use a
+		// rendered page to see pricing they are not allowed to send out.
+		if (isUnauthorized) return;
+
 		Id quoteId = stdController.getId();
 		quote = QuoteSelector.getQuoteById(quoteId);
-		missingFields = new List<String>();
 
 		if (quote == null) {
 			missingFields.add(QuotePDFValidationService.MSG_QUOTE_NOT_FOUND);
