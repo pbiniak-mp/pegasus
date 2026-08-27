@@ -32,6 +32,10 @@ public with sharing class IntegrationLogService {
 			Event_Type__c = eventType,
 			Source_Object__c = Constants.INTEGRATION_SOURCE_OBJECT_OPPORTUNITY,
 			Source_Record_Id__c = sourceRecordId,
+			// Typed lookup alongside the generic Id, so the log is visible from the
+			// Opportunity and joinable in reports. Source_Record_Id__c remains the
+			// pointer for any future source object that has no lookup of its own.
+			Opportunity__c = asOpportunityId(sourceRecordId),
 			Endpoint__c = endpoint,
 			HTTP_Method__c = httpMethod,
 			Request_Body__c = requestBody,
@@ -50,6 +54,21 @@ public with sharing class IntegrationLogService {
 		log.Request_Headers__c = truncate(result.requestHeaders);
 		log.Error_Message__c = truncate(result.errorMessage);
 		log.Sent_At__c = Datetime.now();
+	}
+
+	/**
+	 * Narrows a source record Id to an Opportunity Id, or null when it points at
+	 * anything else. Keeps buildOutboundLog usable for a future source object
+	 * without it writing a foreign Id into the Opportunity lookup.
+	 *
+	 * @param sourceRecordId the record the log was raised for
+	 * @return the same Id when it is an Opportunity, otherwise null
+	 */
+	private static Id asOpportunityId(Id sourceRecordId) {
+		if (sourceRecordId == null) {
+			return null;
+		}
+		return sourceRecordId.getSObjectType() == Opportunity.SObjectType ? sourceRecordId : null;
 	}
 
 	private static String truncate(String value) {

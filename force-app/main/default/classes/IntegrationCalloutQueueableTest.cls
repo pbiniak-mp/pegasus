@@ -57,7 +57,7 @@ private class IntegrationCalloutQueueableTest {
 	}
 
 	@IsTest
-	static void sendsQueuedLogAndStampsOpportunity() {
+	static void sendsQueuedLogAndStampsDeliveryOnOpportunity() {
 		Opportunity opp = makeOpp();
 		queueLog(opp.Id, Constants.INTEGRATION_HTTP_METHOD_POST, ENDPOINT);
 		Test.setMock(HttpCalloutMock.class, new Mock(200));
@@ -67,25 +67,22 @@ private class IntegrationCalloutQueueableTest {
 		Test.stopTest();
 
 		Integration_Log__c log = [
-			SELECT Status__c, Response_Status_Code__c, Sent_At__c
+			SELECT Status__c, Response_Status_Code__c, Sent_At__c, Opportunity__c
 			FROM Integration_Log__c
 			LIMIT 1
 		];
 		Assert.areEqual(Constants.INTEGRATION_STATUS_SENT, log.Status__c);
 		Assert.areEqual(200, log.Response_Status_Code__c);
 		Assert.isNotNull(log.Sent_At__c);
+		Assert.areEqual(opp.Id, log.Opportunity__c,
+			'Log is reachable from the Opportunity through the typed lookup');
 
-		Opportunity stamped = [
-			SELECT Integration_Status__c, Last_Sent__c
-			FROM Opportunity
-			WHERE Id = :opp.Id
-		];
-		Assert.areEqual(Constants.OPP_INTEGRATION_STATUS_SENT, stamped.Integration_Status__c);
+		Opportunity stamped = [SELECT Last_Sent__c FROM Opportunity WHERE Id = :opp.Id];
 		Assert.isNotNull(stamped.Last_Sent__c);
 	}
 
 	@IsTest
-	static void failedCalloutStampsOpportunityAsFailed() {
+	static void failedCalloutLeavesTheOpportunityAlone() {
 		Opportunity opp = makeOpp();
 		queueLog(opp.Id, Constants.INTEGRATION_HTTP_METHOD_PATCH, ENDPOINT + '/' + opp.Id);
 		Test.setMock(HttpCalloutMock.class, new Mock(503));
@@ -94,16 +91,19 @@ private class IntegrationCalloutQueueableTest {
 		System.enqueueJob(new IntegrationCalloutQueueable());
 		Test.stopTest();
 
-		Integration_Log__c log = [SELECT Status__c, Error_Message__c FROM Integration_Log__c LIMIT 1];
+		Integration_Log__c log = [
+			SELECT Status__c, Error_Message__c, Opportunity__c
+			FROM Integration_Log__c
+			LIMIT 1
+		];
 		Assert.areEqual(Constants.INTEGRATION_STATUS_FAILED, log.Status__c);
 		Assert.areEqual('HTTP 503', log.Error_Message__c);
+		Assert.areEqual(opp.Id, log.Opportunity__c,
+			'A failure is still reachable from the Opportunity, on the log');
 
-		Opportunity stamped = [
-			SELECT Integration_Status__c, Last_Sent__c
-			FROM Opportunity
-			WHERE Id = :opp.Id
-		];
-		Assert.areEqual(Constants.OPP_INTEGRATION_STATUS_FAILED, stamped.Integration_Status__c);
+		// The failure lives on the log only. Nothing is written to the Opportunity,
+		// so it can never carry a stale Failed after the problem is fixed.
+		Opportunity stamped = [SELECT Last_Sent__c FROM Opportunity WHERE Id = :opp.Id];
 		Assert.isNull(stamped.Last_Sent__c, 'Last Sent only reflects successful deliveries');
 	}
 }
