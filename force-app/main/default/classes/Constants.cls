@@ -118,10 +118,6 @@ public class Constants {
 	public static final String INTEGRATION_STATUS_SENT = 'Sent';
 	public static final String INTEGRATION_STATUS_FAILED = 'Failed';
 
-	public static final String OPP_INTEGRATION_STATUS_PENDING = 'Pending';
-	public static final String OPP_INTEGRATION_STATUS_SENT = 'Sent';
-	public static final String OPP_INTEGRATION_STATUS_FAILED = 'Failed';
-
 	public static final String INTEGRATION_HTTP_METHOD_POST = 'POST';
 	public static final String INTEGRATION_HTTP_METHOD_PATCH = 'PATCH';
 	public static final String INTEGRATION_LOG_DEBUG_PREFIX = 'OutboundIntegration: ';

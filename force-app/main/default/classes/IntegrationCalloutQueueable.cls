@@ -2,8 +2,14 @@
  * Drains Queued Integration_Log__c records and sends each one (1 log = 1 callout)
  * using the HTTP method + endpoint stored on the log (POST for create, PATCH for
  * stage change). Processes a bounded chunk to stay under the 100-callout governor
- * limit, writes the response back to the log, stamps the source Opportunity, and
- * chains itself while more Queued logs remain.
+ * limit, writes the response back to the log, and chains itself while more Queued
+ * logs remain.
+ *
+ * The log is the single source of truth for delivery state: it carries the
+ * status, endpoint, HTTP code and error message. The only thing mirrored onto the
+ * Opportunity is Last_Sent__c, and only on success - a fact that stays true
+ * regardless of what happens later, unlike a status that silently goes stale when
+ * no further event fires.
  */
 public with sharing class IntegrationCalloutQueueable implements Queueable, Database.AllowsCallouts {
 
@@ -23,26 +29,20 @@ public with sharing class IntegrationCalloutQueueable implements Queueable, Data
 			IntegrationLogService.applyCalloutResult(log, result);
 			logsToUpdate.add(log);
 
-			if (String.isNotBlank(log.Source_Record_Id__c)) {
-				oppStampsById.put((Id) log.Source_Record_Id__c, buildStamp(log.Source_Record_Id__c, result, sentAt));
+			// Only a delivery is worth recording on the Opportunity. A failure lives
+			// on the log, which carries the endpoint, status code and error message
+			// the Opportunity never could.
+			if (result.isSuccess && log.Opportunity__c != null) {
+				oppStampsById.put(log.Opportunity__c, new Opportunity(
+					Id = log.Opportunity__c,
+					Last_Sent__c = sentAt
+				));
 			}
 		}
 
 		update logsToUpdate;
 		stampOpportunities(oppStampsById.values());
 		chainIfMoreQueued();
-	}
-
-	private static Opportunity buildStamp(Id oppId, IntegrationCalloutService.CalloutResult result, Datetime sentAt) {
-		Opportunity stamp = new Opportunity(Id = oppId);
-		stamp.Integration_Status__c = result.isSuccess
-			? Constants.OPP_INTEGRATION_STATUS_SENT
-			: Constants.OPP_INTEGRATION_STATUS_FAILED;
-		// "Last Sent" reflects the last successful delivery only.
-		if (result.isSuccess) {
-			stamp.Last_Sent__c = sentAt;
-		}
-		return stamp;
 	}
 
 	private static void stampOpportunities(List<Opportunity> opps) {
