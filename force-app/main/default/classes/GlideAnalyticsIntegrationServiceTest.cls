@@ -100,11 +100,10 @@ private class GlideAnalyticsIntegrationServiceTest {
 			'Created payload carries project wattage');
 
 		Opportunity stamped = [
-			SELECT Integration_Status__c, Last_Sent__c
+			SELECT Last_Sent__c
 			FROM Opportunity
 			WHERE Id = :log.Source_Record_Id__c
 		];
-		Assert.areEqual(Constants.OPP_INTEGRATION_STATUS_SENT, stamped.Integration_Status__c);
 		Assert.isNotNull(stamped.Last_Sent__c);
 	}
 
@@ -127,8 +126,7 @@ private class GlideAnalyticsIntegrationServiceTest {
 		Assert.areEqual(500, log.Response_Status_Code__c);
 		Assert.isNotNull(log.Error_Message__c);
 
-		Opportunity stamped = [SELECT Integration_Status__c, Last_Sent__c FROM Opportunity LIMIT 1];
-		Assert.areEqual(Constants.OPP_INTEGRATION_STATUS_FAILED, stamped.Integration_Status__c);
+		Opportunity stamped = [SELECT Last_Sent__c FROM Opportunity LIMIT 1];
 		Assert.isNull(stamped.Last_Sent__c, 'Last Sent is only set on a successful delivery');
 	}
 
