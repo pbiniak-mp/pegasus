@@ -16,6 +16,6 @@
     </values>
     <values>
         <field>Retention_Days__c</field>
-        <value xsi:type="xsd:double">30.0</value>
+        <value xsi:type="xsd:double">180.0</value>
     </values>
 </CustomMetadata>
