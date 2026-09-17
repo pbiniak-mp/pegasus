@@ -5,7 +5,9 @@
 public with sharing class IntegrationLogService {
 
 	private static final Integer MAX_LONG_TEXT = 131072;
+	private static final Integer MAX_CORRELATION_ID = 36;
 	private static Id outboundRecordTypeId;
+	private static Id inboundRecordTypeId;
 
 	public static Id getOutboundRecordTypeId() {
 		if (outboundRecordTypeId == null) {
@@ -15,6 +17,16 @@ public with sharing class IntegrationLogService {
 			outboundRecordTypeId = (info != null) ? info.getRecordTypeId() : null;
 		}
 		return outboundRecordTypeId;
+	}
+
+	public static Id getInboundRecordTypeId() {
+		if (inboundRecordTypeId == null) {
+			Schema.RecordTypeInfo info = Schema.SObjectType.Integration_Log__c
+				.getRecordTypeInfosByDeveloperName()
+				.get(Constants.INTEGRATION_LOG_RT_INBOUND);
+			inboundRecordTypeId = (info != null) ? info.getRecordTypeId() : null;
+		}
+		return inboundRecordTypeId;
 	}
 
 	public static Integration_Log__c buildOutboundLog(
@@ -54,6 +66,54 @@ public with sharing class IntegrationLogService {
 		log.Request_Headers__c = truncate(result.requestHeaders);
 		log.Error_Message__c = truncate(result.errorMessage);
 		log.Sent_At__c = Datetime.now();
+	}
+
+	/**
+	 * Builds the log for one request received from an external system. The
+	 * outcome is filled in afterwards with applyInboundResult.
+	 *
+	 * @param integrationName which integration received the request
+	 * @param eventType       Event_Type__c picklist value
+	 * @param sourceObject    the object the request writes to
+	 * @param endpoint        the Salesforce endpoint that received the request
+	 * @param httpMethod      HTTP method of the request
+	 * @param requestBody     raw request body (truncated to the field limit)
+	 * @param correlationId   caller-supplied id that groups related requests, may be null
+	 * @return an unsaved Integration_Log__c with the Inbound record type
+	 */
+	public static Integration_Log__c buildInboundLog(
+		String integrationName,
+		String eventType,
+		String sourceObject,
+		String endpoint,
+		String httpMethod,
+		String requestBody,
+		String correlationId
+	) {
+		return new Integration_Log__c(
+			RecordTypeId = getInboundRecordTypeId(),
+			Integration_Name__c = integrationName,
+			Event_Type__c = eventType,
+			Source_Object__c = sourceObject,
+			Endpoint__c = endpoint,
+			HTTP_Method__c = httpMethod,
+			Request_Body__c = truncate(requestBody),
+			Correlation_Id__c = String.isBlank(correlationId) ? null : correlationId.left(MAX_CORRELATION_ID),
+			Event_Timestamp__c = Datetime.now()
+		);
+	}
+
+	public static void applyInboundResult(
+		Integration_Log__c log,
+		String status,
+		Integer responseStatusCode,
+		String responseBody,
+		String errorMessage
+	) {
+		log.Status__c = status;
+		log.Response_Status_Code__c = responseStatusCode;
+		log.Response_Body__c = truncate(responseBody);
+		log.Error_Message__c = truncate(errorMessage);
 	}
 
 	/**
