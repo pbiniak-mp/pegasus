@@ -41,6 +41,8 @@ public class Constants {
 	public static final String OPPORTUNITY_LINE_ITEM_HANDLER_NAME = 'OpportunityLineItemTriggerHandler';
 
 	// Quote
+	public static final String DISTRIBUTOR_TYPE_DIRECT = 'Direct';
+	public static final String DISTRIBUTOR_TYPE_INDIRECT = 'Indirect';
 	public static final String QUOTE_HANDLER_NAME = 'QuoteTriggerHandler';
 	public static final String QUOTE_STATUS_PRESENTED = 'Presented';
 	public static final String QUOTE_TYPE_MATERIAL = 'Material';

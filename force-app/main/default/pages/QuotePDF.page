@@ -60,7 +60,11 @@
 						<td class="info-value">REV-{!quote.Design_Revision__r.Revision_Number__c}</td>
 					</tr>
 					<tr>
-						<td class="info-label">Customer Name</td>
+						<td class="info-label">Company Name</td>
+						<td class="info-value"><apex:outputText value="{!companyName}"/></td>
+					</tr>
+					<tr>
+						<td class="info-label">Contact Name</td>
 						<td class="info-value">
 							<apex:outputPanel rendered="{!NOT(ISNULL(contact))}">{!contact.Name}</apex:outputPanel>
 						</td>
