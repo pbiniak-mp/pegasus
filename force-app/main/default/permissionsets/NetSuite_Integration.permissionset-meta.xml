@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description>Run-as user of the NetSuite External Client App (client credentials). Allows POST /services/apexrest/netsuite/inventory: upserts Inventory_Location__c, updates Product2.Committed__c, logs requests to Integration_Log__c.</description>
+    <description>Run-as user of the NetSuite External Client App (client credentials). Allows POST /services/apexrest/netsuite/inventory: upserts Inventory_Location__c, updates Product2.Committed__c, logs requests to Integration_Log__c</description>
     <classAccesses>
         <apexClass>NetSuiteInventoryApi</apexClass>
         <enabled>true</enabled>

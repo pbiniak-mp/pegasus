@@ -19,6 +19,11 @@
                 <default>false</default>
                 <label>Opportunity Stage Changed</label>
             </value>
+            <value>
+                <fullName>Inventory Sync</fullName>
+                <default>false</default>
+                <label>Inventory Sync</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>
