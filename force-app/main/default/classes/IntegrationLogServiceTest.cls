@@ -82,4 +82,63 @@ private class IntegrationLogServiceTest {
 		Assert.areEqual(LONG_TEXT_LIMIT, log.Response_Body__c.length(),
 			'Values longer than the Long Text limit are truncated so the DML cannot fail');
 	}
+
+	@IsTest
+	static void buildInboundLogMapsAllFields() {
+		Integration_Log__c log = IntegrationLogService.buildInboundLog(
+			Constants.NETSUITE_INVENTORY_INTEGRATION_NAME,
+			Constants.NETSUITE_INVENTORY_EVENT_TYPE,
+			Constants.NETSUITE_INVENTORY_SOURCE_OBJECT,
+			Constants.NETSUITE_INVENTORY_ENDPOINT,
+			Constants.INTEGRATION_HTTP_METHOD_POST,
+			'{"items":[]}',
+			'NSINV-20260917T120000Z'
+		);
+
+		Assert.areEqual(IntegrationLogService.getInboundRecordTypeId(), log.RecordTypeId,
+			'Log is created with the Inbound record type');
+		Assert.isNotNull(log.RecordTypeId);
+		Assert.areEqual(Constants.NETSUITE_INVENTORY_INTEGRATION_NAME, log.Integration_Name__c);
+		Assert.areEqual(Constants.NETSUITE_INVENTORY_EVENT_TYPE, log.Event_Type__c);
+		Assert.areEqual(Constants.NETSUITE_INVENTORY_SOURCE_OBJECT, log.Source_Object__c);
+		Assert.areEqual(Constants.NETSUITE_INVENTORY_ENDPOINT, log.Endpoint__c);
+		Assert.areEqual(Constants.INTEGRATION_HTTP_METHOD_POST, log.HTTP_Method__c);
+		Assert.areEqual('{"items":[]}', log.Request_Body__c);
+		Assert.areEqual('NSINV-20260917T120000Z', log.Correlation_Id__c);
+		Assert.isNotNull(log.Event_Timestamp__c);
+	}
+
+	@IsTest
+	static void buildInboundLogTruncatesOversizedValues() {
+		Integration_Log__c log = IntegrationLogService.buildInboundLog(
+			Constants.NETSUITE_INVENTORY_INTEGRATION_NAME,
+			Constants.NETSUITE_INVENTORY_EVENT_TYPE,
+			Constants.NETSUITE_INVENTORY_SOURCE_OBJECT,
+			Constants.NETSUITE_INVENTORY_ENDPOINT,
+			Constants.INTEGRATION_HTTP_METHOD_POST,
+			'x'.repeat(LONG_TEXT_LIMIT + 100),
+			'y'.repeat(50)
+		);
+
+		Assert.areEqual(LONG_TEXT_LIMIT, log.Request_Body__c.length());
+		Assert.areEqual(36, log.Correlation_Id__c.length(), 'Correlation id is cut to the field length');
+	}
+
+	@IsTest
+	static void applyInboundResultSetsOutcome() {
+		Integration_Log__c log = new Integration_Log__c();
+
+		IntegrationLogService.applyInboundResult(
+			log,
+			Constants.INTEGRATION_STATUS_PARTIALLY_PROCESSED,
+			200,
+			'{"rowsSkipped":12}',
+			'Skipped:\nItem 5001'
+		);
+
+		Assert.areEqual(Constants.INTEGRATION_STATUS_PARTIALLY_PROCESSED, log.Status__c);
+		Assert.areEqual(200, log.Response_Status_Code__c);
+		Assert.areEqual('{"rowsSkipped":12}', log.Response_Body__c);
+		Assert.areEqual('Skipped:\nItem 5001', log.Error_Message__c);
+	}
 }
