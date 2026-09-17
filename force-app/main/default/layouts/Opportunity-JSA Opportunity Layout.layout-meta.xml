@@ -496,6 +496,16 @@
     </relatedLists>
     <relatedLists>
         <fields>NAME</fields>
+        <fields>Event_Type__c</fields>
+        <fields>Status__c</fields>
+        <fields>HTTP_Method__c</fields>
+        <fields>Response_Status_Code__c</fields>
+        <fields>Error_Message__c</fields>
+        <fields>Sent_At__c</fields>
+        <relatedList>Integration_Log__c.Opportunity__c</relatedList>
+    </relatedLists>
+    <relatedLists>
+        <fields>NAME</fields>
         <fields>Revision_Number__c</fields>
         <fields>Revision_Reason__c</fields>
         <fields>Project_Notes__c</fields>

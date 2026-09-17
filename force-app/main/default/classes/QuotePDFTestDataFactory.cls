@@ -103,6 +103,7 @@ public class QuotePDFTestDataFactory {
 		return new Opportunity(
 			Name = name,
 			AccountId = accountId,
+			Distributor_Type__c = Constants.DISTRIBUTOR_TYPE_DIRECT,
 			StageName = 'Qualification',
 			CloseDate = Date.today().addDays(30),
 			Product_Line__c = 'Flat FX',
