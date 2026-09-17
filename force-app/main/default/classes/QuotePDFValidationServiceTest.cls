@@ -13,6 +13,38 @@ private class QuotePDFValidationServiceTest {
 	}
 
 	@IsTest
+	static void companyValidation_reportsTheSourceToCorrect() {
+		Quote q = QuoteSelector.getQuoteById(getTestQuote().Id);
+		Contact contact = ContactSelector.getContactById(q.ContactId);
+		List<QuoteLineItem> items = QuoteLineItemSelector.getLineItemsByQuoteId(q.Id);
+
+		// Exercise missing relationships in memory without unrelated Account-required rules.
+		q.Opportunity.Account = null;
+		Assert.areEqual(new List<String>{ 'Company Name -> Opportunity: Account Name' },
+			QuotePDFValidationService.getMissingFields(q, contact, items));
+
+		q.Opportunity.Distributor_Type__c = Constants.DISTRIBUTOR_TYPE_INDIRECT;
+		q.Opportunity.Account = new Account(Name = 'End Customer');
+		Assert.areEqual(new List<String>{ 'Company Name -> Opportunity: Distributor' },
+			QuotePDFValidationService.getMissingFields(q, contact, items));
+
+		q.Opportunity.Distributor__r = new Account(Name = 'Distributor Company');
+		Assert.areEqual(new List<String>(), QuotePDFValidationService.getMissingFields(q, contact, items));
+		q.Opportunity.Distributor__r.Name = ' ';
+		Assert.areEqual(new List<String>{ 'Company Name -> Opportunity: Distributor' },
+			QuotePDFValidationService.getMissingFields(q, contact, items));
+		q.Opportunity.Distributor__r.Name = 'Distributor Company';
+
+		q.Opportunity.Distributor_Type__c = null;
+		List<String> expectedTypeIssue = new List<String>{
+			'Company Name -> Opportunity: Distributor Type (select Direct or Indirect)'
+		};
+		Assert.areEqual(expectedTypeIssue, QuotePDFValidationService.getMissingFields(q, contact, items));
+		q.Opportunity.Distributor_Type__c = 'Unknown';
+		Assert.areEqual(expectedTypeIssue, QuotePDFValidationService.getMissingFields(q, contact, items));
+	}
+
+	@IsTest
 	static void getMissingFields_completeQuote_returnsNothing() {
 		Quote q = getTestQuote();
 
@@ -71,8 +103,8 @@ private class QuotePDFValidationServiceTest {
 		Test.stopTest();
 
 		Assert.isTrue(
-			QuotePDFTestDataFactory.mentions(missing, QuotePDFValidationService.LABEL_CUSTOMER_NAME),
-			'Missing Contact should surface as Customer Name: ' + missing
+			QuotePDFTestDataFactory.mentions(missing, QuotePDFValidationService.LABEL_CONTACT_NAME),
+			'Missing Contact should surface as Contact Name: ' + missing
 		);
 		Assert.isTrue(
 			QuotePDFTestDataFactory.mentions(missing, QuotePDFValidationService.LABEL_CITY),

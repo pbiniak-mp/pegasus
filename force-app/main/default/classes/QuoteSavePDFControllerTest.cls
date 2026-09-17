@@ -12,6 +12,58 @@ private class QuoteSavePDFControllerTest {
 	}
 
 	@IsTest
+	static void testSavePDF_missingDistributorCreatesNoFile() {
+		assertCompanyBlocksSave(Constants.DISTRIBUTOR_TYPE_INDIRECT,
+			'Company Name -> Opportunity: Distributor');
+	}
+
+	@IsTest
+	static void testSavePDF_indirectWithDistributorCreatesFile() {
+		QuotePDFTestDataFactory.grantPDFPermission();
+		Quote q = [SELECT Id, OpportunityId FROM Quote LIMIT 1];
+		Account distributor = new Account(Name = 'PDF Distributor');
+		insert distributor;
+		update new Opportunity(
+			Id = q.OpportunityId,
+			Distributor_Type__c = Constants.DISTRIBUTOR_TYPE_INDIRECT,
+			Distributor__c = distributor.Id
+		);
+		QuoteSavePDFController ctrl = new QuoteSavePDFController(new ApexPages.StandardController(q));
+
+		Test.startTest();
+		ctrl.savePDF();
+		Test.stopTest();
+
+		Assert.isTrue(ctrl.showSuccess, 'A complete Indirect quote should save: ' + ctrl.errorMessage);
+		Assert.isFalse(ctrl.showIncomplete);
+		Assert.areEqual(1, [SELECT COUNT() FROM ContentDocumentLink WHERE LinkedEntityId = :q.Id]);
+	}
+
+	@IsTest
+	static void testSavePDF_missingSalesTypeCreatesNoFile() {
+		assertCompanyBlocksSave(null,
+			'Company Name -> Opportunity: Distributor Type (select Direct or Indirect)');
+	}
+
+	private static void assertCompanyBlocksSave(String salesType, String expectedIssue) {
+		QuotePDFTestDataFactory.grantPDFPermission();
+		Quote q = [SELECT Id, OpportunityId FROM Quote LIMIT 1];
+		update new Opportunity(Id = q.OpportunityId, Distributor_Type__c = salesType);
+		QuoteSavePDFController ctrl = new QuoteSavePDFController(new ApexPages.StandardController(q));
+
+		Test.startTest();
+		ctrl.savePDF();
+		Test.stopTest();
+
+		Assert.isTrue(ctrl.showIncomplete);
+		Assert.isFalse(ctrl.showSuccess);
+		Assert.isFalse(ctrl.showError, 'Missing company should be actionable validation, not an exception');
+		Assert.areEqual(new List<String>{ expectedIssue }, ctrl.missingFields);
+		Assert.areEqual(0, [SELECT COUNT() FROM ContentDocumentLink WHERE LinkedEntityId = :q.Id],
+			'No file may be attached when the recipient company is unknown');
+	}
+
+	@IsTest
 	static void testSavePDFCreatesContentVersion() {
 		QuotePDFTestDataFactory.grantPDFPermission();
 		Quote q = getTestQuote();
