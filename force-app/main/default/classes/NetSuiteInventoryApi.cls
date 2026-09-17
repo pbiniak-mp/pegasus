@@ -32,6 +32,7 @@ global with sharing class NetSuiteInventoryApi {
 	global static void handlePost() {
 		RestRequest request = RestContext.request;
 		String requestBody = request.requestBody == null ? null : request.requestBody.toString();
+		debugIncomingRequest(request, requestBody);
 
 		if (String.isBlank(requestBody)) {
 			respondWithError(null, requestBody, Constants.HTTP_STATUS_BAD_REQUEST, Constants.NETSUITE_INVENTORY_MSG_EMPTY_BODY);
@@ -63,6 +64,14 @@ global with sharing class NetSuiteInventoryApi {
 			);
 			return;
 		}
+
+		System.debug(
+			LoggingLevel.INFO,
+			Constants.NETSUITE_INVENTORY_DEBUG_PREFIX + 'Parsed run ' + payload.runId
+				+ ', batch ' + payload.batchNumber + '/' + payload.batchCount
+				+ ', generatedAt ' + payload.generatedAt
+				+ ', ' + payload.items.size() + ' rows'
+		);
 
 		Savepoint beforeSync = Database.setSavepoint();
 		NetSuiteInventorySyncService.SyncResult result;
@@ -100,7 +109,38 @@ global with sharing class NetSuiteInventoryApi {
 		);
 		result.logId = insertLog(log);
 
-		RestResponseUtils.sendJson(Constants.HTTP_STATUS_OK, JSON.serialize(result, true));
+		String responseJson = JSON.serialize(result, true);
+		System.debug(LoggingLevel.INFO, Constants.NETSUITE_INVENTORY_DEBUG_PREFIX + 'Response 200: ' + responseJson);
+		RestResponseUtils.sendJson(Constants.HTTP_STATUS_OK, responseJson);
+	}
+
+	/**
+	 * Writes exactly what NetSuite sent to the debug log: who the request runs as
+	 * (the External Client App run-as user), where it came from, the headers with
+	 * Authorization masked, and the raw body. The same body is also stored on the
+	 * Integration_Log__c record, which is easier to read after the fact.
+	 */
+	private static void debugIncomingRequest(RestRequest request, String requestBody) {
+		Map<String, String> safeHeaders = new Map<String, String>();
+		if (request.headers != null) {
+			for (String name : request.headers.keySet()) {
+				safeHeaders.put(
+					name,
+					name.equalsIgnoreCase(Constants.HTTP_HEADER_AUTHORIZATION)
+						? Constants.INTEGRATION_MASKED_VALUE
+						: request.headers.get(name)
+				);
+			}
+		}
+		System.debug(
+			LoggingLevel.INFO,
+			Constants.NETSUITE_INVENTORY_DEBUG_PREFIX + 'Received ' + request.httpMethod + ' ' + request.requestURI
+				+ ' from ' + request.remoteAddress
+				+ ' as ' + UserInfo.getUserName()
+				+ ', body ' + (requestBody == null ? 0 : requestBody.length()) + ' chars'
+				+ ', headers ' + JSON.serialize(safeHeaders)
+		);
+		System.debug(LoggingLevel.INFO, Constants.NETSUITE_INVENTORY_DEBUG_PREFIX + 'Request body: ' + requestBody);
 	}
 
 	private static void respondWithError(String runId, String requestBody, Integer statusCode, String message) {

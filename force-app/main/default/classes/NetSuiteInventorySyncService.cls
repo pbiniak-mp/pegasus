@@ -117,6 +117,17 @@ public with sharing class NetSuiteInventorySyncService {
 		ProductResolution products = resolveProducts(itemNameById);
 		result.resolvedByName.addAll(products.resolvedByName);
 
+		System.debug(
+			LoggingLevel.INFO,
+			Constants.NETSUITE_INVENTORY_DEBUG_PREFIX + 'Resolution: '
+				+ itemNameById.size() + ' items, '
+				+ (products.productByItemId.size() - products.resolvedByName.size()) + ' by External_Id__c, '
+				+ products.resolvedByName.size() + ' by Product_Name_External__c, '
+				+ products.failureReasonByItemId.size() + ' unresolved ' + JSON.serialize(products.failureReasonByItemId)
+				+ '; locations ' + locationIdByNetSuiteId.size() + '/' + locationIds.size()
+				+ ' resolved ' + JSON.serialize(locationIdByNetSuiteId)
+		);
+
 		List<Inventory_Location__c> toUpsert = new List<Inventory_Location__c>();
 		Map<Id, Decimal> committedByProductId = new Map<Id, Decimal>();
 
