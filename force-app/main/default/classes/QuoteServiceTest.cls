@@ -7,6 +7,43 @@ private class QuoteServiceTest {
 	private static final String THIRD_NUMBER = '26102';
 	private static final Integer BULK_SIZE = 200;
 
+	@IsTest
+	static void recipientCompany_usesSalesTypeRatherThanAvailableAccount() {
+		Opportunity opp = new Opportunity(
+			Distributor_Type__c = Constants.DISTRIBUTOR_TYPE_DIRECT,
+			Account = new Account(Name = 'End Customer'),
+			Distributor__r = new Account(Name = 'Distributor Company')
+		);
+		Assert.areEqual('End Customer', QuoteService.getRecipientCompanyName(opp));
+		opp.Distributor_Type__c = Constants.DISTRIBUTOR_TYPE_INDIRECT;
+		Assert.areEqual('Distributor Company', QuoteService.getRecipientCompanyName(opp));
+	}
+
+	@IsTest
+	static void recipientCompany_missingCompanyNeverFallsBack() {
+		Opportunity opp = new Opportunity(
+			Distributor_Type__c = Constants.DISTRIBUTOR_TYPE_INDIRECT,
+			Account = new Account(Name = 'End Customer')
+		);
+		Assert.isNull(QuoteService.getRecipientCompanyName(opp), 'Indirect must not expose the end customer');
+		opp.Distributor_Type__c = Constants.DISTRIBUTOR_TYPE_DIRECT;
+		opp.Account = null;
+		opp.Distributor__r = new Account(Name = 'Distributor Company');
+		Assert.isNull(QuoteService.getRecipientCompanyName(opp), 'Direct requires its own Account');
+	}
+
+	@IsTest
+	static void recipientCompany_unknownSalesTypeNeverAssumesDirect() {
+		Opportunity opp = new Opportunity(
+			Account = new Account(Name = 'End Customer'),
+			Distributor__r = new Account(Name = 'Distributor Company')
+		);
+		Assert.isNull(QuoteService.getRecipientCompanyName(opp));
+		opp.Distributor_Type__c = 'Unknown';
+		Assert.isNull(QuoteService.getRecipientCompanyName(opp));
+		Assert.isNull(QuoteService.getRecipientCompanyName(null));
+	}
+
 	@TestSetup
 	static void setup() {
 		Account acc = new Account(Name = 'QS Test Account');
