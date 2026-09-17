@@ -16,6 +16,7 @@ private class QuotePDFControllerTest {
 			Name = 'Test Opportunity',
 			AccountId = acc.Id,
 			StageName = 'Qualification',
+			Distributor_Type__c = Constants.DISTRIBUTOR_TYPE_DIRECT,
 			CloseDate = Date.today().addDays(30),
 			Module_Wattage__c = '400',
 			Module_Wattage_W__c = 400,
@@ -80,6 +81,47 @@ private class QuotePDFControllerTest {
 			new Quote(Id = quoteId)
 		);
 		return new QuotePDFController(sc);
+	}
+
+	@IsTest
+	static void testCompanyName_directUsesOpportunityAccount() {
+		QuotePDFTestDataFactory.grantPDFPermission();
+		QuotePDFController ctrl = buildController(getTestQuote().Id);
+		Assert.areEqual('Test Account', ctrl.getCompanyName());
+		Assert.areEqual('John Doe', ctrl.contact.Name, 'The contact remains a separate person');
+	}
+
+	@IsTest
+	static void testCompanyName_indirectUsesDistributorWithEndCustomerContact() {
+		QuotePDFTestDataFactory.grantPDFPermission();
+		Quote q = QuotePDFTestDataFactory.createCompleteQuote();
+		Account distributor = new Account(Name = 'Distributor & Partners <Solar>');
+		insert distributor;
+		update new Opportunity(
+			Id = q.OpportunityId,
+			Distributor_Type__c = Constants.DISTRIBUTOR_TYPE_INDIRECT,
+			Distributor__c = distributor.Id
+		);
+
+		QuotePDFController ctrl = buildController(q.Id);
+		Assert.areEqual(distributor.Name, ctrl.getCompanyName());
+		Assert.areEqual('John Doe', ctrl.contact.Name, 'Company must not be inferred from the contact');
+		Assert.isTrue(ctrl.showQuote, 'A complete Indirect quote can render: ' + ctrl.missingFields);
+	}
+
+	@IsTest
+	static void testCompanyName_missingDistributorSuppressesQuote() {
+		QuotePDFTestDataFactory.grantPDFPermission();
+		Quote q = QuotePDFTestDataFactory.createCompleteQuote();
+		update new Opportunity(
+			Id = q.OpportunityId,
+			Distributor_Type__c = Constants.DISTRIBUTOR_TYPE_INDIRECT
+		);
+
+		QuotePDFController ctrl = buildController(q.Id);
+		Assert.isNull(ctrl.getCompanyName(), 'The end customer must not be used as a fallback');
+		Assert.isFalse(ctrl.showQuote, 'Direct access to the PDF must also be blocked');
+		Assert.areEqual(new List<String>{ 'Company Name -> Opportunity: Distributor' }, ctrl.missingFields);
 	}
 
 	@IsTest

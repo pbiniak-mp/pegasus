@@ -90,6 +90,10 @@ public with sharing class QuotePDFController {
 		}
 	}
 
+	public String getCompanyName() {
+		return QuoteService.getRecipientCompanyName(opp);
+	}
+
 	public String getFormattedDate() {
 		return quote?.CreatedDate != null
 			? quote.CreatedDate.format(DATE_FORMAT)

@@ -5,6 +5,22 @@ public with sharing class QuoteService {
 	private static final String ERR_NO_SEQUENCE = 'Quote_Sequence__c org default record not found';
 	private static final String ERR_APPLY_GLOBAL_DISCOUNT = 'Failed to apply Global Discount to Quote Line Items';
 
+	/**
+	 * Resolves the company receiving the quote from the Opportunity relationships
+	 * loaded by QuoteSelector. Indirect sales never fall back to the end customer;
+	 * an unknown sales type also has no recipient until the user corrects it.
+	 */
+	public static String getRecipientCompanyName(Opportunity opp) {
+		if (opp == null) return null;
+		if (opp.Distributor_Type__c == Constants.DISTRIBUTOR_TYPE_DIRECT) {
+			return opp.Account?.Name;
+		}
+		if (opp.Distributor_Type__c == Constants.DISTRIBUTOR_TYPE_INDIRECT) {
+			return opp.Distributor__r?.Name;
+		}
+		return null;
+	}
+
 	public static void applyAccountDefaultDiscount(List<Quote> newList) {
 		if (newList == null || newList.isEmpty()) return;
 

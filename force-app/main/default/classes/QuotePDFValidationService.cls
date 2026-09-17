@@ -8,11 +8,11 @@
  *     Total Attachments  ->  Design Revision REV-01: Total Attachments
  *     ^ caption on the PDF   ^ record to open        ^ field label on it
  *
- * The values live on four different records:
+ * The values come from the following records:
  *   - Quote            - quote number, Bill To address, expiration date
- *   - Opportunity      - project name, project code (via Quote.OpportunityId)
+ *   - Opportunity      - project name and recipient company via Account / Distributor
  *   - Design Revision  - the whole Summary / Equipments Type block
- *   - Contact          - customer name (via Quote.ContactId)
+ *   - Contact          - contact name (via Quote.ContactId)
  *   - Quote Line Items - the Racking Components table
  *
  * Freight and Tax are deliberately not required: the PDF prints "TBD" for
@@ -38,7 +38,8 @@ public inherited sharing class QuotePDFValidationService {
 	public static final String LABEL_PROJECT_NAME = 'Project Name';
 	public static final String LABEL_QUOTE_NUMBER = 'Quote #';
 	public static final String LABEL_REV_NUMBER = 'REV Number';
-	public static final String LABEL_CUSTOMER_NAME = 'Customer Name';
+	public static final String LABEL_COMPANY_NAME = 'Company Name';
+	public static final String LABEL_CONTACT_NAME = 'Contact Name';
 	public static final String LABEL_PROJECT_STREET = 'Project Street';
 	public static final String LABEL_CITY = 'City';
 	public static final String LABEL_STATE = 'State';
@@ -74,6 +75,9 @@ public inherited sharing class QuotePDFValidationService {
 	public static final String RECORD_SEPARATOR = ': ';
 
 	public static final String FIELD_OPPORTUNITY_NAME = 'Opportunity Name';
+	public static final String FIELD_ACCOUNT_NAME = 'Account Name';
+	public static final String FIELD_DISTRIBUTOR = 'Distributor';
+	public static final String FIELD_DISTRIBUTOR_TYPE = 'Distributor Type (select Direct or Indirect)';
 	public static final String FIELD_QUOTE_NUMBER = 'Quote Number (auto-generated on save)';
 	public static final String FIELD_REVISION_NUMBER = 'Revision Number';
 	public static final String FIELD_CONTACT = 'Contact (the Contact lookup on the Quote)';
@@ -131,8 +135,9 @@ public inherited sharing class QuotePDFValidationService {
 		// --- Project Information ---
 		// Opportunity, reached through Quote.OpportunityId
 		addIfBlank(missing, LABEL_PROJECT_NAME, RECORD_OPPORTUNITY, FIELD_OPPORTUNITY_NAME, quote.Opportunity?.Name);
+		addCompanyIssue(missing, quote.Opportunity);
 		// Contact, reached through Quote.ContactId
-		addIfBlank(missing, LABEL_CUSTOMER_NAME, RECORD_CONTACT, FIELD_CONTACT, contact?.Name);
+		addIfBlank(missing, LABEL_CONTACT_NAME, RECORD_CONTACT, FIELD_CONTACT, contact?.Name);
 		// The Quote record itself - Bill To address block, not Quote To
 		addIfBlank(missing, LABEL_QUOTE_NUMBER, RECORD_QUOTE, FIELD_QUOTE_NUMBER, quote.Quote_Number__c);
 		addIfBlank(missing, LABEL_PROJECT_STREET, RECORD_QUOTE, FIELD_BILL_TO_STREET, quote.BillingStreet);
@@ -197,6 +202,17 @@ public inherited sharing class QuotePDFValidationService {
 	 */
 	public static String describe(String pdfLabel, String recordName, String fieldLabel) {
 		return pdfLabel + SOURCE_SEPARATOR + recordName + RECORD_SEPARATOR + fieldLabel;
+	}
+
+	private static void addCompanyIssue(List<String> missing, Opportunity opp) {
+		String sourceField = FIELD_DISTRIBUTOR_TYPE;
+		if (opp?.Distributor_Type__c == Constants.DISTRIBUTOR_TYPE_DIRECT) {
+			sourceField = FIELD_ACCOUNT_NAME;
+		} else if (opp?.Distributor_Type__c == Constants.DISTRIBUTOR_TYPE_INDIRECT) {
+			sourceField = FIELD_DISTRIBUTOR;
+		}
+		addIfBlank(missing, LABEL_COMPANY_NAME, RECORD_OPPORTUNITY, sourceField,
+			QuoteService.getRecipientCompanyName(opp));
 	}
 
 	private static void addLineItemIssues(List<String> missing, List<QuoteLineItem> lineItems) {
