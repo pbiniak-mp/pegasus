@@ -69,10 +69,6 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>NetSuiteProductApi</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
         <apexClass>OpportunityLineItemService</apexClass>
         <enabled>true</enabled>
     </classAccesses>
