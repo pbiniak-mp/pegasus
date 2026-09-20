@@ -8,6 +8,9 @@ public inherited sharing class OpportunityLineItemSelector {
 	 * the WHERE clause below. The Module Coverage report displays the already-averaged
 	 * value and cannot re-scope it, so to limit the average (e.g. only Closed Won, or
 	 * only recent opportunities) add the condition here — that is the single source of truth.
+	 *
+	 * @param productIds the products whose qualifying line items should be averaged
+	 * @return one aggregate result per product with qualifying line items
 	 */
 	public static List<AggregateResult> getAverageSkuPerModuleByProduct(Set<Id> productIds) {
 		return [

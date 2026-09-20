@@ -21,6 +21,9 @@ public with sharing class AgentQuerySelector {
 	 * matching records serialized as JSON. Throws AgentQueryException for any
 	 * non-SELECT input; lets QueryException bubble up so the caller can hand the
 	 * error back to the model for self-correction.
+	 *
+	 * @param soql the model-supplied SOQL SELECT query to validate and execute
+	 * @return the matching records serialized as JSON
 	 */
 	public static String runReadOnlyQuery(String soql) {
 		String prepared = prepareQuery(soql);

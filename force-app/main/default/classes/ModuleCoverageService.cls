@@ -13,6 +13,8 @@ public with sharing class ModuleCoverageService {
 	 *
 	 * The passed products MUST include the current Avg_SKU_Per_Module__c value so the change
 	 * comparison is correct (the batch start query selects it).
+	 *
+	 * @param products the products whose average SKU-per-module value should be recalculated
 	 */
 	public static void recalculateAverageSkuPerModule(List<Product2> products) {
 		if (products == null || products.isEmpty()) return;

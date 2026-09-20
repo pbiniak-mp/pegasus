@@ -132,6 +132,9 @@ global with sharing class NetSuiteInventoryApi {
 	 * (the External Client App run-as user), where it came from, the relevant
 	 * headers and the raw body. The same body is also stored on the
 	 * Integration_Log__c record, which is easier to read after the fact.
+	 *
+	 * @param request the inbound REST request whose metadata and headers are logged
+	 * @param requestBody the raw request body to log
 	 */
 	private static void debugIncomingRequest(RestRequest request, String requestBody) {
 		Map<String, String> debugHeaders = new Map<String, String>();
@@ -190,6 +193,9 @@ global with sharing class NetSuiteInventoryApi {
 	/**
 	 * Human-readable list of everything that did not land, for Error_Message__c.
 	 * Null when the batch was fully applied.
+	 *
+	 * @param result the sync result containing skipped rows and processing errors
+	 * @return a human-readable problem summary, or null when there are no problems
 	 */
 	private static String describeProblems(NetSuiteInventorySyncService.SyncResult result) {
 		List<String> lines = new List<String>();
@@ -207,6 +213,9 @@ global with sharing class NetSuiteInventoryApi {
 	/**
 	 * A logging failure must never turn a processed batch into an error response,
 	 * so it is reported through BoltErrorLogger instead of thrown.
+	 *
+	 * @param log the inbound integration log to insert
+	 * @return the inserted log Id, or null when logging fails
 	 */
 	private static Id insertLog(Integration_Log__c log) {
 		try {

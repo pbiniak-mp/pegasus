@@ -202,6 +202,11 @@ public with sharing class NetSuiteInventorySyncService {
 	/**
 	 * Drops rows without both ids and keeps the last row per item + location, so
 	 * a repeated row can neither fail the upsert nor double-count Committed__c.
+	 *
+	 * @param rows the inventory rows received in the current batch
+	 * @param skips tracker that groups reasons for skipped rows
+	 * @param result sync result whose skipped-row count is updated
+	 * @return valid inventory rows keyed by their composite item-location key
 	 */
 	private static Map<String, InventoryRow> dedupeValidRows(
 		List<InventoryRow> rows,
@@ -255,6 +260,9 @@ public with sharing class NetSuiteInventorySyncService {
 	 * field itself). A name match is rejected when that Product2 is already
 	 * matched by External_Id__c to a different item in the same batch, so one
 	 * product can never receive two items' stock.
+	 *
+	 * @param itemNameById NetSuite item names keyed by NetSuite item id
+	 * @return resolved products, failure reasons, and name-based match details
 	 */
 	private static ProductResolution resolveProducts(Map<String, String> itemNameById) {
 		ProductResolution resolution = new ProductResolution();
