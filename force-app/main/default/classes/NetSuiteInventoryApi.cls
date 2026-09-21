@@ -115,21 +115,36 @@ global with sharing class NetSuiteInventoryApi {
 	}
 
 	/**
+	 * Headers worth seeing when debugging a sync. Salesforce adds many platform
+	 * headers (x-forwarded-client-cert alone carries a whole certificate), so only
+	 * these are logged. Authorization is never logged, only whether it was sent.
+	 */
+	private static final Set<String> DEBUG_HEADER_NAMES = new Set<String>{
+		'user-agent',
+		'content-type',
+		'content-length',
+		'accept',
+		'x-forwarded-for'
+	};
+
+	/**
 	 * Writes exactly what NetSuite sent to the debug log: who the request runs as
-	 * (the External Client App run-as user), where it came from, the headers with
-	 * Authorization masked, and the raw body. The same body is also stored on the
+	 * (the External Client App run-as user), where it came from, the relevant
+	 * headers and the raw body. The same body is also stored on the
 	 * Integration_Log__c record, which is easier to read after the fact.
+	 *
+	 * @param request the inbound REST request whose metadata and headers are logged
+	 * @param requestBody the raw request body to log
 	 */
 	private static void debugIncomingRequest(RestRequest request, String requestBody) {
-		Map<String, String> safeHeaders = new Map<String, String>();
+		Map<String, String> debugHeaders = new Map<String, String>();
 		if (request.headers != null) {
 			for (String name : request.headers.keySet()) {
-				safeHeaders.put(
-					name,
-					name.equalsIgnoreCase(Constants.HTTP_HEADER_AUTHORIZATION)
-						? Constants.INTEGRATION_MASKED_VALUE
-						: request.headers.get(name)
-				);
+				if (name.equalsIgnoreCase(Constants.HTTP_HEADER_AUTHORIZATION)) {
+					debugHeaders.put(name, Constants.INTEGRATION_MASKED_VALUE);
+				} else if (DEBUG_HEADER_NAMES.contains(name.toLowerCase())) {
+					debugHeaders.put(name, request.headers.get(name));
+				}
 			}
 		}
 		System.debug(
@@ -138,7 +153,7 @@ global with sharing class NetSuiteInventoryApi {
 				+ ' from ' + request.remoteAddress
 				+ ' as ' + UserInfo.getUserName()
 				+ ', body ' + (requestBody == null ? 0 : requestBody.length()) + ' chars'
-				+ ', headers ' + JSON.serialize(safeHeaders)
+				+ ', headers ' + JSON.serialize(debugHeaders)
 		);
 		System.debug(LoggingLevel.INFO, Constants.NETSUITE_INVENTORY_DEBUG_PREFIX + 'Request body: ' + requestBody);
 	}
@@ -178,6 +193,9 @@ global with sharing class NetSuiteInventoryApi {
 	/**
 	 * Human-readable list of everything that did not land, for Error_Message__c.
 	 * Null when the batch was fully applied.
+	 *
+	 * @param result the sync result containing skipped rows and processing errors
+	 * @return a human-readable problem summary, or null when there are no problems
 	 */
 	private static String describeProblems(NetSuiteInventorySyncService.SyncResult result) {
 		List<String> lines = new List<String>();
@@ -195,6 +213,9 @@ global with sharing class NetSuiteInventoryApi {
 	/**
 	 * A logging failure must never turn a processed batch into an error response,
 	 * so it is reported through BoltErrorLogger instead of thrown.
+	 *
+	 * @param log the inbound integration log to insert
+	 * @return the inserted log Id, or null when logging fails
 	 */
 	private static Id insertLog(Integration_Log__c log) {
 		try {

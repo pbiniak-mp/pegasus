@@ -47,6 +47,10 @@ public with sharing class ClaudeAgentService {
 	/**
 	 * Runs the agent for a single user question (with optional prior turns for
 	 * follow-up context) and returns Claude's final natural-language answer.
+	 *
+	 * @param question the current question from the user
+	 * @param history prior conversation turns used as follow-up context, or null
+	 * @return Claude's final natural-language answer
 	 */
 	public static String ask(String question, List<AiChatController.ChatTurn> history) {
 		List<Object> messages = new List<Object>();
@@ -134,6 +138,9 @@ public with sharing class ClaudeAgentService {
 	 *  - the External Credential or its ApiKey parameter does not exist → Salesforce
 	 *    throws BEFORE sending, so there is no HTTP status, only a credential-config
 	 *    error message (e.g. "Field Anthropic_API_Credential.ApiKey does not exist").
+	 *
+	 * @param res the failed callout result to inspect
+	 * @return true when the failure indicates an API key configuration problem
 	 */
 	private static Boolean isApiKeyConfigFailure(IntegrationCalloutService.CalloutResult res) {
 		if (res.statusCode == Constants.ANTHROPIC_UNAUTHORIZED_STATUS

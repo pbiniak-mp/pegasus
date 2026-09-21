@@ -120,6 +120,7 @@ public class QuotePDFTestDataFactory {
 	 *
 	 * @param missing the entries returned by QuotePDFValidationService
 	 * @param pdfLabel the PDF caption to look for
+	 * @return true when one of the reported entries starts with the PDF caption
 	 */
 	public static Boolean mentions(List<String> missing, String pdfLabel) {
 		if (missing == null) return false;

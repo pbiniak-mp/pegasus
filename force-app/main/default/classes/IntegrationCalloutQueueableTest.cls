@@ -19,6 +19,8 @@ private class IntegrationCalloutQueueableTest {
 	/**
 	 * Integration stays inactive so the Opportunity trigger does not queue its
 	 * own logs — these tests drive the Queueable directly.
+	 *
+	 * @return the inserted Opportunity used by the Queueable tests
 	 */
 	private static Opportunity makeOpp() {
 		GlideAnalyticsIntegrationService.configOverride = new Outbound_Integration__mdt(Active__c = false);

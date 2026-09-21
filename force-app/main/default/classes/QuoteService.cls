@@ -9,6 +9,9 @@ public with sharing class QuoteService {
 	 * Resolves the company receiving the quote from the Opportunity relationships
 	 * loaded by QuoteSelector. Indirect sales never fall back to the end customer;
 	 * an unknown sales type also has no recipient until the user corrects it.
+	 *
+	 * @param opp the Opportunity whose loaded relationships identify the recipient
+	 * @return the recipient company name, or null when it cannot be resolved
 	 */
 	public static String getRecipientCompanyName(Opportunity opp) {
 		if (opp == null) return null;
