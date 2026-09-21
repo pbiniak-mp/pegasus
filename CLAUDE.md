@@ -6,6 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **Never run `sf project deploy` or any deploy command.** The user deploys manually.
 
+Also follow the shared repository instructions in `AGENTS.md`, especially the required Apex test-map workflow when adding, renaming, or deleting Apex classes, triggers, or test classes.
+
 ## Architecture
 
 This is a **Salesforce DX project** (`force-app/main/default/`) using API version 65.0.

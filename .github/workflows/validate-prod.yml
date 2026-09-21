@@ -5,27 +5,52 @@ on:
     branches:
       - master
 
+permissions:
+  contents: read
+
+concurrency:
+  group: salesforce-production-metadata
+  queue: max
+  cancel-in-progress: false
+
 jobs:
   validation:
     name: Validation on PROD
     runs-on: ubuntu-latest
     environment: Production
     env:
-      GIT_DEPTH: 0
+      API_VERSION: "67.0"
+      SF_CLI_VERSION: "2.150.6"
+      SGD_VERSION: "6.45.1"
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install project dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Check formatting and lint changed files
+        run: bash .github/scripts/quality-check-changed-files.sh "${{ github.event.pull_request.base.sha }}"
+
+      - name: Test CI helper scripts
+        run: npm run test:ci-tools
+
       - name: Install SF CLI
         run: |
-          npm install -g @salesforce/cli
+          npm install --global "@salesforce/cli@${SF_CLI_VERSION}"
           sf version
 
       - name: Install sfdx-git-delta plugin
-        run: echo y | sf plugins install sfdx-git-delta
+        run: echo y | sf plugins install "sfdx-git-delta@${SGD_VERSION}"
 
       - name: Authenticate to Salesforce (PROD)
         run: |
@@ -35,23 +60,43 @@ jobs:
 
       - name: Generate delta
         run: |
-          sf sgd source delta --api-version 66.0 --to "HEAD" --from "origin/master" --output-dir .
+          sf sgd source delta \
+            --api-version "${API_VERSION}" \
+            --to "HEAD" \
+            --from "${{ github.event.pull_request.base.sha }}" \
+            --source-dir force-app \
+            --output-dir .delta \
+            --changes-manifest
 
       - name: Show package.xml
-        run: cat package/package.xml || true
+        run: cat .delta/package/package.xml || true
 
       - name: Show destructiveChanges.xml
-        run: cat destructiveChanges/destructiveChanges.xml || true
+        run: cat .delta/destructiveChanges/destructiveChanges.xml || true
+
+      - name: Select Apex tests
+        id: test-selection
+        run: node .github/scripts/select-deployment-tests.js
 
       - name: Dry-run deploy (validation)
+        env:
+          SELECTED_TEST_LEVEL: ${{ steps.test-selection.outputs.test_level }}
+          SELECTED_TESTS: ${{ steps.test-selection.outputs.tests }}
         run: |
-          if grep -q "<types>" package/package.xml destructiveChanges/destructiveChanges.xml 2>/dev/null; then
+          if grep -q "<types>" .delta/package/package.xml .delta/destructiveChanges/destructiveChanges.xml 2>/dev/null; then
             echo "Delta detected – running DRY-RUN deploy"
+            test_args=(--test-level "${SELECTED_TEST_LEVEL}")
+            if [[ "${SELECTED_TEST_LEVEL}" == "RunSpecifiedTests" ]]; then
+              read -r -a test_names <<< "${SELECTED_TESTS}"
+              for test_name in "${test_names[@]}"; do
+                test_args+=(--tests "${test_name}")
+              done
+            fi
             sf project deploy start \
-              --manifest package/package.xml \
-              --post-destructive-changes destructiveChanges/destructiveChanges.xml \
-              --test-level RunLocalTests \
-              --api-version 66.0 \
+              --manifest .delta/package/package.xml \
+              --post-destructive-changes .delta/destructiveChanges/destructiveChanges.xml \
+              "${test_args[@]}" \
+              --api-version "${API_VERSION}" \
               --wait 300 \
               --verbose \
               --ignore-warnings \

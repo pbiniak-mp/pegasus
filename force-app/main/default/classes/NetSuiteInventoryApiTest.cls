@@ -17,9 +17,9 @@ private class NetSuiteInventoryApiTest {
 		req.requestUri = Constants.NETSUITE_INVENTORY_ENDPOINT;
 		req.httpMethod = 'POST';
 		req.requestBody = body == null ? null : Blob.valueOf(body);
-		// Exercises the debug header filter: kept, masked and dropped headers.
+		// Exercises the debug header filter with a kept and a dropped header.
+		// RestRequest rejects Authorization when it is added from Apex test code.
 		req.addHeader('User-Agent', 'NetSuite-SuiteScript');
-		req.addHeader('Authorization', 'Bearer test-token');
 		req.addHeader('x-forwarded-client-cert', 'Hash=abc;Cert=long-certificate');
 		RestContext.request = req;
 		RestContext.response = new RestResponse();
