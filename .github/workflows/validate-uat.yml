@@ -60,6 +60,7 @@ jobs:
 
       - name: Generate delta
         run: |
+          mkdir -p .delta
           sf sgd source delta \
             --api-version "${API_VERSION}" \
             --to "HEAD" \
