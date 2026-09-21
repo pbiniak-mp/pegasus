@@ -81,7 +81,12 @@ public inherited sharing class StateCodeService {
 		'yukon' => 'YT'
 	};
 
-	/** Returns the ISO code for a state/province name, or null when unknown. */
+	/**
+	 * Returns the ISO code for a state/province name, or null when unknown.
+	 *
+	 * @param stateName the state or province name to resolve
+	 * @return the ISO subdivision code, or null when the name is blank or unknown
+	 */
 	public static String getCode(String stateName) {
 		if (String.isBlank(stateName)) return null;
 		return STATE_NAME_TO_CODE.get(stateName.trim().toLowerCase());
@@ -91,6 +96,9 @@ public inherited sharing class StateCodeService {
 	 * Before insert/update: keeps Project_State_Code__c in sync with
 	 * Project_State__c. A code set explicitly in the same DML (e.g. by
 	 * LeadService, which copies the authoritative Lead.StateCode) wins.
+	 *
+	 * @param newList the Opportunities being inserted or updated
+	 * @param oldMap the pre-update Opportunity state keyed by Id, or null on insert
 	 */
 	public static void applyProjectStateCodes(List<Opportunity> newList, Map<Id, Opportunity> oldMap) {
 		for (Opportunity opp : newList) {

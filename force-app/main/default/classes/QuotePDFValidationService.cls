@@ -181,6 +181,7 @@ public inherited sharing class QuotePDFValidationService {
 	}
 
 	/**
+	 * @param quoteId the Quote whose PDF values should be validated
 	 * @throws IncompleteQuoteException listing every empty PDF value
 	 */
 	public static void validate(Id quoteId) {
@@ -199,6 +200,7 @@ public inherited sharing class QuotePDFValidationService {
 	 * @param pdfLabel the caption as printed on the PDF
 	 * @param recordName the record to open, e.g. 'Design Revision REV-01'
 	 * @param fieldLabel the field label on that record
+	 * @return the formatted PDF caption, record name, and field label
 	 */
 	public static String describe(String pdfLabel, String recordName, String fieldLabel) {
 		return pdfLabel + SOURCE_SEPARATOR + recordName + RECORD_SEPARATOR + fieldLabel;

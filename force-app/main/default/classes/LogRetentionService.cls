@@ -23,6 +23,9 @@ public without sharing class LogRetentionService {
 	 * Callers must run this before enqueuing the batch: a Batchable cannot refuse to
 	 * start once it is running, and this is also what guarantees the object name
 	 * interpolated into the SOQL below is a real object rather than arbitrary text.
+	 *
+	 * @param policy the retention policy to validate
+	 * @return null when the policy is valid, otherwise the validation error
 	 */
 	public static String validate(Log_Retention_Policy__mdt policy) {
 		if (policy == null) {
@@ -49,7 +52,12 @@ public without sharing class LogRetentionService {
 		return Datetime.now().addDays(-Integer.valueOf(policy.Retention_Days__c));
 	}
 
-	/** Query locator over every record the policy considers expired. Run validate() first. */
+	/**
+	 * Query locator over every record the policy considers expired. Run validate() first.
+	 *
+	 * @param policy the validated retention policy that defines the object and cutoff
+	 * @return a query locator over the records older than the policy cutoff
+	 */
 	public static Database.QueryLocator expiredRecordsLocator(Log_Retention_Policy__mdt policy) {
 		String query =
 			'SELECT Id FROM ' + policy.Object_API_Name__c +
@@ -101,6 +109,9 @@ public without sharing class LogRetentionService {
 	/**
 	 * Keeps a lid on the error list: the batch is Stateful, so an object failing on every
 	 * single record would otherwise carry thousands of messages in the heap until finish().
+	 *
+	 * @param result the purge result whose bounded error list is updated
+	 * @param message the error message to add when the limit has not been reached
 	 */
 	private static void addError(PurgeResult result, String message) {
 		if (result.errors.size() < Constants.LOG_RETENTION_MAX_TRACKED_ERRORS) {
