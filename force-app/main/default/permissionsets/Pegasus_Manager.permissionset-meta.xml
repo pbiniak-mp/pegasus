@@ -554,6 +554,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>Design_Revision__c.Closed_Date__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>Design_Revision__c.Code_Standard__c</field>
         <readable>true</readable>
     </fieldPermissions>

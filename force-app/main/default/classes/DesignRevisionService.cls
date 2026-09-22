@@ -356,6 +356,26 @@ public with sharing class DesignRevisionService {
 		}
 	}
 
+	// Stamps the date a revision entered Closed so list views can show a rolling window
+	// of recently closed revisions. Cleared again when the revision is reopened.
+	public static void stampClosedDate(
+		List<Design_Revision__c> revisions,
+		Map<Id, Design_Revision__c> oldMap
+	) {
+		for (Design_Revision__c rev : revisions) {
+			Boolean isInsert = oldMap == null;
+			Boolean wasClosed = !isInsert
+				&& oldMap.get(rev.Id).Status__c == Constants.DESIGN_REVISION_STATUS_CLOSED;
+			Boolean isClosed = rev.Status__c == Constants.DESIGN_REVISION_STATUS_CLOSED;
+
+			if (isClosed && !wasClosed) {
+				rev.Closed_Date__c = Date.today();
+			} else if (!isClosed && wasClosed) {
+				rev.Closed_Date__c = null;
+			}
+		}
+	}
+
 	public static void assignOwnerOnStatusChange(
 		List<Design_Revision__c> revisions,
 		Map<Id, Design_Revision__c> oldMap
