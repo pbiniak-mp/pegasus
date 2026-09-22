@@ -170,10 +170,16 @@
       "coveredLines": 30,
       "totalLines": 30
     },
+    "ApexClass:NetSuiteInventoryApi": {
+      "tests": ["NetSuiteInventoryApiTest"],
+      "coveragePercent": 88,
+      "coveredLines": 105,
+      "totalLines": 119
+    },
     "ApexClass:NetSuiteInventorySyncService": {
-      "tests": ["NetSuiteInventorySyncServiceTest"],
-      "coveragePercent": 91,
-      "coveredLines": 178,
+      "tests": ["NetSuiteInventoryApiTest", "NetSuiteInventorySyncServiceTest"],
+      "coveragePercent": 92,
+      "coveredLines": 179,
       "totalLines": 194
     },
     "ApexClass:OpportunityAmountService": {
@@ -329,6 +335,12 @@
       "coveredLines": 15,
       "totalLines": 15
     },
+    "ApexClass:RestResponseUtils": {
+      "tests": ["NetSuiteInventoryApiTest"],
+      "coveragePercent": 100,
+      "coveredLines": 4,
+      "totalLines": 4
+    },
     "ApexClass:RevisionTimelineController": {
       "tests": ["RevisionTimelineControllerTest"],
       "coveragePercent": 85,
@@ -353,7 +365,7 @@
       "totalLines": 122
     },
     "ApexClass:WarehouseLocationSelector": {
-      "tests": ["NetSuiteInventorySyncServiceTest"],
+      "tests": ["NetSuiteInventoryApiTest"],
       "coveragePercent": 100,
       "coveredLines": 3,
       "totalLines": 3
