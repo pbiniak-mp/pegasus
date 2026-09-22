@@ -21,6 +21,8 @@ private class DesignRevisionTriggerTest {
 
 	private static final String REV_SYSTEM_TYPE_FLAT = 'Flat Roof';
 
+	private static final Integer BULK_REVISION_COUNT = 200;
+
 	private static final String CDL_SHARE_TYPE = 'V';
 	private static final String CDL_VISIBILITY = 'AllUsers';
 
@@ -472,6 +474,107 @@ private class DesignRevisionTriggerTest {
 		Assert.areEqual(Constants.OPPORTUNITY_STAGE_QUOTE, result.get(opps[0].Id).StageName, 'Opp StageName should be set to Quote when DR Status changes to Quote');
 		Assert.areEqual(Constants.OPPORTUNITY_STAGE_OFFERED, result.get(opps[1].Id).StageName, 'Opp StageName should be set to Offered when DR Status changes to Closed');
 		Assert.areEqual(Constants.OPPORTUNITY_STAGE_QUOTE, result.get(opps[2].Id).StageName, 'Opp StageName should remain Quote when already Quote');
+	}
+
+	@IsTest
+	static void testClosedDate_stampedOnStatusChangeToClosed() {
+		Opportunity opp = getOpp();
+		Design_Revision__c rev = buildRevision(opp.Id, 5.0);
+		insert rev;
+
+		rev.Status__c = Constants.DESIGN_REVISION_STATUS_ASSIGNED;
+		update rev;
+
+		Design_Revision__c beforeClose = [SELECT Closed_Date__c FROM Design_Revision__c WHERE Id = :rev.Id];
+		Assert.isNull(beforeClose.Closed_Date__c, 'Closed_Date__c should be empty before the revision is closed');
+
+		Test.startTest();
+		rev.Status__c = Constants.DESIGN_REVISION_STATUS_CLOSED;
+		update rev;
+		Test.stopTest();
+
+		Design_Revision__c afterClose = [SELECT Closed_Date__c FROM Design_Revision__c WHERE Id = :rev.Id];
+		Assert.areEqual(Date.today(), afterClose.Closed_Date__c, 'Closed_Date__c should be stamped with today when Status changes to Closed');
+	}
+
+	@IsTest
+	static void testClosedDate_stampedOnInsertWhenCreatedClosed() {
+		Opportunity opp = getOpp();
+		Design_Revision__c rev = buildRevision(opp.Id, 5.0);
+		rev.Status__c = Constants.DESIGN_REVISION_STATUS_CLOSED;
+
+		Test.startTest();
+		insert rev;
+		Test.stopTest();
+
+		Design_Revision__c result = [SELECT Closed_Date__c FROM Design_Revision__c WHERE Id = :rev.Id];
+		Assert.areEqual(Date.today(), result.Closed_Date__c, 'Closed_Date__c should be stamped when a revision is created already Closed');
+	}
+
+	@IsTest
+	static void testClosedDate_clearedWhenRevisionReopened() {
+		Opportunity opp = getOpp();
+		Design_Revision__c rev = buildRevision(opp.Id, 5.0);
+		rev.Status__c = Constants.DESIGN_REVISION_STATUS_CLOSED;
+		insert rev;
+
+		Test.startTest();
+		rev.Status__c = Constants.DESIGN_REVISION_STATUS_ASSIGNED;
+		update rev;
+		Test.stopTest();
+
+		Design_Revision__c result = [SELECT Closed_Date__c FROM Design_Revision__c WHERE Id = :rev.Id];
+		Assert.isNull(result.Closed_Date__c, 'Closed_Date__c should be cleared when the revision leaves the Closed status');
+	}
+
+	@IsTest
+	static void testClosedDate_notOverwrittenByLaterEditsWhileClosed() {
+		Opportunity opp = getOpp();
+		Design_Revision__c rev = buildRevision(opp.Id, 5.0);
+		rev.Status__c = Constants.DESIGN_REVISION_STATUS_CLOSED;
+		insert rev;
+
+		Date stampedOn = Date.today().addDays(-10);
+		rev.Closed_Date__c = stampedOn;
+		update rev;
+
+		Test.startTest();
+		rev.Project_Notes__c = 'Edited while already closed';
+		update rev;
+		Test.stopTest();
+
+		Design_Revision__c result = [SELECT Closed_Date__c FROM Design_Revision__c WHERE Id = :rev.Id];
+		Assert.areEqual(stampedOn, result.Closed_Date__c, 'Closed_Date__c should not be re-stamped when an already closed revision is edited');
+	}
+
+	@IsTest
+	static void testClosedDate_bulkStampAcrossRevisions() {
+		Opportunity opp = getOpp();
+		List<Design_Revision__c> revisions = new List<Design_Revision__c>();
+		for (Integer i = 0; i < BULK_REVISION_COUNT; i++) {
+			revisions.add(buildRevision(opp.Id, 5.0));
+		}
+		insert revisions;
+
+		for (Design_Revision__c rev : revisions) {
+			rev.Status__c = Constants.DESIGN_REVISION_STATUS_ASSIGNED;
+		}
+		update revisions;
+
+		for (Design_Revision__c rev : revisions) {
+			rev.Status__c = Constants.DESIGN_REVISION_STATUS_CLOSED;
+		}
+
+		Test.startTest();
+		update revisions;
+		Test.stopTest();
+
+		List<Design_Revision__c> result = [
+			SELECT Closed_Date__c
+			FROM Design_Revision__c
+			WHERE Id IN :revisions AND Closed_Date__c = TODAY
+		];
+		Assert.areEqual(BULK_REVISION_COUNT, result.size(), 'Every revision closed in the same transaction should be stamped');
 	}
 
 	private static Set<Id> getLinkedDocIds(Id recordId) {
