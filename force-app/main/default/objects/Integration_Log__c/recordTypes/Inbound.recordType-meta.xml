@@ -4,4 +4,26 @@
     <active>true</active>
     <description>Incoming messages from external systems</description>
     <label>Inbound</label>
+    <picklistValues>
+        <picklist>Event_Type__c</picklist>
+        <values>
+            <fullName>Inventory Sync</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Status__c</picklist>
+        <values>
+            <fullName>Failed</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Partially Processed</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Processed</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
 </RecordType>

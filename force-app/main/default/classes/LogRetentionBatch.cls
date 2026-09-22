@@ -34,6 +34,9 @@ public without sharing class LogRetentionBatch implements Database.Batchable<SOb
 	 * Id, or null when nothing is left to run. Invalid policies are logged and skipped
 	 * rather than aborting the run — one bad config row should not stop the other objects
 	 * from being purged.
+	 *
+	 * @param policies the retention policies to validate and process in order
+	 * @return the first enqueued batch job Id, or null when no valid policy remains
 	 */
 	public static Id run(List<Log_Retention_Policy__mdt> policies) {
 		List<Log_Retention_Policy__mdt> queue = (policies == null)
