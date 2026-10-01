@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Task_Result__c</fullName>
+    <label>Task Result</label>
+    <required>false</required>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Call - Success</fullName>
+                <default>false</default>
+                <label>Call - Success</label>
+            </value>
+            <value>
+                <fullName>Call - Not Interested</fullName>
+                <default>false</default>
+                <label>Call - Not Interested</label>
+            </value>
+            <value>
+                <fullName>Voicemail</fullName>
+                <default>false</default>
+                <label>Call - Voicemail</label>
+            </value>
+            <value>
+                <fullName>Meeting Scheduled</fullName>
+                <default>false</default>
+                <label>Meeting - Scheduled</label>
+            </value>
+            <value>
+                <fullName>Email Sent</fullName>
+                <default>false</default>
+                <label>Email Sent</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>
