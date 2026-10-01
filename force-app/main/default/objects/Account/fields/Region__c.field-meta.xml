@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Region__c</fullName>
+    <label>Region</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Southeast</fullName>
+                <default>false</default>
+                <label>Southeast</label>
+            </value>
+            <value>
+                <fullName>So. Cal</fullName>
+                <default>false</default>
+                <label>So. Cal</label>
+            </value>
+            <value>
+                <fullName>South Central</fullName>
+                <default>false</default>
+                <label>South Central</label>
+            </value>
+            <value>
+                <fullName>Northeast</fullName>
+                <default>false</default>
+                <label>Northeast</label>
+            </value>
+            <value>
+                <fullName>Mountain West</fullName>
+                <default>false</default>
+                <label>Mountain West</label>
+            </value>
+            <value>
+                <fullName>Pacific Northwest</fullName>
+                <default>false</default>
+                <label>Pacific Northwest</label>
+            </value>
+            <value>
+                <fullName>Midwest</fullName>
+                <default>false</default>
+                <label>Midwest</label>
+            </value>
+            <value>
+                <fullName>Caribbean</fullName>
+                <default>false</default>
+                <label>Caribbean</label>
+            </value>
+            <value>
+                <fullName>LATM</fullName>
+                <default>false</default>
+                <label>LATM</label>
+            </value>
+            <value>
+                <fullName>[Regions]</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>[Regions]</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>
