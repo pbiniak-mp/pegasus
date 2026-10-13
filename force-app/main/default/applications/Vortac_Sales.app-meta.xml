@@ -134,13 +134,11 @@
     <tabs>standard-Lead</tabs>
     <tabs>standard-Account</tabs>
     <tabs>standard-Contact</tabs>
-    <tabs>standard-Opportunity</tabs>
-    <tabs>standard-Case</tabs>
-    <tabs>standard-Quote</tabs>
     <tabs>standard-Task</tabs>
+    <tabs>standard-Opportunity</tabs>
+    <tabs>standard-Quote</tabs>
+    <tabs>Design_Revision__c</tabs>
     <tabs>standard-Product2</tabs>
-    <tabs>standard-Pricebook2</tabs>
-    <tabs>standard-Order</tabs>
     <tabs>Warehouse_Location__c</tabs>
     <uiType>Lightning</uiType>
     <utilityBar>Vortac_Sales_UtilityBar</utilityBar>
