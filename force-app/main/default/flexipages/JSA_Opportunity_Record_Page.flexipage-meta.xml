@@ -320,6 +320,38 @@
                 <identifier>c_detectAndLaunch</identifier>
             </componentInstance>
         </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>deleteFlowName</name>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>editFlowName</name>
+                    <value>Opportunity_Closed_Stage_Additional_Details</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>fieldChange</name>
+                    <value>StageName</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>fieldValue</name>
+                    <value>Closed Lost</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>launchMode</name>
+                    <value>Modal</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>loadFlowName</name>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>modalHeader</name>
+                    <value>Closed Lost Details</value>
+                </componentInstanceProperties>
+                <componentName>detectAndLaunch</componentName>
+                <identifier>c_detectAndLaunch_closedLost</identifier>
+            </componentInstance>
+        </itemInstances>
         <name>main</name>
         <type>Region</type>
     </flexiPageRegions>
