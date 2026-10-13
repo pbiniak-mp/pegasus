@@ -183,6 +183,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>true</editable>
+        <field>Account.Annual_Wattage_Installed_Utility__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>false</editable>
         <field>Account.Average_Closed_Won_Opportunity__c</field>
         <readable>true</readable>
@@ -330,6 +335,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Account.Linkedin_Company_Page__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Account.Market_Segment__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1183,6 +1193,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>false</editable>
+        <field>Opportunity.Actual_Close_Date__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>true</editable>
         <field>Opportunity.Additional_Notes__c</field>
         <readable>true</readable>
@@ -1325,6 +1340,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Opportunity.Customer_Point_of_Contact__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Opportunity.Days_to_Close__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

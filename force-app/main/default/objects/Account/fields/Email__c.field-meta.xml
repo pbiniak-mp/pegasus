@@ -2,7 +2,8 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Email__c</fullName>
     <externalId>false</externalId>
-    <label>Email</label>
+    <inlineHelpText>General company email (e.g. info@ or accounts@), used for business and NetSuite communication. Personal emails belong on Contacts.</inlineHelpText>
+    <label>Company Email</label>
     <length>255</length>
     <required>false</required>
     <trackFeedHistory>false</trackFeedHistory>

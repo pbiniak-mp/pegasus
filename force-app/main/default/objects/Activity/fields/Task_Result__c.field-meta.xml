@@ -33,6 +33,11 @@
                 <default>false</default>
                 <label>Email Sent</label>
             </value>
+            <value>
+                <fullName>Meeting Completed</fullName>
+                <default>false</default>
+                <label>Meeting Completed</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>

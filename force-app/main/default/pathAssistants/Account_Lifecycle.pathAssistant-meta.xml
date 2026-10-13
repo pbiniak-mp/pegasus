@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PathAssistant xmlns="http://soap.sforce.com/2006/04/metadata">
+    <active>true</active>
+    <entityName>Account</entityName>
+    <fieldName>Account_Lifecycle__c</fieldName>
+    <masterLabel>Account Lifecycle</masterLabel>
+    <pathAssistantSteps>
+        <fieldNames>Description</fieldNames>
+        <info>&lt;p&gt;&lt;strong&gt;Blocked.&lt;/strong&gt; &lt;/p&gt;&lt;p&gt;Do not do business with this company. Write the reason in Description.&lt;/p&gt;</info>
+        <picklistValueName>Blocked</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <fieldNames>Became_a_Customer_On__c</fieldNames>
+        <fieldNames>Customer_Type__c</fieldNames>
+        <info>&lt;p&gt;&lt;strong&gt;Customer.&lt;/strong&gt; &lt;/p&gt;&lt;p&gt;We have done business with this company. Set automatically when an opportunity is Closed Won.&lt;/p&gt;</info>
+        <picklistValueName>In Business</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <fieldNames>Next_Step_Date__c</fieldNames>
+        <info>&lt;p&gt;&lt;strong&gt;Prospect&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;In contact.&lt;/strong&gt; Set the next step date (notes in the Next Steps section) and log calls and meetings with Log Activity.&lt;/p&gt;</info>
+        <picklistValueName>Initial phase</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <fieldNames>Type</fieldNames>
+        <fieldNames>Market_Segment__c</fieldNames>
+        <fieldNames>Phone</fieldNames>
+        <fieldNames>Website</fieldNames>
+        <fieldNames>Email__c</fieldNames>
+        <info>&lt;p&gt;&lt;strong&gt;Prospect&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;Fill in the basics: &lt;/p&gt;&lt;ul&gt;&lt;li&gt;company type, &lt;/li&gt;&lt;li&gt;market segment, &lt;/li&gt;&lt;li&gt;phone, website and email. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt;Add the main contact point on the Contacts list.&lt;/p&gt;</info>
+        <picklistValueName>New</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>&lt;p&gt;&lt;strong&gt;Not relevant.&lt;/strong&gt; &lt;/p&gt;&lt;p&gt;Write the reason in Description.&lt;/p&gt;</info>
+        <picklistValueName>Not relevant</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <fieldNames>Payment_Terms__c</fieldNames>
+        <fieldNames>Billing_Point_of_Contact__c</fieldNames>
+        <fieldNames>Billing_Email__c</fieldNames>
+        <fieldNames>Default_Discount__c</fieldNames>
+        <info>&lt;p&gt;&lt;strong&gt;Prospect&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Onboarding.&lt;/strong&gt; Collect what is needed for the first order: payment terms, billing contact and billing email, agreed discount.&lt;/p&gt;</info>
+        <picklistValueName>Onboarding</picklistValueName>
+    </pathAssistantSteps>
+    <recordTypeName>__MASTER__</recordTypeName>
+</PathAssistant>

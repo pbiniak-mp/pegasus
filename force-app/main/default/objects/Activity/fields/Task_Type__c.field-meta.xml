@@ -48,6 +48,41 @@
                 <default>false</default>
                 <label>Networking</label>
             </value>
+            <value>
+                <fullName>Training</fullName>
+                <default>false</default>
+                <label>Training</label>
+            </value>
+            <value>
+                <fullName>Prospecting Visit</fullName>
+                <default>false</default>
+                <label>Prospecting Visit</label>
+            </value>
+            <value>
+                <fullName>Drop-In</fullName>
+                <default>false</default>
+                <label>Drop-In</label>
+            </value>
+            <value>
+                <fullName>Distributor Event</fullName>
+                <default>false</default>
+                <label>Distributor Event</label>
+            </value>
+            <value>
+                <fullName>Joint Sales Call</fullName>
+                <default>false</default>
+                <label>Joint Sales Call</label>
+            </value>
+            <value>
+                <fullName>Trial</fullName>
+                <default>false</default>
+                <label>Trial</label>
+            </value>
+            <value>
+                <fullName>Text Message</fullName>
+                <default>false</default>
+                <label>Text Message</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>

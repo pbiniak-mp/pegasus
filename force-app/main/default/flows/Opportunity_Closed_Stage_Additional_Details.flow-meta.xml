@@ -2,13 +2,86 @@
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <apiVersion>65.0</apiVersion>
     <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <assignments>
+        <name>Flag_Missing_Details</name>
+        <label>Flag Missing Details</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>ShowMissingDetails</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Closed_Lost_Details_Screen</targetReference>
+        </connector>
+    </assignments>
     <customProperties>
         <name>ScreenProgressIndicator</name>
         <value>
             <stringValue>{&quot;location&quot;:&quot;top&quot;,&quot;type&quot;:&quot;simple&quot;}</stringValue>
         </value>
     </customProperties>
-    <description>Screen Flow launched by the Detect and Launch component when an Opportunity moves to Closed Won. Lets the user review/adjust the Product Line and choose the active Design Revision. Setting Is_Active__c = true on the selected revision reuses the existing Design Revision activation mechanism (DesignRevisionTrigger) which deactivates other revisions and syncs technical fields to the Opportunity.</description>
+    <decisions>
+        <name>Check_Loss_Details</name>
+        <label>Check Loss Details</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>Save_Loss_Details</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Details OK</defaultConnectorLabel>
+        <rules>
+            <name>Competitor_Details_Missing</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Select_Loss_Reason</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Lost to Competitor</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Lost_Reason_Details</leftValueReference>
+                <operator>IsBlank</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Flag_Missing_Details</targetReference>
+            </connector>
+            <label>Competitor Details Missing</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Which_Closed_Stage</name>
+        <label>Which Closed Stage</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>Additional_Details_Screen</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Closed Won</defaultConnectorLabel>
+        <rules>
+            <name>Closed_Lost</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Opportunity.StageName</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Closed Lost</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Closed_Lost_Details_Screen</targetReference>
+            </connector>
+            <label>Closed Lost</label>
+        </rules>
+    </decisions>
+    <description>Screen Flow launched by the Detect and Launch components when an Opportunity moves to Closed Won or Closed Lost. Closed Lost: asks for Loss Reason and Lost Reason Details (details required for Lost to Competitor) and saves them on the Opportunity. Closed Won: Lets the user review/adjust the Product Line and choose the active Design Revision. Setting Is_Active__c = true on the selected revision reuses the existing Design Revision activation mechanism (DesignRevisionTrigger) which deactivates other revisions and syncs technical fields to the Opportunity.</description>
     <dynamicChoiceSets>
         <name>ProductLineChoices</name>
         <dataType>Picklist</dataType>
@@ -16,6 +89,14 @@
         <object xsi:nil="true"/>
         <picklistField>Product_Line__c</picklistField>
         <picklistObject>Design_Revision__c</picklistObject>
+    </dynamicChoiceSets>
+    <dynamicChoiceSets>
+        <name>LossReasonChoices</name>
+        <dataType>Picklist</dataType>
+        <displayField xsi:nil="true"/>
+        <object xsi:nil="true"/>
+        <picklistField>Loss_Reason__c</picklistField>
+        <picklistObject>Opportunity</picklistObject>
     </dynamicChoiceSets>
     <dynamicChoiceSets>
         <name>RevisionChoices</name>
@@ -30,8 +111,6 @@
             </value>
         </filters>
         <object>Design_Revision__c</object>
-        <picklistField xsi:nil="true"/>
-        <picklistObject xsi:nil="true"/>
         <sortField>Revision_Number__c</sortField>
         <sortOrder>Asc</sortOrder>
         <valueField>Id</valueField>
@@ -65,7 +144,7 @@
         <locationY>0</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>Additional_Details_Screen</targetReference>
+            <targetReference>Which_Closed_Stage</targetReference>
         </connector>
         <faultConnector>
             <targetReference>Error_Screen</targetReference>
@@ -114,6 +193,36 @@
             </value>
         </inputAssignments>
         <object>Design_Revision__c</object>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Save_Loss_Details</name>
+        <label>Save Loss Details</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <faultConnector>
+            <targetReference>Error_Screen</targetReference>
+        </faultConnector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>Closed_Lost_Reason__c</field>
+            <value>
+                <elementReference>Lost_Reason_Details</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Loss_Reason__c</field>
+            <value>
+                <elementReference>Select_Loss_Reason</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Opportunity</object>
     </recordUpdates>
     <screens>
         <name>Additional_Details_Screen</name>
@@ -183,6 +292,116 @@
         <showHeader>true</showHeader>
     </screens>
     <screens>
+        <name>Closed_Lost_Details_Screen</name>
+        <label>Closed Lost Details</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <connector>
+            <targetReference>Check_Loss_Details</targetReference>
+        </connector>
+        <fields>
+            <name>Closed_Lost_Header</name>
+            <fieldText>&lt;p&gt;This Opportunity is now Closed Lost. Tell us why we lost it.&lt;/p&gt;&lt;p&gt;If we lost to a competitor, write which one in Lost Reason Details.&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+        </fields>
+        <fields>
+            <name>Missing_Details_Error</name>
+            <fieldText>&lt;p&gt;&lt;span style=&quot;color: rgb(194, 57, 52);&quot;&gt;Loss Reason is Lost to Competitor: please write which competitor in Lost Reason Details.&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+            <visibilityRule>
+                <conditionLogic>and</conditionLogic>
+                <conditions>
+                    <leftValueReference>ShowMissingDetails</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <booleanValue>true</booleanValue>
+                    </rightValue>
+                </conditions>
+            </visibilityRule>
+        </fields>
+        <fields>
+            <name>Select_Loss_Reason</name>
+            <choiceReferences>LossReasonChoices</choiceReferences>
+            <dataType>String</dataType>
+            <defaultValue>
+                <elementReference>Get_Opportunity.Loss_Reason__c</elementReference>
+            </defaultValue>
+            <fieldText>Loss Reason</fieldText>
+            <fieldType>DropdownBox</fieldType>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+        </fields>
+        <fields>
+            <name>Lost_Reason_Details</name>
+            <dataType>String</dataType>
+            <defaultValue>
+                <elementReference>Get_Opportunity.Closed_Lost_Reason__c</elementReference>
+            </defaultValue>
+            <fieldText>Lost Reason Details</fieldText>
+            <fieldType>InputField</fieldType>
+            <helpText>&lt;p&gt;Short explanation why we lost. Required when Loss Reason is Lost to Competitor: write which competitor (e.g. IronRidge, Unirac) and why.&lt;/p&gt;</helpText>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>false</isRequired>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+            <validationRule>
+                <errorMessage>&lt;p&gt;Lost Reason Details can have at most 255 characters.&lt;/p&gt;</errorMessage>
+                <formulaExpression>LEN({!Lost_Reason_Details}) &lt;= 255</formulaExpression>
+            </validationRule>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Error_Screen</name>
+        <label>Something Went Wrong</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>Error_Text</name>
+            <fieldText>&lt;p&gt;&lt;b&gt;Something went wrong and your changes could not be saved.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;The Opportunity stage has already been updated, but the additional details (Design Revision or loss reason) were not saved. Please try again from the record. If the problem persists, contact your administrator with the details below.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;{!$Flow.FaultMessage}&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
         <name>Success_Screen</name>
         <label>Success</label>
         <locationX>0</locationX>
@@ -206,30 +425,6 @@
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
     </screens>
-    <screens>
-        <name>Error_Screen</name>
-        <label>Something Went Wrong</label>
-        <locationX>0</locationX>
-        <locationY>0</locationY>
-        <allowBack>false</allowBack>
-        <allowFinish>true</allowFinish>
-        <allowPause>false</allowPause>
-        <fields>
-            <name>Error_Text</name>
-            <fieldText>&lt;p&gt;&lt;b&gt;Something went wrong and your changes could not be saved.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;The Opportunity stage has already been updated, but the Design Revision was not activated. Please try again from the record. If the problem persists, contact your administrator with the details below.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;{!$Flow.FaultMessage}&lt;/p&gt;</fieldText>
-            <fieldType>DisplayText</fieldType>
-            <styleProperties>
-                <verticalAlignment>
-                    <stringValue>top</stringValue>
-                </verticalAlignment>
-                <width>
-                    <stringValue>12</stringValue>
-                </width>
-            </styleProperties>
-        </fields>
-        <showFooter>true</showFooter>
-        <showHeader>true</showHeader>
-    </screens>
     <start>
         <locationX>0</locationX>
         <locationY>0</locationY>
@@ -237,7 +432,17 @@
             <targetReference>Get_Opportunity</targetReference>
         </connector>
     </start>
-    <status>Draft</status>
+    <status>Active</status>
+    <variables>
+        <name>ShowMissingDetails</name>
+        <dataType>Boolean</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <value>
+            <booleanValue>false</booleanValue>
+        </value>
+    </variables>
     <variables>
         <name>recordId</name>
         <dataType>String</dataType>
