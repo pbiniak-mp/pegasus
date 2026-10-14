@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Market_Segment__c</fullName>
+    <description>Market segments the company works in. Multi-select: a company can be active in several segments. Used for reports and list views (e.g. utility customer list).</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Select every segment this company works in, e.g. Residential and Commercial (C&amp;I).</inlineHelpText>
+    <label>Market Segment</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>MultiselectPicklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Residential</fullName>
+                <default>false</default>
+                <label>Residential</label>
+            </value>
+            <value>
+                <fullName>Commercial (C&amp;I)</fullName>
+                <default>false</default>
+                <label>Commercial (C&amp;I)</label>
+            </value>
+            <value>
+                <fullName>Utility</fullName>
+                <default>false</default>
+                <label>Utility</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+    <visibleLines>4</visibleLines>
+</CustomField>

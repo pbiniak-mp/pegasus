@@ -134,16 +134,18 @@
     <tabs>standard-Lead</tabs>
     <tabs>standard-Account</tabs>
     <tabs>standard-Contact</tabs>
-    <tabs>standard-Opportunity</tabs>
     <tabs>standard-Task</tabs>
-    <tabs>standard-Product2</tabs>
-    <tabs>standard-Pricebook2</tabs>
-    <tabs>standard-Order</tabs>
+    <tabs>standard-Opportunity</tabs>
     <tabs>standard-Quote</tabs>
+    <tabs>Design_Revision__c</tabs>
+    <tabs>standard-Product2</tabs>
     <tabs>Warehouse_Location__c</tabs>
     <uiType>Lightning</uiType>
     <utilityBar>Sales_Console_1_UtilityBar</utilityBar>
     <workspaceConfig>
+        <mappings>
+            <tab>Design_Revision__c</tab>
+        </mappings>
         <mappings>
             <tab>Warehouse_Location__c</tab>
         </mappings>
@@ -160,12 +162,6 @@
         <mappings>
             <fieldName>AccountId</fieldName>
             <tab>standard-Opportunity</tab>
-        </mappings>
-        <mappings>
-            <tab>standard-Order</tab>
-        </mappings>
-        <mappings>
-            <tab>standard-Pricebook2</tab>
         </mappings>
         <mappings>
             <tab>standard-Product2</tab>
