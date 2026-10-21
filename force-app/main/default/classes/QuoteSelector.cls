@@ -13,6 +13,7 @@ public inherited sharing class QuoteSelector {
 				CreatedDate,
 				Design_Revision__c,
 				ExpirationDate,
+				Freight_Terms__c,
 				GrandTotal,
 				Id,
 				Name,

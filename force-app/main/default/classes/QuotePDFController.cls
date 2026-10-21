@@ -38,7 +38,6 @@ public with sharing class QuotePDFController {
 
 	public static final String EMPTY_STRING = '';
 	public static final String DATE_FORMAT = 'MMMM dd, yyyy';
-	public static final String FREIGHT_TBD = 'TBD';
 
 	public QuotePDFController(ApexPages.StandardController stdController) {
 		missingFields = new List<String>();
@@ -140,11 +139,17 @@ public with sharing class QuotePDFController {
 		return '$ ' + dpw.format();
 	}
 
+	// An amount in Shipping and Handling always wins. Without one the line
+	// prints the Freight Terms the team picked, and quotes created before that
+	// field existed fall back to "Not Included".
 	public String getFormattedFreight() {
-		if (quote == null || quote.ShippingHandling == null || quote.ShippingHandling == 0) {
-			return FREIGHT_TBD;
+		if (quote != null && quote.ShippingHandling != null && quote.ShippingHandling != 0) {
+			return '$ ' + quote.ShippingHandling.setScale(2).format();
 		}
-		return '$ ' + quote.ShippingHandling.setScale(2).format();
+		if (quote == null || String.isBlank(quote.Freight_Terms__c)) {
+			return Constants.QUOTE_FREIGHT_TERMS_NOT_INCLUDED;
+		}
+		return quote.Freight_Terms__c;
 	}
 
 	public Decimal getTotalAttachments() {
