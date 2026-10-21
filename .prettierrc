@@ -1,0 +1,17 @@
+{
+  "overrides": [
+    {
+      "files": ["**/lwc/**/*.{js,css,html}", "**/aura/**/*.js"],
+      "options": {
+        "singleQuote": true,
+        "useTabs": true,
+        "tabWidth": 4,
+        "trailingComma": "none"
+      }
+    },
+    {
+      "files": "**/lwc/**/*.html",
+      "options": { "parser": "lwc" }
+    }
+  ]
+}
