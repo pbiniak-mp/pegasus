@@ -1,5 +1,24 @@
 public class Constants {
 
+	// Account To Do
+	public static final String TODO_TASK_FIELDS =
+		'Id, AccountId, Subject, ActivityDate, Status, IsClosed, Priority, ' +
+		'OwnerId, Owner.Name, WhoId, Who.Name, WhatId, What.Name, Task_Type__c, Description';
+	public static final String TODO_STATUS_OPEN = 'Not Started';
+	public static final String TODO_STATUS_COMPLETED = 'Completed';
+	public static final String TODO_PRIORITY_NORMAL = 'Normal';
+	public static final String TODO_INVALID_CONTEXT = 'Choose an Account, Contact, or Opportunity record.';
+	public static final String TODO_TASK_UNAVAILABLE = 'This task is unavailable or does not belong to this record.';
+	public static final String TODO_ALREADY_CLOSED = 'This task is already completed. Refresh the list.';
+	public static final String TODO_NOT_CLOSED = 'Complete the task before scheduling its next activity.';
+	public static final String TODO_SUBJECT_REQUIRED = 'Enter a subject for the activity.';
+	public static final String TODO_OWNER_INVALID = 'Choose a user as the activity owner.';
+	public static final String TODO_TYPE_INACCESSIBLE = 'You do not have access to the task type field.';
+	public static final String TODO_LOAD_ERROR = 'Unable to load Account To Do: ';
+	public static final String TODO_COMPLETE_ERROR = 'Unable to complete the task: ';
+	public static final String TODO_CREATE_ERROR = 'Unable to create the activity: ';
+	public static final String TODO_TYPE_ERROR = 'Unable to load activity types: ';
+
 	// BoltErrorLogger
 	public static final String SOURCE_TYPE_APEX = 'Apex';
 	public static final String SEVERITY_ERROR = 'ERROR';
@@ -48,6 +67,8 @@ public class Constants {
 	public static final String QUOTE_TYPE_MATERIAL = 'Material';
 	public static final String QUOTE_TYPE_STAMP = 'Stamp';
 	public static final String QUOTE_TYPE_EXTRA = 'Extra';
+	public static final String QUOTE_FREIGHT_TERMS_NOT_INCLUDED = 'Not Included';
+	public static final String QUOTE_FREIGHT_TERMS_COLLECT = 'Collect';
 
 	// Quote Line Item
 	public static final String QUOTE_LINE_ITEM_HANDLER_NAME = 'QuoteLineItemTriggerHandler';

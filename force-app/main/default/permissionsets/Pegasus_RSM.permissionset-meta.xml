@@ -5,6 +5,10 @@
         <visible>true</visible>
     </applicationVisibilities>
     <classAccesses>
+        <apexClass>AccountTodoController</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>CreateDesignRevisionInvocable</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -2075,6 +2079,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Quote.Fax</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Quote.Freight_Terms__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

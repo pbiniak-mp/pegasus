@@ -230,6 +230,74 @@ private class QuotePDFControllerTest {
 	}
 
 	@IsTest
+	static void testFormattedFreight_amountWinsOverFreightTerms() {
+		QuotePDFTestDataFactory.grantPDFPermission();
+		Quote q = getTestQuote();
+		q.ShippingHandling = 10;
+		q.Freight_Terms__c = Constants.QUOTE_FREIGHT_TERMS_COLLECT;
+		update q;
+
+		QuotePDFController ctrl = buildController(q.Id);
+
+		Assert.areEqual('$ ' + (10.00).format(), ctrl.getFormattedFreight(),
+			'A Shipping and Handling amount should print instead of the Freight Terms');
+	}
+
+	@IsTest
+	static void testFormattedFreight_printsCollectWithoutAmount() {
+		QuotePDFTestDataFactory.grantPDFPermission();
+		Quote q = getTestQuote();
+		q.ShippingHandling = null;
+		q.Freight_Terms__c = Constants.QUOTE_FREIGHT_TERMS_COLLECT;
+		update q;
+
+		QuotePDFController ctrl = buildController(q.Id);
+
+		Assert.areEqual(Constants.QUOTE_FREIGHT_TERMS_COLLECT, ctrl.getFormattedFreight());
+	}
+
+	@IsTest
+	static void testFormattedFreight_printsNotIncludedWithoutAmount() {
+		QuotePDFTestDataFactory.grantPDFPermission();
+		Quote q = getTestQuote();
+		q.ShippingHandling = null;
+		q.Freight_Terms__c = Constants.QUOTE_FREIGHT_TERMS_NOT_INCLUDED;
+		update q;
+
+		QuotePDFController ctrl = buildController(q.Id);
+
+		Assert.areEqual(Constants.QUOTE_FREIGHT_TERMS_NOT_INCLUDED, ctrl.getFormattedFreight());
+	}
+
+	@IsTest
+	static void testFormattedFreight_zeroAmountFallsBackToFreightTerms() {
+		QuotePDFTestDataFactory.grantPDFPermission();
+		Quote q = getTestQuote();
+		q.ShippingHandling = 0;
+		q.Freight_Terms__c = Constants.QUOTE_FREIGHT_TERMS_COLLECT;
+		update q;
+
+		QuotePDFController ctrl = buildController(q.Id);
+
+		Assert.areEqual(Constants.QUOTE_FREIGHT_TERMS_COLLECT, ctrl.getFormattedFreight(),
+			'A zero amount should be treated as no amount');
+	}
+
+	@IsTest
+	static void testFormattedFreight_blankTermsFallBackToNotIncluded() {
+		QuotePDFTestDataFactory.grantPDFPermission();
+		Quote q = getTestQuote();
+		q.ShippingHandling = null;
+		q.Freight_Terms__c = null;
+		update q;
+
+		QuotePDFController ctrl = buildController(q.Id);
+
+		Assert.areEqual(Constants.QUOTE_FREIGHT_TERMS_NOT_INCLUDED, ctrl.getFormattedFreight(),
+			'Quotes created before Freight Terms existed should print Not Included');
+	}
+
+	@IsTest
 	static void testGetFormattedDate() {
 		QuotePDFTestDataFactory.grantPDFPermission();
 		Quote q = getTestQuote();
