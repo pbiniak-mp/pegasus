@@ -1,0 +1,332 @@
+<template>
+    <article class="slds-card todo">
+        <header class="todo__header">
+            <div class="todo__title">
+                <lightning-icon
+                    icon-name="standard:task"
+                    size="small"
+                    alternative-text="To Do"
+                ></lightning-icon>
+                <h2 class="slds-text-heading_small slds-truncate">To Do</h2>
+                <span class={countBadgeClass}>{openCount}</span>
+            </div>
+            <div class="todo__header-actions">
+                <div class="todo__segmented" role="group" aria-label="Show tasks">
+                    <button
+                        class={allFilterClass}
+                        aria-pressed={isAllFilter}
+                        data-filter="all"
+                        onclick={handleFilter}
+                        disabled={isBusy}
+                    >
+                        All
+                    </button>
+                    <button
+                        class={mineFilterClass}
+                        aria-pressed={isMineFilter}
+                        data-filter="mine"
+                        onclick={handleFilter}
+                        disabled={isBusy}
+                    >
+                        Mine
+                    </button>
+                </div>
+                <lightning-button-icon
+                    icon-name="utility:refresh"
+                    variant="bare"
+                    size="small"
+                    alternative-text="Refresh"
+                    title="Refresh"
+                    onclick={handleRefresh}
+                    disabled={isBusy}
+                ></lightning-button-icon>
+            </div>
+        </header>
+
+        <div class="todo__body slds-is-relative">
+            <template lwc:if={showSpinner}>
+                <lightning-spinner
+                    alternative-text="Loading"
+                    size="small"
+                ></lightning-spinner>
+            </template>
+
+            <!-- Quick add: always visible, details unfold on focus -->
+            <div class={quickAddClass} data-form="quick">
+                <div class="todo__quick-row">
+                    <lightning-icon
+                        icon-name="utility:add"
+                        size="x-small"
+                        class="todo__quick-icon"
+                    ></lightning-icon>
+                    <lightning-input
+                        class="todo__quick-input"
+                        name="subject"
+                        label="New to do"
+                        variant="label-hidden"
+                        placeholder="Add a to do and press Enter"
+                        value={newSubject}
+                        max-length="255"
+                        onfocus={handleQuickFocus}
+                        onchange={handleNewField}
+                        onkeyup={handleQuickKeyup}
+                        disabled={disableAdd}
+                    ></lightning-input>
+                </div>
+                <template lwc:if={showQuickDetails}>
+                    <div class="todo__quick-details">
+                        <lightning-combobox
+                            name="taskType"
+                            label="Type"
+                            variant="label-hidden"
+                            placeholder="Activity type"
+                            value={newType}
+                            options={activityTypeOptions}
+                            onchange={handleNewField}
+                            disabled={disableSave}
+                        ></lightning-combobox>
+                        <div class="todo__chips">
+                            <template for:each={quickDateChips} for:item="chip">
+                                <button
+                                    key={chip.key}
+                                    class={chip.className}
+                                    data-form="quick"
+                                    data-offset={chip.offset}
+                                    onclick={handleDateChip}
+                                    disabled={isBusy}
+                                >
+                                    {chip.label}
+                                </button>
+                            </template>
+                            <lightning-input
+                                class="todo__date"
+                                name="dueDate"
+                                type="date"
+                                label="Due date"
+                                variant="label-hidden"
+                                value={newDueDate}
+                                onchange={handleNewField}
+                                disabled={isBusy}
+                            ></lightning-input>
+                        </div>
+                        <div class="todo__form-actions">
+                            <lightning-button
+                                label="Cancel"
+                                variant="base"
+                                onclick={handleCancelQuick}
+                                disabled={isBusy}
+                            ></lightning-button>
+                            <lightning-button
+                                label="Add"
+                                variant="brand"
+                                onclick={handleCreate}
+                                disabled={disableCreate}
+                            ></lightning-button>
+                        </div>
+                    </div>
+                </template>
+            </div>
+
+            <template lwc:if={errorText}>
+                <div class="todo__error" role="alert">
+                    <lightning-icon
+                        icon-name="utility:error"
+                        size="xx-small"
+                        variant="error"
+                    ></lightning-icon>
+                    <span>{errorText}</span>
+                </div>
+            </template>
+
+            <!-- Follow-up after completing a task -->
+            <template lwc:if={followUp}>
+                <section
+                    class="todo__followup"
+                    aria-label="Schedule next activity"
+                    data-form="followup"
+                >
+                    <div class="todo__followup-head">
+                        <lightning-icon
+                            icon-name="utility:success"
+                            size="x-small"
+                            variant="success"
+                        ></lightning-icon>
+                        <span class="todo__followup-title"
+                            >Done. What is the next step?</span
+                        >
+                    </div>
+                    <lightning-input
+                        name="subject"
+                        label="Next step"
+                        variant="label-hidden"
+                        placeholder="Next step"
+                        value={followUp.subject}
+                        required
+                        max-length="255"
+                        onchange={handleFollowUpField}
+                        disabled={isBusy}
+                    ></lightning-input>
+                    <lightning-combobox
+                        name="taskType"
+                        label="Type"
+                        variant="label-hidden"
+                        placeholder="Activity type"
+                        value={followUp.taskType}
+                        options={activityTypeOptions}
+                        onchange={handleFollowUpField}
+                        disabled={disableSave}
+                    ></lightning-combobox>
+                    <div class="todo__chips">
+                        <template for:each={followUpDateChips} for:item="chip">
+                            <button
+                                key={chip.key}
+                                class={chip.className}
+                                data-form="followup"
+                                data-offset={chip.offset}
+                                onclick={handleDateChip}
+                                disabled={isBusy}
+                            >
+                                {chip.label}
+                            </button>
+                        </template>
+                        <lightning-input
+                            class="todo__date"
+                            name="dueDate"
+                            type="date"
+                            label="Due date"
+                            variant="label-hidden"
+                            value={followUp.dueDate}
+                            onchange={handleFollowUpField}
+                            disabled={isBusy}
+                        ></lightning-input>
+                    </div>
+                    <template lwc:if={showOwnerPicker}>
+                        <lightning-record-picker
+                            data-field="ownerId"
+                            label="Assign to"
+                            object-api-name="User"
+                            value={followUp.ownerId}
+                            required
+                            onchange={handleFollowUpField}
+                            disabled={isBusy}
+                        ></lightning-record-picker>
+                    </template>
+                    <template lwc:else>
+                        <button
+                            class="todo__link"
+                            onclick={handleShowOwnerPicker}
+                            disabled={isBusy}
+                        >
+                            Assign to someone else
+                        </button>
+                    </template>
+                    <div class="todo__form-actions">
+                        <lightning-button
+                            label="Skip"
+                            variant="base"
+                            onclick={handleSkipFollowUp}
+                            disabled={isBusy}
+                        ></lightning-button>
+                        <lightning-button
+                            label="Schedule"
+                            variant="brand"
+                            onclick={handleScheduleNext}
+                            disabled={disableSave}
+                        ></lightning-button>
+                    </div>
+                </section>
+            </template>
+
+            <!-- Empty state -->
+            <template lwc:if={showEmptyState}>
+                <div class="todo__empty">
+                    <lightning-icon
+                        icon-name="utility:check"
+                        size="small"
+                        class="todo__empty-icon"
+                    ></lightning-icon>
+                    <p class="todo__empty-title">All caught up</p>
+                    <p class="todo__empty-text">{emptyText}</p>
+                </div>
+            </template>
+
+            <!-- Groups (empty groups are hidden) -->
+            <template for:each={groups} for:item="group">
+                <section key={group.key} class="todo__group" data-group={group.key}>
+                    <h3 class={group.headingClass}>
+                        <span>{group.label}</span>
+                        <span class="todo__group-count">{group.count}</span>
+                    </h3>
+                    <ul class="todo__list">
+                        <template for:each={group.visibleTasks} for:item="task">
+                            <li key={task.Id} class={task.rowClass} data-task={task.Id}>
+                                <button
+                                    class="todo__check"
+                                    title="Mark as done"
+                                    aria-label={task.completeLabel}
+                                    data-id={task.Id}
+                                    onclick={handleComplete}
+                                    disabled={disableRows}
+                                >
+                                    <lightning-icon
+                                        icon-name="utility:check"
+                                        size="xx-small"
+                                        class="todo__check-icon"
+                                    ></lightning-icon>
+                                </button>
+                                <div class="todo__content">
+                                    <div class="todo__subject-row">
+                                        <lightning-icon
+                                            icon-name={task.iconName}
+                                            alternative-text={task.typeLabel}
+                                            title={task.typeLabel}
+                                            size="x-small"
+                                            class="todo__type-icon"
+                                        ></lightning-icon>
+                                        <a
+                                            href={task.href}
+                                            data-id={task.Id}
+                                            onclick={handleNavigate}
+                                            class="todo__subject"
+                                            title={task.tooltip}
+                                            >{task.subjectLabel}</a
+                                        >
+                                        <template lwc:if={task.isHighPriority}>
+                                            <span class="todo__priority" title="High priority"
+                                                >!</span
+                                            >
+                                        </template>
+                                    </div>
+                                    <div class="todo__meta">
+                                        <span class={task.dueClass}>{task.dueLabel}</span>
+                                        <template lwc:if={task.relatedName}>
+                                            <span class="todo__dot" aria-hidden="true"></span>
+                                            <span class="todo__meta-item" title={task.relatedName}
+                                                >{task.relatedName}</span
+                                            >
+                                        </template>
+                                        <template lwc:if={task.ownerLabel}>
+                                            <span class="todo__dot" aria-hidden="true"></span>
+                                            <span class="todo__meta-item" title={task.ownerLabel}
+                                                >{task.ownerLabel}</span
+                                            >
+                                        </template>
+                                    </div>
+                                </div>
+                            </li>
+                        </template>
+                    </ul>
+                    <template lwc:if={group.moreCount}>
+                        <button
+                            class="todo__link todo__more"
+                            data-group={group.key}
+                            onclick={handleToggleGroup}
+                        >
+                            {group.moreLabel}
+                        </button>
+                    </template>
+                </section>
+            </template>
+        </div>
+    </article>
+</template>
