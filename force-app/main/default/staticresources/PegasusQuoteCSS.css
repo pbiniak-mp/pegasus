@@ -157,7 +157,7 @@ body {
 .signature-table {
   width: 100%;
   border-collapse: collapse;
-  margin-bottom: 60px;
+  margin-bottom: 24px;
 }
 .sig-line-cell {
   width: 38%;
@@ -187,6 +187,20 @@ body {
   font-size: 7.5pt;
   padding-top: 6px;
   color: #000000;
+}
+
+/* ── Freight terms ── */
+.freight-terms {
+  font-size: 7.5pt;
+  color: #000000;
+  line-height: 1.4;
+  margin-bottom: 36px;
+}
+.freight-terms p {
+  margin: 0 0 4px 0;
+}
+.freight-terms .bold {
+  font-weight: bold;
 }
 
 /* ── Confidentiality ── */

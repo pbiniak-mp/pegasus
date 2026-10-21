@@ -72,3 +72,4 @@ dev/
 .mcp.json
 .agents
 skills-lock.json
+/docs
