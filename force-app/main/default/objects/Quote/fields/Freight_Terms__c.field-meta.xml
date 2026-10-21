@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Freight_Terms__c</fullName>
+    <description>Printed in the Freight line of the Quote PDF when Shipping and Handling is blank. Ignored on the PDF once Shipping and Handling has an amount.</description>
+    <inlineHelpText>Shown on the Quote PDF instead of a freight amount when Shipping and Handling is empty.</inlineHelpText>
+    <label>Freight Terms</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Not Included</fullName>
+                <default>true</default>
+                <label>Not Included</label>
+            </value>
+            <value>
+                <fullName>Collect</fullName>
+                <default>false</default>
+                <label>Collect</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

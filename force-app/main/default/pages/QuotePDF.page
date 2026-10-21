@@ -250,6 +250,21 @@
 		</tr>
 	</table>
 
+	<!-- FREIGHT TERMS -->
+	<div class="freight-terms">
+		<p>
+			<span class="bold">Freight:</span> Not included. Orders ship FOB Shipping Point,
+			Freight Prepaid &amp; Add. Pegasus Solar will arrange shipment and bill freight and
+			handling on the final invoice.
+		</p>
+		<p>
+			<span class="bold">Freight:</span> Collect. If the customer elects to arrange its own
+			carrier, the order ships FOB Shipping Point, Freight Collect (customer books the
+			carrier, pays freight directly to the carrier, and must provide the carrier name and
+			account number with the PO).
+		</p>
+	</div>
+
 	<!-- CONFIDENTIALITY -->
 	<div class="confidential">
 		This document contains confidential and proprietary information of Pegasus Solar Inc.
