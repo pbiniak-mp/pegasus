@@ -10,11 +10,29 @@
       "coveredLines": 6,
       "totalLines": 6
     },
-    "ApexClass:Constants": {
-      "tests": ["ContentDocumentLinkSelectorTest"],
+    "ApexClass:AccountTodoController": {
+      "tests": ["AccountTodoControllerTest"],
+      "coveragePercent": 95,
+      "coveredLines": 38,
+      "totalLines": 40
+    },
+    "ApexClass:AccountTodoSelector": {
+      "tests": ["AccountTodoControllerTest"],
       "coveragePercent": 100,
-      "coveredLines": 27,
-      "totalLines": 27
+      "coveredLines": 43,
+      "totalLines": 43
+    },
+    "ApexClass:AccountTodoService": {
+      "tests": ["AccountTodoControllerTest"],
+      "coveragePercent": 98,
+      "coveredLines": 68,
+      "totalLines": 69
+    },
+    "ApexClass:Constants": {
+      "tests": ["AccountTodoControllerTest"],
+      "coveragePercent": 100,
+      "coveredLines": 29,
+      "totalLines": 29
     },
     "ApexClass:ContactSelector": {
       "tests": ["QuotePDFControllerTest"],
@@ -59,14 +77,14 @@
     "ApexClass:DesignRevisionService": {
       "tests": ["DesignRevisionTriggerTest"],
       "coveragePercent": 80,
-      "coveredLines": 274,
-      "totalLines": 342
+      "coveredLines": 284,
+      "totalLines": 352
     },
     "ApexClass:DesignRevisionTriggerHandler": {
       "tests": ["DesignRevisionTriggerTest"],
       "coveragePercent": 100,
-      "coveredLines": 15,
-      "totalLines": 15
+      "coveredLines": 17,
+      "totalLines": 17
     },
     "ApexClass:GlideAnalyticsIntegrationService": {
       "tests": ["QuotePDFControllerTest"],
@@ -277,9 +295,9 @@
     },
     "ApexClass:QuotePDFController": {
       "tests": ["QuotePDFControllerTest"],
-      "coveragePercent": 83,
-      "coveredLines": 73,
-      "totalLines": 87
+      "coveragePercent": 88,
+      "coveredLines": 79,
+      "totalLines": 89
     },
     "ApexClass:QuotePDFValidationService": {
       "tests": ["QuotePDFValidationServiceTest"],
@@ -395,7 +413,7 @@
       "totalLines": 1
     },
     "ApexTrigger:OpportunityTrigger": {
-      "tests": ["ContentDocumentLinkSelectorTest"],
+      "tests": ["AccountTodoControllerTest"],
       "coveragePercent": 100,
       "coveredLines": 1,
       "totalLines": 1
