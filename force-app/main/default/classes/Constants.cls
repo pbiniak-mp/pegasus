@@ -67,6 +67,8 @@ public class Constants {
 	public static final String QUOTE_TYPE_MATERIAL = 'Material';
 	public static final String QUOTE_TYPE_STAMP = 'Stamp';
 	public static final String QUOTE_TYPE_EXTRA = 'Extra';
+	public static final String QUOTE_FREIGHT_TERMS_NOT_INCLUDED = 'Not Included';
+	public static final String QUOTE_FREIGHT_TERMS_COLLECT = 'Collect';
 
 	// Quote Line Item
 	public static final String QUOTE_LINE_ITEM_HANDLER_NAME = 'QuoteLineItemTriggerHandler';

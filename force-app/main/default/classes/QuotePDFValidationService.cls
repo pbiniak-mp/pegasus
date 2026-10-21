@@ -15,8 +15,9 @@
  *   - Contact          - contact name (via Quote.ContactId)
  *   - Quote Line Items - the Racking Components table
  *
- * Freight and Tax are deliberately not required: the PDF prints "TBD" for
- * freight by design.
+ * Freight and Tax are deliberately not required: without a Shipping and
+ * Handling amount the PDF prints the Freight Terms instead ("Not Included" by
+ * default).
  *
  * Keep this in sync with QuotePDF.page whenever a field is added or removed
  * from the layout.

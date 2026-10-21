@@ -95,6 +95,10 @@
                 <behavior>Edit</behavior>
                 <field>ShippingHandling</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Freight_Terms__c</field>
+            </layoutItems>
         </layoutColumns>
         <style>TwoColumnsTopToBottom</style>
     </layoutSections>
