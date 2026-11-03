@@ -1,0 +1,112 @@
+<template>
+	<div class="intake-callout intake-section">
+		<p>{text.intro}</p>
+	</div>
+
+	<section class="intake-section">
+		<h2 class="intake-section-title">Project Information</h2>
+		<div class="intake-grid">
+			<lightning-input
+				class="intake-col-full"
+				label="Project Name"
+				data-name="projectName"
+				value={v.projectName}
+				placeholder="Project_01"
+				max-length="30"
+				required
+				onchange={handleChange}
+			></lightning-input>
+
+			<lightning-combobox
+				label="Country"
+				data-name="countryCode"
+				value={v.countryCode}
+				options={countryOptions}
+				placeholder="Select a country"
+				required
+				onchange={handleChange}
+			></lightning-combobox>
+
+			<lightning-combobox
+				label="State / Province"
+				data-name="stateCode"
+				value={v.stateCode}
+				options={stateOptions}
+				placeholder="Select a state"
+				disabled={stateDisabled}
+				required
+				onchange={handleChange}
+			></lightning-combobox>
+
+			<lightning-input
+				class="intake-col-full"
+				label="Street"
+				data-name="street"
+				value={v.street}
+				placeholder="145 Pegasus Way"
+				max-length="255"
+				required
+				onchange={handleChange}
+			></lightning-input>
+
+			<lightning-input
+				label="City"
+				data-name="city"
+				value={v.city}
+				max-length="40"
+				required
+				onchange={handleChange}
+			></lightning-input>
+
+			<lightning-input
+				label="Zip / Postal Code"
+				data-name="postalCode"
+				value={v.postalCode}
+				placeholder="00000"
+				max-length="20"
+				required
+				onchange={handleChange}
+			></lightning-input>
+
+			<lightning-input
+				type="date"
+				label="Planned Install Date"
+				data-name="plannedInstallDate"
+				value={v.plannedInstallDate}
+				min={minInstallDate}
+				message-when-range-underflow="Planned Install Date cannot be in the past."
+				required
+				onchange={handleChange}
+			></lightning-input>
+
+			<div class="intake-col-full">
+				<lightning-textarea
+					label="Project Notes"
+					data-name="projectNotes"
+					value={v.projectNotes}
+					placeholder="Please indicate any special project needs or considerations not clarified in your layout submission."
+					max-length={notesMaxLength}
+					onchange={handleChange}
+				></lightning-textarea>
+				<p class="intake-help notes-remaining" aria-live="polite">
+					{notesRemaining}
+				</p>
+			</div>
+		</div>
+	</section>
+
+	<section class="intake-section">
+		<h2 class="intake-section-title">Module Layout</h2>
+		<c-project-intake-file-upload
+			category={layoutCategory}
+			label={layoutLimits.label}
+			accept={layoutLimits.accept}
+			max-files={layoutLimits.maxFiles}
+			max-size-bytes={layoutLimits.maxSizeBytes}
+			token={uploadToken}
+			files={layoutFiles}
+			required
+			onfileschange={handleFilesChange}
+		></c-project-intake-file-upload>
+	</section>
+</template>

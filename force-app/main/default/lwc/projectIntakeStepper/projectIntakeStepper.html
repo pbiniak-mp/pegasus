@@ -1,0 +1,57 @@
+<template>
+	<nav class="stepper" aria-label="Form progress">
+		<div class="stepper-compact" aria-hidden="true">
+			<p class="stepper-compact-text">
+				Step {stepNumber} of {stepCount} - {currentLabel}
+			</p>
+			<div class="stepper-compact-track">
+				<div class="stepper-compact-bar" style={progressStyle}></div>
+			</div>
+		</div>
+		<ol class="stepper-list">
+			<template for:each={items} for:item="item">
+				<li
+					key={item.key}
+					class={item.itemClass}
+					aria-current={item.ariaCurrent}
+				>
+					<template lwc:if={item.clickable}>
+						<button
+							type="button"
+							class="stepper-step stepper-step_button"
+							data-index={item.index}
+							aria-label={item.ariaLabel}
+							onclick={handleClick}
+						>
+							<span class="stepper-marker" aria-hidden="true">
+								<template lwc:if={item.showCheck}>
+									<svg
+										class="stepper-check"
+										viewBox="0 0 16 16"
+										focusable="false"
+									>
+										<path d="M3.5 8.5l3 3 6-7"></path>
+									</svg>
+								</template>
+								<template lwc:else>{item.number}</template>
+							</span>
+							<span class="stepper-label" aria-hidden="true"
+								>{item.label}</span
+							>
+						</button>
+					</template>
+					<template lwc:else>
+						<span class="stepper-step" aria-label={item.ariaLabel}>
+							<span class="stepper-marker" aria-hidden="true"
+								>{item.number}</span
+							>
+							<span class="stepper-label" aria-hidden="true"
+								>{item.label}</span
+							>
+						</span>
+					</template>
+				</li>
+			</template>
+		</ol>
+	</nav>
+</template>
