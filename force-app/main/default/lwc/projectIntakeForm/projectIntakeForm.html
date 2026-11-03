@@ -1,0 +1,153 @@
+<template>
+	<div class="intake-page">
+		<article class="intake-card" lwc:ref="card">
+			<header class="intake-header">
+				<img class="intake-logo" src={logoUrl} alt="Pegasus Solar" />
+				<h1 class="intake-title">Project Intake Form</h1>
+				<p class="intake-subtitle">
+					Tell us about your project and we will prepare your racking
+					design.
+				</p>
+			</header>
+
+			<template lwc:if={isLoading}>
+				<div class="intake-state" role="status">
+					<lightning-spinner
+						alternative-text="Loading form"
+						size="medium"
+					></lightning-spinner>
+				</div>
+			</template>
+			<template lwc:elseif={loadError}>
+				<div class="intake-state intake-state_error" role="alert">
+					<lightning-icon
+						icon-name="utility:warning"
+						size="small"
+						alternative-text="Error"
+					></lightning-icon>
+					<p class="intake-state-message">{loadError}</p>
+					<lightning-button
+						label="Retry"
+						variant="brand"
+						onclick={handleRetry}
+					></lightning-button>
+				</div>
+			</template>
+			<template lwc:else>
+				<c-project-intake-stepper
+					steps={steps}
+					current-index={currentIndex}
+					max-visited-index={maxVisitedIndex}
+					onstepselect={handleStepSelect}
+				></c-project-intake-stepper>
+
+				<div class="intake-body">
+					<template lwc:if={isProjectStep}>
+						<c-project-intake-project-step
+							lwc:ref="activeStep"
+							values={values}
+							options={viewOptions}
+							visibility={visibility}
+							upload-token={uploadToken}
+							onfieldchange={handleFieldChange}
+						></c-project-intake-project-step>
+					</template>
+					<template lwc:elseif={isModuleStep}>
+						<c-project-intake-module-step
+							lwc:ref="activeStep"
+							values={values}
+							options={viewOptions}
+							visibility={visibility}
+							upload-token={uploadToken}
+							onfieldchange={handleFieldChange}
+						></c-project-intake-module-step>
+					</template>
+					<template lwc:elseif={isSystemStep}>
+						<c-project-intake-system-step
+							lwc:ref="activeStep"
+							values={values}
+							options={viewOptions}
+							visibility={visibility}
+							upload-token={uploadToken}
+							onfieldchange={handleFieldChange}
+						></c-project-intake-system-step>
+					</template>
+					<template lwc:elseif={isSiteStep}>
+						<c-project-intake-site-step
+							lwc:ref="activeStep"
+							values={values}
+							options={viewOptions}
+							visibility={visibility}
+							upload-token={uploadToken}
+							onfieldchange={handleFieldChange}
+						></c-project-intake-site-step>
+					</template>
+					<template lwc:elseif={isContactStep}>
+						<c-project-intake-contact-step
+							lwc:ref="activeStep"
+							values={values}
+							options={viewOptions}
+							visibility={visibility}
+							upload-token={uploadToken}
+							onfieldchange={handleFieldChange}
+						></c-project-intake-contact-step>
+					</template>
+					<template lwc:elseif={isReviewStep}>
+						<c-project-intake-review-step
+							lwc:ref="activeStep"
+							values={values}
+							options={viewOptions}
+							visibility={visibility}
+							onfieldchange={handleFieldChange}
+							oneditstep={handleEditStep}
+						></c-project-intake-review-step>
+					</template>
+
+					<template lwc:if={isSubmitting}>
+						<lightning-spinner
+							alternative-text="Submitting your project"
+							size="medium"
+						></lightning-spinner>
+					</template>
+				</div>
+
+				<template lwc:if={submitError}>
+					<div class="intake-error" role="alert">
+						<lightning-icon
+							icon-name="utility:error"
+							size="x-small"
+							variant="error"
+							alternative-text="Error"
+						></lightning-icon>
+						<p class="intake-error-message">{submitError}</p>
+					</div>
+				</template>
+
+				<footer class="intake-actions">
+					<div class="intake-actions-start">
+						<template lwc:if={showBack}>
+							<lightning-button
+								class="intake-back"
+								label="Back"
+								icon-name="utility:chevronleft"
+								disabled={isSubmitting}
+								onclick={handleBack}
+							></lightning-button>
+						</template>
+					</div>
+					<div class="intake-actions-end">
+						<lightning-button
+							class="intake-primary"
+							label={primaryLabel}
+							variant="brand"
+							icon-name={primaryIcon}
+							icon-position="right"
+							disabled={isSubmitting}
+							onclick={handlePrimary}
+						></lightning-button>
+					</div>
+				</footer>
+			</template>
+		</article>
+	</div>
+</template>

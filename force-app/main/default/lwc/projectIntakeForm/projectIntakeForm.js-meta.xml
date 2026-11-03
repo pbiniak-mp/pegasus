@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>67.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>Project Intake Form</masterLabel>
+    <description>Public multi-step project intake form that creates a Lead with uploaded files.</description>
+    <targets>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightningCommunity__Default">
+            <property
+                name="redirectUrl"
+                type="String"
+                label="Redirect URL after submit"
+                default="https://www.pegasussolar.com/form-received/"
+            />
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

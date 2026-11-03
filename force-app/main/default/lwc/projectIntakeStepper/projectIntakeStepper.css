@@ -1,0 +1,176 @@
+@import 'c/projectIntakeStyles';
+
+.stepper {
+	margin-bottom: 2rem;
+}
+
+.stepper-list {
+	display: flex;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.stepper-item {
+	position: relative;
+	flex: 1 1 0;
+	display: flex;
+	justify-content: center;
+	min-width: 0;
+}
+
+/* Connector line from the previous step */
+.stepper-item + .stepper-item::before {
+	content: '';
+	position: absolute;
+	top: 1rem;
+	left: calc(-50% + 1.25rem);
+	right: calc(50% + 1.25rem);
+	height: 2px;
+	border-radius: 1px;
+	background: var(--intake-border);
+}
+
+.stepper-item_reached + .stepper-item_reached::before {
+	background: var(--intake-brand);
+}
+
+.stepper-step {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 0.5rem;
+	min-width: 0;
+	padding: 0;
+	border: 0;
+	background: none;
+	font: inherit;
+	color: var(--intake-muted);
+	text-align: center;
+}
+
+.stepper-step_button {
+	cursor: pointer;
+	border-radius: 8px;
+}
+
+.stepper-step_button:focus-visible {
+	outline: 2px solid var(--intake-brand);
+	outline-offset: 4px;
+}
+
+.stepper-marker {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 2rem;
+	height: 2rem;
+	border-radius: 50%;
+	border: 2px solid var(--intake-border);
+	background: #ffffff;
+	color: var(--intake-muted);
+	font-size: 0.875rem;
+	font-weight: 600;
+	transition:
+		background-color 0.2s ease,
+		border-color 0.2s ease,
+		color 0.2s ease;
+}
+
+.stepper-label {
+	font-size: 0.8125rem;
+	line-height: 1.3;
+	overflow-wrap: anywhere;
+}
+
+.stepper-item_current .stepper-marker {
+	border-color: var(--intake-brand);
+	background: var(--intake-brand);
+	color: #ffffff;
+	box-shadow: 0 0 0 4px rgba(67, 112, 182, 0.15);
+}
+
+.stepper-item_current .stepper-label {
+	color: var(--intake-text);
+	font-weight: 600;
+}
+
+.stepper-item_complete .stepper-marker {
+	border-color: var(--intake-brand);
+	background: var(--intake-brand);
+	color: #ffffff;
+}
+
+.stepper-item_visited .stepper-marker {
+	border-color: var(--intake-brand);
+	color: var(--intake-brand);
+}
+
+.stepper-item_complete .stepper-label,
+.stepper-item_visited .stepper-label {
+	color: var(--intake-text);
+}
+
+.stepper-step_button:hover .stepper-marker {
+	box-shadow: 0 0 0 4px rgba(67, 112, 182, 0.15);
+}
+
+.stepper-step_button:hover .stepper-label {
+	color: var(--intake-brand);
+}
+
+.stepper-compact {
+	display: none;
+}
+
+@media (max-width: 767px) {
+	.stepper-compact {
+		display: block;
+		margin-bottom: 1rem;
+	}
+
+	.stepper-compact-text {
+		margin: 0 0 0.5rem;
+		font-size: 0.875rem;
+		font-weight: 600;
+		color: var(--intake-text);
+	}
+
+	.stepper-compact-track {
+		height: 4px;
+		border-radius: 2px;
+		background: var(--intake-border);
+		overflow: hidden;
+	}
+
+	.stepper-compact-bar {
+		height: 100%;
+		background: var(--intake-brand);
+		transition: width 0.3s ease;
+	}
+
+	/* Keep the markers (still clickable), hide the labels visually only */
+	.stepper-label {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		margin: -1px;
+		padding: 0;
+		overflow: hidden;
+		clip: rect(0 0 0 0);
+		white-space: nowrap;
+		border: 0;
+	}
+
+	.stepper-marker {
+		width: 1.75rem;
+		height: 1.75rem;
+		font-size: 0.75rem;
+	}
+
+	.stepper-item + .stepper-item::before {
+		top: 0.875rem;
+		left: calc(-50% + 1.125rem);
+		right: calc(50% + 1.125rem);
+	}
+}

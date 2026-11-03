@@ -1,0 +1,109 @@
+<template>
+	<section class="intake-section">
+		<h2 class="intake-section-title">Product Selection</h2>
+		<div class="intake-grid">
+			<lightning-combobox
+				label="System Type"
+				data-name="systemType"
+				value={v.systemType}
+				options={systemTypeOptions}
+				placeholder="Select a system type"
+				required
+				onchange={handleChange}
+			></lightning-combobox>
+
+			<lightning-combobox
+				label="System Configuration"
+				data-name="systemConfiguration"
+				value={v.systemConfiguration}
+				options={configurationOptions}
+				placeholder="Select a configuration"
+				disabled={configurationDisabled}
+				required={configurationRequired}
+				onchange={handleChange}
+			></lightning-combobox>
+
+			<lightning-combobox
+				label="Panel Tilt"
+				data-name="panelTilt"
+				value={v.panelTilt}
+				options={tiltOptions}
+				placeholder="Select a tilt"
+				disabled={tiltDisabled}
+				required={tiltRequired}
+				field-level-help={tiltHelp}
+				onchange={handleChange}
+			></lightning-combobox>
+
+			<template lwc:if={showUl3741}>
+				<div class="checkbox-cell">
+					<lightning-input
+						type="checkbox"
+						label="UL 3741 compliance"
+						data-name="ul3741Compliance"
+						checked={v.ul3741Compliance}
+						onchange={handleChange}
+					></lightning-input>
+				</div>
+			</template>
+		</div>
+	</section>
+
+	<section class="intake-section">
+		<h2 class="intake-section-title">Design Goal</h2>
+		<template lwc:if={hasDesignPreferenceOptions}>
+			<fieldset class="radio-cards">
+				<legend class="radio-cards__legend">Design Preference</legend>
+				<div class="radio-cards__list">
+					<template for:each={designPreferenceCards} for:item="card">
+						<label key={card.key} class={card.cssClass}>
+							<input
+								type="radio"
+								class="radio-card__input"
+								name="designPreference"
+								value={card.value}
+								checked={card.checked}
+								disabled={designPreferenceLocked}
+								data-name="designPreference"
+								onchange={handleChange}
+							/>
+							<span class="radio-card__text">
+								<span class="radio-card__title"
+									>{card.title}</span
+								>
+								<span class="radio-card__description"
+									>{card.description}</span
+								>
+							</span>
+						</label>
+					</template>
+				</div>
+				<template lwc:if={designPreferenceLocked}>
+					<p class="intake-help radio-cards__note">
+						Set automatically for Flush Mount.
+					</p>
+				</template>
+			</fieldset>
+		</template>
+
+		<template lwc:if={showBallast}>
+			<div class="intake-grid ballast">
+				<lightning-combobox
+					label="Ballast Block Specification"
+					data-name="ballastBlockSpecification"
+					value={v.ballastBlockSpecification}
+					options={ballastOptions}
+					placeholder="Select a ballast block"
+					required
+					onchange={handleChange}
+				></lightning-combobox>
+				<div
+					class="intake-callout intake-callout_warning intake-col-full"
+					role="note"
+				>
+					<p>{text.ballastWarning}</p>
+				</div>
+			</div>
+		</template>
+	</section>
+</template>

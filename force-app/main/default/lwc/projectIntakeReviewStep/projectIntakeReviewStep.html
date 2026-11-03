@@ -1,0 +1,53 @@
+<template>
+	<p class="intake-help review__intro">
+		Please review your answers before submitting. Use Edit to change a
+		section.
+	</p>
+
+	<template for:each={sections} for:item="section">
+		<section key={section.key} class="intake-section review__section">
+			<div class="review__header">
+				<h2 class="intake-section-title review__title">
+					{section.title}
+				</h2>
+				<lightning-button
+					variant="base"
+					label="Edit"
+					title={section.editLabel}
+					icon-name="utility:edit"
+					data-step-key={section.stepKey}
+					onclick={handleEdit}
+					class="review__edit"
+				></lightning-button>
+			</div>
+
+			<dl class="review__list">
+				<template for:each={section.items} for:item="item">
+					<div key={item.key} class={item.cssClass}>
+						<dt class="review__label">{item.label}</dt>
+						<dd class="review__value">
+							<template lwc:if={item.hasFiles}>
+								<ul class="review__files">
+									<template
+										for:each={item.files}
+										for:item="file"
+									>
+										<li key={file.key} class="review__file">
+											<span class="review__file-name"
+												>{file.name}</span
+											>
+											<span class="review__file-size"
+												>{file.size}</span
+											>
+										</li>
+									</template>
+								</ul>
+							</template>
+							<template lwc:else>{item.value}</template>
+						</dd>
+					</div>
+				</template>
+			</dl>
+		</section>
+	</template>
+</template>

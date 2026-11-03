@@ -1,0 +1,11 @@
+@import 'c/projectIntakeStyles';
+
+.intake-callout p {
+	margin: 0;
+	line-height: 1.5;
+}
+
+.notes-remaining {
+	margin-top: 0.25rem;
+	text-align: right;
+}
