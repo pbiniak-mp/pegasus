@@ -1,0 +1,130 @@
+<template>
+	<section class="intake-section">
+		<h2 class="intake-section-title">Design Code</h2>
+		<div class="intake-grid">
+			<lightning-combobox
+				label="ASCE Code"
+				data-name="codeStandard"
+				value={v.codeStandard}
+				options={codeStandardOptions}
+				placeholder="Select a code"
+				onchange={handleChange}
+			></lightning-combobox>
+		</div>
+	</section>
+
+	<template lwc:if={showBuildingInfo}>
+		<section class="intake-section">
+			<h2 class="intake-section-title">Building Information</h2>
+			<div class="intake-grid">
+				<lightning-input
+					type="number"
+					label="Building Height (ft)"
+					data-name="buildingHeightFt"
+					value={v.buildingHeightFt}
+					placeholder="Max height from grade to roof deck"
+					min="0.01"
+					step="0.01"
+					message-when-range-underflow="Must be greater than 0."
+					required
+					onchange={handleChange}
+				></lightning-input>
+
+				<lightning-input
+					type="number"
+					label="Roof Pitch (°)"
+					data-name="roofPitch"
+					value={v.roofPitch}
+					placeholder="0° - 7°"
+					min="0"
+					step="0.01"
+					message-when-range-underflow="Cannot be negative."
+					required
+					onchange={handleChange}
+				></lightning-input>
+
+				<template for:each={buildingNumbers} for:item="field">
+					<lightning-input
+						key={field.name}
+						type="number"
+						label={field.label}
+						data-name={field.name}
+						value={field.value}
+						placeholder={field.placeholder}
+						min="0.01"
+						step="0.01"
+						message-when-range-underflow={positiveMessage}
+						onchange={handleChange}
+					></lightning-input>
+				</template>
+
+				<lightning-combobox
+					label="Roof Surface"
+					data-name="roofSurface"
+					value={v.roofSurface}
+					options={roofSurfaceOptions}
+					placeholder="Select a roof surface"
+					onchange={handleChange}
+				></lightning-combobox>
+
+				<lightning-combobox
+					label="Existing or New Construction"
+					data-name="constructionType"
+					value={v.constructionType}
+					options={constructionTypeOptions}
+					placeholder="Select an option"
+					onchange={handleChange}
+				></lightning-combobox>
+			</div>
+		</section>
+	</template>
+
+	<template lwc:if={showSiteInfo}>
+		<section class="intake-section">
+			<h2 class="intake-section-title">Site Information</h2>
+			<div class="intake-grid">
+				<div>
+					<lightning-input
+						type="number"
+						label="Ground Slope (°)"
+						data-name="groundSlope"
+						value={v.groundSlope}
+						min="0.01"
+						max="99.99"
+						step="0.01"
+						message-when-range-underflow={positiveMessage}
+						message-when-range-overflow="Must be 99.99 or less."
+						onchange={handleChange}
+					></lightning-input>
+					<p class="intake-help field-hint">Leave blank if flat.</p>
+				</div>
+
+				<div>
+					<lightning-input
+						type="number"
+						label="Array Azimuth (°)"
+						data-name="arrayAzimuth"
+						value={v.arrayAzimuth}
+						min="0.01"
+						max="360"
+						step="0.01"
+						message-when-range-underflow={positiveMessage}
+						message-when-range-overflow="Must be 360 or less."
+						onchange={handleChange}
+					></lightning-input>
+					<p class="intake-help field-hint">Leave blank if 0°.</p>
+				</div>
+
+				<div class="intake-col-full">
+					<lightning-input
+						type="checkbox"
+						label="Landfill Location (No Penetrations)"
+						data-name="landfillLocation"
+						checked={v.landfillLocation}
+						onchange={handleChange}
+					></lightning-input>
+				</div>
+			</div>
+		</section>
+	</template>
+</template>

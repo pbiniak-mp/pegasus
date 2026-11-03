@@ -1,0 +1,14 @@
+@import 'c/projectIntakeStyles';
+
+.intake-legal p {
+	margin: 0;
+	line-height: 1.55;
+}
+
+.consent {
+	margin-top: 1rem;
+}
+
+.consent__note {
+	margin-top: 0.5rem;
+}

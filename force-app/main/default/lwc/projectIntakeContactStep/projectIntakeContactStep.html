@@ -1,0 +1,104 @@
+<template>
+	<section class="intake-section">
+		<h2 class="intake-section-title">Contact Information</h2>
+		<div class="intake-grid">
+			<lightning-input
+				class="intake-col-full"
+				label="Company"
+				data-name="company"
+				value={v.company}
+				placeholder="Solar Corp Inc."
+				max-length="255"
+				autocomplete="organization"
+				required
+				onchange={handleChange}
+			></lightning-input>
+
+			<lightning-input
+				label="First Name"
+				data-name="firstName"
+				value={v.firstName}
+				max-length="40"
+				autocomplete="given-name"
+				required
+				onchange={handleChange}
+			></lightning-input>
+
+			<lightning-input
+				label="Last Name"
+				data-name="lastName"
+				value={v.lastName}
+				max-length="80"
+				autocomplete="family-name"
+				required
+				onchange={handleChange}
+			></lightning-input>
+
+			<lightning-input
+				type="email"
+				label="Email"
+				data-name="email"
+				value={v.email}
+				placeholder="you@company.com"
+				max-length="80"
+				autocomplete="email"
+				required
+				onchange={handleChange}
+			></lightning-input>
+
+			<lightning-input
+				type="tel"
+				label="Phone"
+				data-name="phone"
+				value={v.phone}
+				placeholder="(555) 555-5555"
+				max-length="40"
+				autocomplete="tel"
+				required
+				onchange={handleChange}
+			></lightning-input>
+
+			<lightning-combobox
+				label="Purchasing"
+				data-name="distributorType"
+				value={v.distributorType}
+				options={distributorTypeOptions}
+				placeholder="Select an option"
+				field-level-help="Direct from Pegasus or through a distribution partner."
+				onchange={handleChange}
+			></lightning-combobox>
+
+			<template lwc:if={showKnownDisty}>
+				<lightning-input
+					label="Distribution Partner"
+					data-name="knownDisty"
+					value={v.knownDisty}
+					max-length="42"
+					required
+					onchange={handleChange}
+				></lightning-input>
+			</template>
+		</div>
+	</section>
+
+	<section class="intake-section">
+		<h2 class="intake-section-title">Consent &amp; Terms</h2>
+		<div class="intake-legal" tabindex="0" aria-label="Terms">
+			<p>{text.consentTerms}</p>
+		</div>
+		<div class="consent">
+			<lightning-input
+				type="checkbox"
+				label="I Consent &amp; Agree"
+				data-name="legalConsent"
+				checked={v.legalConsent}
+				message-when-value-missing="You must agree to the terms to submit."
+				required
+				onchange={handleChange}
+			></lightning-input>
+			<p class="intake-help consent__note">
+				{text.consentAcknowledgement}
+			</p>
+		</div>
+	</section>
+</template>

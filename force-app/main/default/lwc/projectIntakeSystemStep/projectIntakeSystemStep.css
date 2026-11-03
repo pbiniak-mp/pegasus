@@ -1,0 +1,111 @@
+@import 'c/projectIntakeStyles';
+
+.checkbox-cell {
+	display: flex;
+	align-items: flex-end;
+	padding-bottom: 0.5rem;
+}
+
+.intake-callout p {
+	margin: 0;
+	line-height: 1.5;
+}
+
+.radio-cards {
+	border: 0;
+	margin: 0 0 1rem;
+	padding: 0;
+	min-width: 0;
+}
+
+.radio-cards__legend {
+	font-size: 0.75rem;
+	color: #3e4b5e;
+	margin-bottom: 0.5rem;
+	padding: 0;
+}
+
+.radio-cards__list {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 0.75rem;
+}
+
+@media (min-width: 768px) {
+	.radio-cards__list {
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+}
+
+.radio-card {
+	display: flex;
+	align-items: flex-start;
+	gap: 0.75rem;
+	padding: 0.875rem 1rem;
+	border: 1px solid #d8dee8;
+	border-radius: 8px;
+	background: #ffffff;
+	cursor: pointer;
+	transition:
+		border-color 0.15s ease,
+		box-shadow 0.15s ease;
+}
+
+.radio-card:hover {
+	border-color: var(--intake-brand);
+}
+
+.radio-card:focus-within {
+	box-shadow: 0 0 0 3px rgba(67, 112, 182, 0.25);
+}
+
+.radio-card_checked {
+	border-color: var(--intake-brand);
+	background: #f3f7fd;
+	box-shadow: inset 0 0 0 1px var(--intake-brand);
+}
+
+.radio-card_disabled {
+	cursor: not-allowed;
+	opacity: 0.7;
+}
+
+.radio-card_disabled:hover {
+	border-color: #d8dee8;
+}
+
+.radio-card_checked.radio-card_disabled,
+.radio-card_checked.radio-card_disabled:hover {
+	border-color: var(--intake-brand);
+}
+
+.radio-card__input {
+	flex-shrink: 0;
+	margin-top: 0.2rem;
+	accent-color: var(--intake-brand);
+}
+
+.radio-card__text {
+	display: flex;
+	flex-direction: column;
+	gap: 0.25rem;
+}
+
+.radio-card__title {
+	font-weight: 600;
+	color: #181818;
+}
+
+.radio-card__description {
+	font-size: 0.8125rem;
+	line-height: 1.4;
+	color: #5c6b80;
+}
+
+.radio-cards__note {
+	margin-top: 0.5rem;
+}
+
+.ballast {
+	margin-top: 0.5rem;
+}
