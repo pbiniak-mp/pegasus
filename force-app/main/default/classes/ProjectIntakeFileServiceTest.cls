@@ -4,9 +4,40 @@ private class ProjectIntakeFileServiceTest {
 		return [SELECT COUNT() FROM ContentDocument WHERE Id = :documentId];
 	}
 
+	private static Project_Intake_Upload__c uploadOf(ContentVersion version) {
+		return [
+			SELECT Id, Upload_Token__c, Category__c, Content_Document_Id__c, File_Name__c,
+				File_Extension__c, Size_Bytes__c, Lead__c
+			FROM Project_Intake_Upload__c
+			WHERE Content_Version_Id__c = :String.valueOf(version.Id)
+			WITH SYSTEM_MODE
+		];
+	}
+
+	/** Inserts an intake file and returns the error that rejected it. */
+	private static String expectUploadError(String tokenValue, String fileName, Integer sizeChars) {
+		try {
+			ProjectIntakeTestData.createFile(tokenValue, fileName, sizeChars);
+		} catch (DmlException e) {
+			return e.getDmlMessage(0);
+		}
+		Assert.fail('Expected the upload to be rejected');
+		return null;
+	}
+
 	private static String expectError(String token, List<ProjectIntakeRequest.FileRef> refs) {
 		try {
 			ProjectIntakeFileService.validateFileRefs(token, refs);
+		} catch (ProjectIntakeService.IntakeValidationException e) {
+			return e.getMessage();
+		}
+		Assert.fail('Expected IntakeValidationException');
+		return null;
+	}
+
+	private static String expectAttachError(Id leadId, String token, List<ProjectIntakeRequest.FileRef> refs) {
+		try {
+			ProjectIntakeFileService.attachFilesToLead(leadId, token, refs);
 		} catch (ProjectIntakeService.IntakeValidationException e) {
 			return e.getMessage();
 		}
@@ -19,6 +50,11 @@ private class ProjectIntakeFileServiceTest {
 		fileRef.contentVersionId = versionId;
 		fileRef.category = category;
 		return fileRef;
+	}
+
+	/** A syntactically valid ContentVersion Id for structural checks. */
+	private static Id fakeVersionId(Integer index) {
+		return Id.valueOf('068' + String.valueOf(index).leftPad(12, '0'));
 	}
 
 	private static Lead insertLead() {
@@ -36,6 +72,137 @@ private class ProjectIntakeFileServiceTest {
 		Assert.areNotEqual(token, ProjectIntakeFileService.createUploadToken());
 	}
 
+	// ---- upload transaction (trigger) ------------------------------------------
+
+	@IsTest
+	static void upload_validFileIsRecordedAndPrefixed() {
+		String token = ProjectIntakeFileService.createUploadToken();
+
+		ContentVersion layout = ProjectIntakeTestData.createLayout(token);
+
+		Assert.areEqual('Module Layout - layout', layout.Title);
+		Project_Intake_Upload__c upload = uploadOf(layout);
+		Assert.areEqual(token, upload.Upload_Token__c);
+		Assert.areEqual('LAYOUT', upload.Category__c);
+		Assert.areEqual(layout.ContentDocumentId, upload.Content_Document_Id__c);
+		Assert.areEqual('layout', upload.File_Name__c);
+		Assert.areEqual('pdf', upload.File_Extension__c);
+		Assert.areEqual(layout.ContentSize, upload.Size_Bytes__c);
+		Assert.isNull(upload.Lead__c);
+	}
+
+	@IsTest
+	static void upload_existingPrefixIsNotDoubled() {
+		String token = ProjectIntakeFileService.createUploadToken();
+
+		ContentVersion layout = ProjectIntakeTestData.createFile(
+			token + '|LAYOUT',
+			'Module Layout - plan.pdf',
+			10
+		);
+
+		Assert.areEqual('Module Layout - plan', layout.Title);
+		Assert.areEqual('plan', uploadOf(layout).File_Name__c);
+	}
+
+	@IsTest
+	static void upload_fileWithoutIntakeTokenIsIgnored() {
+		ContentVersion version = new ContentVersion(
+			Title = 'internal',
+			PathOnClient = 'internal.exe',
+			VersionData = Blob.valueOf('x')
+		);
+
+		insert version;
+
+		Assert.areEqual(0, [SELECT COUNT() FROM Project_Intake_Upload__c WITH SYSTEM_MODE]);
+		Assert.areEqual('internal', [SELECT Title FROM ContentVersion WHERE Id = :version.Id].Title);
+	}
+
+	@IsTest
+	static void upload_invalidTokenOrCategoryIsRejected() {
+		String token = ProjectIntakeFileService.createUploadToken();
+
+		Assert.areEqual(Constants.INTAKE_ERR_SESSION, expectUploadError('short|LAYOUT', 'a.pdf', 10));
+		Assert.areEqual(Constants.INTAKE_ERR_SESSION, expectUploadError(token + '|OTHER', 'a.pdf', 10));
+		Assert.areEqual(Constants.INTAKE_ERR_SESSION, expectUploadError(token, 'a.pdf', 10));
+		Assert.areEqual(0, [SELECT COUNT() FROM Project_Intake_Upload__c WITH SYSTEM_MODE]);
+	}
+
+	@IsTest
+	static void upload_wrongExtensionIsRejected() {
+		String token = ProjectIntakeFileService.createUploadToken();
+
+		Assert.areEqual(
+			'File type .exe is not allowed.',
+			expectUploadError(token + '|SPEC', 'malware.exe', 10)
+		);
+		// dwg is fine for a layout but not for a spec sheet
+		Assert.areEqual(
+			'File type .dwg is not allowed.',
+			expectUploadError(token + '|SPEC', 'plan.dwg', 10)
+		);
+		Assert.areEqual(0, [SELECT COUNT() FROM Project_Intake_Upload__c WITH SYSTEM_MODE]);
+	}
+
+	@IsTest
+	static void upload_extensionCheckIsCaseInsensitive() {
+		String token = ProjectIntakeFileService.createUploadToken();
+
+		ContentVersion dwg = ProjectIntakeTestData.createFile(token + '|LAYOUT', 'plan.DWG', 10);
+
+		Assert.areEqual('dwg', uploadOf(dwg).File_Extension__c);
+	}
+
+	@IsTest
+	static void upload_oversizeFileIsRejectedWithReadableLimit() {
+		String token = ProjectIntakeFileService.createUploadToken();
+		ProjectIntakeFileService.maxBytesOverride.put('SPEC', 10);
+		ProjectIntakeFileService.maxBytesOverride.put('LAYOUT', 2048);
+
+		Assert.areEqual(
+			'File is larger than 10 bytes.',
+			expectUploadError(token + '|SPEC', 'big.pdf', 50)
+		);
+		Assert.areEqual(
+			'File is larger than 2 KB.',
+			expectUploadError(token + '|LAYOUT', 'mid.pdf', 5000)
+		);
+		ProjectIntakeFileService.maxBytesOverride.put('SPEC', 2097152);
+		Assert.areEqual(
+			'File is larger than 2 MB.',
+			expectUploadError(token + '|SPEC', 'huge.pdf', 2200000)
+		);
+	}
+
+	@IsTest
+	static void upload_tooManyFilesOfACategoryAreRejected() {
+		String token = ProjectIntakeFileService.createUploadToken();
+		ProjectIntakeTestData.createLayout(token);
+		ProjectIntakeTestData.createSpec(token);
+		ProjectIntakeTestData.createFile(token + '|SPEC', 'spec2.pdf', 10);
+
+		Assert.areEqual('Only 1 file allowed.', expectUploadError(token + '|LAYOUT', 'l2.pdf', 10));
+		Assert.areEqual('Only 2 files allowed.', expectUploadError(token + '|SPEC', 's3.pdf', 10));
+		Assert.areEqual(3, [SELECT COUNT() FROM Project_Intake_Upload__c WITH SYSTEM_MODE]);
+	}
+
+	@IsTest
+	static void upload_limitCountsOnlyTheSameTokenAndUnattachedFiles() {
+		String token = ProjectIntakeFileService.createUploadToken();
+		ContentVersion first = ProjectIntakeTestData.createLayout(token);
+		Project_Intake_Upload__c upload = uploadOf(first);
+		upload.Lead__c = insertLead().Id;
+		Database.update(upload, AccessLevel.SYSTEM_MODE);
+
+		ProjectIntakeTestData.createLayout(token);
+		ProjectIntakeTestData.createLayout(ProjectIntakeFileService.createUploadToken());
+
+		Assert.areEqual(3, [SELECT COUNT() FROM Project_Intake_Upload__c WITH SYSTEM_MODE]);
+	}
+
+	// ---- form ------------------------------------------------------------------
+
 	@IsTest
 	static void describeUploadedFiles_validFilesAreReturnedAsValid() {
 		String token = ProjectIntakeFileService.createUploadToken();
@@ -50,12 +217,12 @@ private class ProjectIntakeFileServiceTest {
 		Assert.areEqual(2, result.size());
 		Assert.isTrue(result[0].isValid);
 		Assert.isNull(result[0].errorMessage);
+		Assert.areEqual(layout.Id, result[0].contentVersionId);
 		Assert.areEqual('LAYOUT', result[0].category);
 		Assert.areEqual('pdf', result[0].extension);
 		Assert.areEqual('layout', result[0].title);
 		Assert.areEqual(layout.ContentSize, result[0].sizeBytes);
 		Assert.areEqual('SPEC', result[1].category);
-		Assert.areEqual(1, documentCount(layout.ContentDocumentId));
 	}
 
 	@IsTest
@@ -79,117 +246,21 @@ private class ProjectIntakeFileServiceTest {
 	}
 
 	@IsTest
-	static void describeUploadedFiles_wrongExtensionIsInvalidAndDeleted() {
+	static void describeUploadedFiles_unknownOrForeignFileIsNotFound() {
 		String token = ProjectIntakeFileService.createUploadToken();
-		ContentVersion exe = ProjectIntakeTestData.createFile(token + '|SPEC', 'malware.exe', 10);
-		// dwg is fine for a layout but not for a spec sheet
-		ContentVersion dwgSpec = ProjectIntakeTestData.createFile(token + '|SPEC', 'plan.dwg', 10);
-
-		List<ProjectIntakeFileInfo> result = ProjectIntakeFileService.describeUploadedFiles(
-			token,
-			new List<Id>{ exe.Id, dwgSpec.Id }
+		ContentVersion foreign = ProjectIntakeTestData.createLayout(
+			ProjectIntakeFileService.createUploadToken()
 		);
 
-		Assert.isFalse(result[0].isValid);
-		Assert.areEqual('File type .exe is not allowed.', result[0].errorMessage);
-		Assert.isFalse(result[1].isValid);
-		Assert.areEqual(0, documentCount(exe.ContentDocumentId), 'Invalid file must be deleted');
-		Assert.areEqual(0, documentCount(dwgSpec.ContentDocumentId));
-	}
-
-	@IsTest
-	static void describeUploadedFiles_dwgAllowedForLayout() {
-		String token = ProjectIntakeFileService.createUploadToken();
-		ContentVersion dwg = ProjectIntakeTestData.createFile(token + '|LAYOUT', 'plan.DWG', 10);
-
 		List<ProjectIntakeFileInfo> result = ProjectIntakeFileService.describeUploadedFiles(
 			token,
-			new List<Id>{ dwg.Id }
-		);
-
-		Assert.isTrue(result[0].isValid, 'Extension check must be case insensitive');
-	}
-
-	@IsTest
-	static void describeUploadedFiles_oversizeFileIsInvalid() {
-		String token = ProjectIntakeFileService.createUploadToken();
-		ContentVersion spec = ProjectIntakeTestData.createFile(token + '|SPEC', 'big.pdf', 50);
-		ProjectIntakeFileService.maxBytesOverride.put('SPEC', 10);
-
-		List<ProjectIntakeFileInfo> result = ProjectIntakeFileService.describeUploadedFiles(
-			token,
-			new List<Id>{ spec.Id }
-		);
-
-		Assert.isFalse(result[0].isValid);
-		Assert.areEqual('File is larger than 10 bytes.', result[0].errorMessage);
-		Assert.areEqual(0, documentCount(spec.ContentDocumentId));
-	}
-
-	@IsTest
-	static void describeUploadedFiles_sizeLimitMessageUsesReadableUnits() {
-		String token = ProjectIntakeFileService.createUploadToken();
-		ContentVersion bigSpec = ProjectIntakeTestData.createFile(token + '|SPEC', 'big.pdf', 2200000);
-		ContentVersion midLayout = ProjectIntakeTestData.createFile(token + '|LAYOUT', 'mid.pdf', 5000);
-
-		ProjectIntakeFileService.maxBytesOverride.put('SPEC', 2097152);
-		ProjectIntakeFileService.maxBytesOverride.put('LAYOUT', 2048);
-		List<ProjectIntakeFileInfo> result = ProjectIntakeFileService.describeUploadedFiles(
-			token,
-			new List<Id>{ bigSpec.Id, midLayout.Id }
-		);
-
-		Assert.areEqual('File is larger than 2 MB.', result[0].errorMessage);
-		Assert.areEqual('File is larger than 2 KB.', result[1].errorMessage);
-	}
-
-	@IsTest
-	static void describeUploadedFiles_tooManyFilesRejectsTheExcess() {
-		String token = ProjectIntakeFileService.createUploadToken();
-		ContentVersion first = ProjectIntakeTestData.createLayout(token);
-		ContentVersion second = ProjectIntakeTestData.createFile(token + '|LAYOUT', 'second.pdf', 10);
-
-		List<ProjectIntakeFileInfo> result = ProjectIntakeFileService.describeUploadedFiles(
-			token,
-			new List<Id>{ second.Id }
-		);
-
-		Assert.isFalse(result[0].isValid);
-		Assert.areEqual('Only 1 file allowed.', result[0].errorMessage);
-		Assert.areEqual(0, documentCount(second.ContentDocumentId));
-		Assert.areEqual(1, documentCount(first.ContentDocumentId), 'Earlier upload is kept');
-	}
-
-	@IsTest
-	static void describeUploadedFiles_specAllowsTwoFilesButNotThree() {
-		String token = ProjectIntakeFileService.createUploadToken();
-		List<Id> ids = new List<Id>();
-		for (Integer i = 0; i < 3; i++) {
-			ids.add(ProjectIntakeTestData.createFile(token + '|SPEC', 'spec' + i + '.pdf', 10).Id);
-		}
-
-		List<ProjectIntakeFileInfo> result = ProjectIntakeFileService.describeUploadedFiles(token, ids);
-
-		Assert.isTrue(result[0].isValid);
-		Assert.isTrue(result[1].isValid);
-		Assert.isFalse(result[2].isValid);
-		Assert.areEqual('Only 2 files allowed.', result[2].errorMessage);
-	}
-
-	@IsTest
-	static void describeUploadedFiles_foreignTokenIsNotFoundAndKept() {
-		String token = ProjectIntakeFileService.createUploadToken();
-		String otherToken = ProjectIntakeFileService.createUploadToken();
-		ContentVersion foreign = ProjectIntakeTestData.createLayout(otherToken);
-
-		List<ProjectIntakeFileInfo> result = ProjectIntakeFileService.describeUploadedFiles(
-			token,
-			new List<Id>{ foreign.Id }
+			new List<Id>{ foreign.Id, fakeVersionId(1) }
 		);
 
 		Assert.isFalse(result[0].isValid);
 		Assert.areEqual(Constants.INTAKE_ERR_FILE_NOT_FOUND, result[0].errorMessage);
-		Assert.areEqual(1, documentCount(foreign.ContentDocumentId), 'Foreign file must not be deleted');
+		Assert.isFalse(result[1].isValid);
+		Assert.areEqual(Constants.INTAKE_ERR_FILE_NOT_FOUND, result[1].errorMessage);
 	}
 
 	@IsTest
@@ -208,14 +279,12 @@ private class ProjectIntakeFileServiceTest {
 	}
 
 	@IsTest
-	static void describeUploadedFiles_fileLinkedToARecordIsInUseAndKept() {
+	static void describeUploadedFiles_attachedFileIsInUse() {
 		String token = ProjectIntakeFileService.createUploadToken();
 		ContentVersion layout = ProjectIntakeTestData.createLayout(token);
-		insert new ContentDocumentLink(
-			ContentDocumentId = layout.ContentDocumentId,
-			LinkedEntityId = insertLead().Id,
-			ShareType = 'V'
-		);
+		Project_Intake_Upload__c upload = uploadOf(layout);
+		upload.Lead__c = insertLead().Id;
+		Database.update(upload, AccessLevel.SYSTEM_MODE);
 
 		List<ProjectIntakeFileInfo> result = ProjectIntakeFileService.describeUploadedFiles(
 			token,
@@ -224,29 +293,29 @@ private class ProjectIntakeFileServiceTest {
 
 		Assert.isFalse(result[0].isValid);
 		Assert.areEqual(Constants.INTAKE_ERR_FILE_IN_USE, result[0].errorMessage);
-		Assert.areEqual(1, documentCount(layout.ContentDocumentId), 'File in use must not be deleted');
 	}
 
 	@IsTest
-	static void removeUploadedFile_deletesOwnUnlinkedFile() {
+	static void removeUploadedFile_removesOwnUpload() {
 		String token = ProjectIntakeFileService.createUploadToken();
 		ContentVersion layout = ProjectIntakeTestData.createLayout(token);
 
 		ProjectIntakeFileService.removeUploadedFile(token, layout.Id);
 
+		Assert.areEqual(0, [SELECT COUNT() FROM Project_Intake_Upload__c WITH SYSTEM_MODE]);
 		Assert.areEqual(0, documentCount(layout.ContentDocumentId));
+		// The slot is free again.
+		ProjectIntakeTestData.createLayout(token);
 	}
 
 	@IsTest
 	static void removeUploadedFile_missingFileOrIdIsIgnored() {
 		String token = ProjectIntakeFileService.createUploadToken();
-		ContentVersion layout = ProjectIntakeTestData.createLayout(token);
-		delete new ContentDocument(Id = layout.ContentDocumentId);
 
-		ProjectIntakeFileService.removeUploadedFile(token, layout.Id);
+		ProjectIntakeFileService.removeUploadedFile(token, fakeVersionId(1));
 		ProjectIntakeFileService.removeUploadedFile(token, null);
 
-		Assert.areEqual(0, documentCount(layout.ContentDocumentId));
+		Assert.areEqual(0, [SELECT COUNT() FROM Project_Intake_Upload__c WITH SYSTEM_MODE]);
 	}
 
 	@IsTest
@@ -263,17 +332,16 @@ private class ProjectIntakeFileServiceTest {
 			Assert.areEqual(Constants.INTAKE_ERR_FILE_REMOVE, e.getMessage());
 		}
 		Assert.areEqual(1, documentCount(foreign.ContentDocumentId));
+		Assert.areEqual(1, [SELECT COUNT() FROM Project_Intake_Upload__c WITH SYSTEM_MODE]);
 	}
 
 	@IsTest
-	static void removeUploadedFile_linkedFileThrowsAndKeepsFile() {
+	static void removeUploadedFile_attachedFileThrowsAndKeepsFile() {
 		String token = ProjectIntakeFileService.createUploadToken();
 		ContentVersion layout = ProjectIntakeTestData.createLayout(token);
-		insert new ContentDocumentLink(
-			ContentDocumentId = layout.ContentDocumentId,
-			LinkedEntityId = insertLead().Id,
-			ShareType = 'V'
-		);
+		Project_Intake_Upload__c upload = uploadOf(layout);
+		upload.Lead__c = insertLead().Id;
+		Database.update(upload, AccessLevel.SYSTEM_MODE);
 
 		try {
 			ProjectIntakeFileService.removeUploadedFile(token, layout.Id);
@@ -284,18 +352,20 @@ private class ProjectIntakeFileServiceTest {
 		Assert.areEqual(1, documentCount(layout.ContentDocumentId));
 	}
 
+	// ---- submit ----------------------------------------------------------------
+
 	@IsTest
 	static void validateFileRefs_enforcesCountsAndStructure() {
 		String token = ProjectIntakeFileService.createUploadToken();
-		ContentVersion layout = ProjectIntakeTestData.createLayout(token);
-		ContentVersion spec = ProjectIntakeTestData.createSpec(token);
-		ContentVersion spec2 = ProjectIntakeTestData.createFile(token + '|SPEC', 's2.pdf', 10);
-		ContentVersion spec3 = ProjectIntakeTestData.createFile(token + '|SPEC', 's3.pdf', 10);
-		ContentVersion layout2 = ProjectIntakeTestData.createFile(token + '|LAYOUT', 'l2.pdf', 10);
+		Id layout = fakeVersionId(1);
+		Id layout2 = fakeVersionId(2);
+		Id spec = fakeVersionId(3);
+		Id spec2 = fakeVersionId(4);
+		Id spec3 = fakeVersionId(5);
 
 		Assert.isTrue(expectError(token, null).startsWith('Please upload'), 'null files');
 		Assert.isTrue(
-			expectError(token, new List<ProjectIntakeRequest.FileRef>{ ref(layout.Id, 'LAYOUT') })
+			expectError(token, new List<ProjectIntakeRequest.FileRef>{ ref(layout, 'LAYOUT') })
 				.contains('Module Spec Sheet'),
 			'missing spec'
 		);
@@ -303,7 +373,7 @@ private class ProjectIntakeFileServiceTest {
 			Constants.INTAKE_ERR_INVALID_SUBMISSION,
 			expectError(
 				token,
-				new List<ProjectIntakeRequest.FileRef>{ ref(layout.Id, 'OTHER'), ref(spec.Id, 'SPEC') }
+				new List<ProjectIntakeRequest.FileRef>{ ref(layout, 'OTHER'), ref(spec, 'SPEC') }
 			)
 		);
 		Assert.areEqual(
@@ -315,9 +385,9 @@ private class ProjectIntakeFileServiceTest {
 			expectError(
 				token,
 				new List<ProjectIntakeRequest.FileRef>{
-					ref(layout.Id, 'LAYOUT'),
-					ref(layout.Id, 'LAYOUT'),
-					ref(spec.Id, 'SPEC')
+					ref(layout, 'LAYOUT'),
+					ref(layout, 'LAYOUT'),
+					ref(spec, 'SPEC')
 				}
 			)
 		);
@@ -325,9 +395,9 @@ private class ProjectIntakeFileServiceTest {
 			expectError(
 				token,
 				new List<ProjectIntakeRequest.FileRef>{
-					ref(layout.Id, 'LAYOUT'),
-					ref(layout2.Id, 'LAYOUT'),
-					ref(spec.Id, 'SPEC')
+					ref(layout, 'LAYOUT'),
+					ref(layout2, 'LAYOUT'),
+					ref(spec, 'SPEC')
 				}
 			)
 				.contains('Only 1 file allowed'),
@@ -337,19 +407,23 @@ private class ProjectIntakeFileServiceTest {
 			expectError(
 				token,
 				new List<ProjectIntakeRequest.FileRef>{
-					ref(layout.Id, 'LAYOUT'),
-					ref(spec.Id, 'SPEC'),
-					ref(spec2.Id, 'SPEC'),
-					ref(spec3.Id, 'SPEC')
+					ref(layout, 'LAYOUT'),
+					ref(spec, 'SPEC'),
+					ref(spec2, 'SPEC'),
+					ref(spec3, 'SPEC')
 				}
 			)
 				.contains('Only 2 files allowed'),
 			'three specs'
 		);
+		Assert.areEqual(
+			Constants.INTAKE_ERR_SESSION,
+			expectError('short', new List<ProjectIntakeRequest.FileRef>())
+		);
 	}
 
 	@IsTest
-	static void attachFilesToLead_linksFilesPrefixesTitlesAndSetsOwner() {
+	static void attachFilesToLead_linksFilesAndMarksUploadsAttached() {
 		String token = ProjectIntakeFileService.createUploadToken();
 		ContentVersion layout = ProjectIntakeTestData.createLayout(token);
 		ContentVersion spec = ProjectIntakeTestData.createSpec(token);
@@ -368,38 +442,9 @@ private class ProjectIntakeFileServiceTest {
 		];
 		Assert.areEqual(2, links.size());
 		Assert.areEqual('I', links[0].ShareType);
-		Assert.areEqual('InternalUsers', links[0].Visibility);
-		Map<Id, ContentVersion> versions = new Map<Id, ContentVersion>(
-			[SELECT Id, Title FROM ContentVersion WHERE Id IN :new Set<Id>{ layout.Id, spec.Id }]
-		);
-		Assert.areEqual('Module Layout - layout', versions.get(layout.Id).Title);
-		Assert.areEqual('Module Spec Sheet - spec', versions.get(spec.Id).Title);
-		Assert.areEqual(
-			UserInfo.getUserId(),
-			[SELECT OwnerId FROM ContentDocument WHERE Id = :layout.ContentDocumentId].OwnerId
-		);
-	}
-
-	@IsTest
-	static void attachFilesToLead_doesNotDoublePrefixTitle() {
-		String token = ProjectIntakeFileService.createUploadToken();
-		ContentVersion layout = ProjectIntakeTestData.createFile(
-			token + '|LAYOUT',
-			'Module Layout - plan.pdf',
-			10
-		);
-		ContentVersion spec = ProjectIntakeTestData.createSpec(token);
-
-		ProjectIntakeFileService.attachFilesToLead(
-			insertLead().Id,
-			token,
-			new List<ProjectIntakeRequest.FileRef>{ ref(layout.Id, 'LAYOUT'), ref(spec.Id, 'SPEC') }
-		);
-
-		Assert.areEqual(
-			'Module Layout - plan',
-			[SELECT Title FROM ContentVersion WHERE Id = :layout.Id].Title
-		);
+		Assert.areEqual('AllUsers', links[0].Visibility);
+		Assert.areEqual(lead.Id, uploadOf(layout).Lead__c);
+		Assert.areEqual(lead.Id, uploadOf(spec).Lead__c);
 	}
 
 	@IsTest
@@ -410,73 +455,57 @@ private class ProjectIntakeFileServiceTest {
 		);
 		ContentVersion spec = ProjectIntakeTestData.createSpec(token);
 
-		try {
-			ProjectIntakeFileService.attachFilesToLead(
-				insertLead().Id,
-				token,
-				new List<ProjectIntakeRequest.FileRef>{ ref(layout.Id, 'LAYOUT'), ref(spec.Id, 'SPEC') }
-			);
-			Assert.fail('Expected IntakeValidationException');
-		} catch (ProjectIntakeService.IntakeValidationException e) {
-			Assert.areEqual(Constants.INTAKE_ERR_FILE_NOT_FOUND, e.getMessage());
-		}
+		String message = expectAttachError(
+			insertLead().Id,
+			token,
+			new List<ProjectIntakeRequest.FileRef>{ ref(layout.Id, 'LAYOUT'), ref(spec.Id, 'SPEC') }
+		);
+
+		Assert.areEqual(Constants.INTAKE_ERR_FILE_NOT_FOUND, message);
 	}
 
 	@IsTest
-	static void attachFilesToLead_categoryMustMatchTheTokenSuffix() {
+	static void attachFilesToLead_unknownFileIsRejected() {
+		String token = ProjectIntakeFileService.createUploadToken();
+		ContentVersion spec = ProjectIntakeTestData.createSpec(token);
+
+		String message = expectAttachError(
+			insertLead().Id,
+			token,
+			new List<ProjectIntakeRequest.FileRef>{ ref(fakeVersionId(1), 'LAYOUT'), ref(spec.Id, 'SPEC') }
+		);
+
+		Assert.areEqual(Constants.INTAKE_ERR_FILE_NOT_FOUND, message);
+	}
+
+	@IsTest
+	static void attachFilesToLead_categoryMustMatchTheUpload() {
 		String token = ProjectIntakeFileService.createUploadToken();
 		ContentVersion layout = ProjectIntakeTestData.createLayout(token);
 		ContentVersion spec = ProjectIntakeTestData.createSpec(token);
 
-		try {
-			ProjectIntakeFileService.attachFilesToLead(
-				insertLead().Id,
-				token,
-				new List<ProjectIntakeRequest.FileRef>{ ref(layout.Id, 'SPEC'), ref(spec.Id, 'LAYOUT') }
-			);
-			Assert.fail('Expected IntakeValidationException');
-		} catch (ProjectIntakeService.IntakeValidationException e) {
-			Assert.areEqual(Constants.INTAKE_ERR_FILE_NOT_FOUND, e.getMessage());
-		}
+		String message = expectAttachError(
+			insertLead().Id,
+			token,
+			new List<ProjectIntakeRequest.FileRef>{ ref(layout.Id, 'SPEC'), ref(spec.Id, 'LAYOUT') }
+		);
+
+		Assert.areEqual(Constants.INTAKE_ERR_FILE_NOT_FOUND, message);
 	}
 
 	@IsTest
-	static void attachFilesToLead_invalidFileNamesItInTheMessage() {
-		String token = ProjectIntakeFileService.createUploadToken();
-		ContentVersion layout = ProjectIntakeTestData.createFile(token + '|LAYOUT', 'plan.exe', 10);
-		ContentVersion spec = ProjectIntakeTestData.createSpec(token);
-
-		try {
-			ProjectIntakeFileService.attachFilesToLead(
-				insertLead().Id,
-				token,
-				new List<ProjectIntakeRequest.FileRef>{ ref(layout.Id, 'LAYOUT'), ref(spec.Id, 'SPEC') }
-			);
-			Assert.fail('Expected IntakeValidationException');
-		} catch (ProjectIntakeService.IntakeValidationException e) {
-			Assert.isTrue(e.getMessage().contains('"plan"'), e.getMessage());
-			Assert.isTrue(e.getMessage().contains('.exe'), e.getMessage());
-		}
-	}
-
-	@IsTest
-	static void attachFilesToLead_unknownLeadThrowsGenericMessage() {
+	static void attachFilesToLead_alreadyAttachedFileNamesItInTheMessage() {
 		String token = ProjectIntakeFileService.createUploadToken();
 		ContentVersion layout = ProjectIntakeTestData.createLayout(token);
 		ContentVersion spec = ProjectIntakeTestData.createSpec(token);
-		Lead lead = insertLead();
-		Id deletedLeadId = lead.Id;
-		delete lead;
+		List<ProjectIntakeRequest.FileRef> refs = new List<ProjectIntakeRequest.FileRef>{
+			ref(layout.Id, 'LAYOUT'),
+			ref(spec.Id, 'SPEC')
+		};
+		ProjectIntakeFileService.attachFilesToLead(insertLead().Id, token, refs);
 
-		try {
-			ProjectIntakeFileService.attachFilesToLead(
-				deletedLeadId,
-				token,
-				new List<ProjectIntakeRequest.FileRef>{ ref(layout.Id, 'LAYOUT'), ref(spec.Id, 'SPEC') }
-			);
-			Assert.fail('Expected IntakeValidationException');
-		} catch (ProjectIntakeService.IntakeValidationException e) {
-			Assert.areEqual(Constants.INTAKE_ERR_GENERIC, e.getMessage());
-		}
+		String message = expectAttachError(insertLead().Id, token, refs);
+
+		Assert.areEqual('"layout": ' + Constants.INTAKE_ERR_FILE_IN_USE, message);
 	}
 }

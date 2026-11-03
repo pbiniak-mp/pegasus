@@ -11,7 +11,18 @@ public class ProjectIntakeTestData {
 			IsMajorVersion = true,
 			Intake_Token_fileupload__c = tokenValue
 		);
-		insert version;
+		try {
+			insert version;
+		} catch (DmlException e) {
+			Exception cause = ProjectIntakeFileService.lastUnexpectedError;
+			if (cause != null) {
+				// Surface the real cause instead of the generic upload error.
+				throw new IllegalArgumentException(
+					cause.getTypeName() + ': ' + cause.getMessage() + '\n' + cause.getStackTraceString()
+				);
+			}
+			throw e;
+		}
 		return [
 			SELECT Id, ContentDocumentId, Title, FileExtension, ContentSize, Intake_Token_fileupload__c
 			FROM ContentVersion

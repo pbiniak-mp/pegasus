@@ -239,6 +239,7 @@ public class Constants {
 	public static final String INTAKE_ERR_FILE_IN_USE = 'File is already in use.';
 	public static final String INTAKE_ERR_FILE_EXPIRED = 'File upload has expired. Please upload it again.';
 	public static final String INTAKE_ERR_FILE_REMOVE = 'This file cannot be removed.';
+	public static final String INTAKE_ERR_UPLOAD_FAILED = 'The file could not be uploaded. Please try again.';
 	public static final String INTAKE_ERR_FILE_REQUIRED = 'Please upload {0}.';
 	public static final String INTAKE_ERR_FILE_DUPLICATE = 'The same file was selected more than once.';
 }
