@@ -180,4 +180,66 @@ public class Constants {
 	public static final String AGENT_NO_ACCESS_MESSAGE =
 		'You do not have permission to use the AI Chat. Please ask your Salesforce administrator ' +
 		'to assign you the "AI Chat Agent User" permission set.';
+
+	// --- Project Intake (public guest lead form) ---
+	public static final String INTAKE_CLASS_NAME = 'ProjectIntakeController';
+	public static final String INTAKE_ERROR_CATEGORY = 'Project Intake';
+	public static final String INTAKE_FILE_CATEGORY_LAYOUT = 'LAYOUT';
+	public static final String INTAKE_FILE_CATEGORY_SPEC = 'SPEC';
+	public static final String INTAKE_TOKEN_SEPARATOR = '|';
+	public static final String INTAKE_TOKEN_PATTERN = '[0-9a-f]{32}';
+	public static final Integer INTAKE_TOKEN_MAX_AGE_HOURS = 24;
+	public static final Integer INTAKE_MAX_REQUEST_LENGTH = 50000;
+	public static final Map<String, Integer> INTAKE_FILE_MIN_FILES = new Map<String, Integer>{
+		'LAYOUT' => 1,
+		'SPEC' => 1
+	};
+	public static final Map<String, Integer> INTAKE_FILE_MAX_FILES = new Map<String, Integer>{
+		'LAYOUT' => 1,
+		'SPEC' => 2
+	};
+	public static final Map<String, Integer> INTAKE_FILE_MAX_BYTES = new Map<String, Integer>{
+		'LAYOUT' => 20971520,
+		'SPEC' => 5242880
+	};
+	public static final Map<String, Set<String>> INTAKE_FILE_EXTENSIONS = new Map<String, Set<String>>{
+		'LAYOUT' => new Set<String>{ 'pdf', 'dwg', 'dxf', 'jpg', 'jpeg', 'png', 'gif' },
+		'SPEC' => new Set<String>{ 'pdf', 'jpg', 'jpeg', 'png', 'gif' }
+	};
+	public static final Map<String, String> INTAKE_FILE_TITLE_PREFIX = new Map<String, String>{
+		'LAYOUT' => 'Module Layout - ',
+		'SPEC' => 'Module Spec Sheet - '
+	};
+	public static final Map<String, String> INTAKE_FILE_LABEL = new Map<String, String>{
+		'LAYOUT' => 'Module Layout',
+		'SPEC' => 'Module Spec Sheet'
+	};
+	public static final List<String> INTAKE_ALLOWED_COUNTRIES = new List<String>{ 'US', 'CA', 'MX' };
+	public static final String INTAKE_LEAD_SOURCE = 'Web';
+	public static final String INTAKE_LEAD_STATUS = 'New';
+	public static final String INTAKE_SYSTEM_TYPE_FLAT_ROOF = 'Flat Roof';
+	public static final String INTAKE_SYSTEM_TYPE_PITCHED_ROOF = 'Pitched Roof';
+	public static final String INTAKE_SYSTEM_TYPE_GROUND_MOUNT = 'Ground Mount';
+	public static final String INTAKE_CONFIG_FLUSH_MOUNT = 'Flush Mount';
+	public static final String INTAKE_CONFIG_SOUTH_FACING = 'South Facing';
+	public static final String INTAKE_CONFIG_EAST_WEST_FACING = 'East/West Facing';
+	public static final String INTAKE_DESIGN_PREFERENCE_BALLASTED = 'Ballasted - Blocks used to resist active forces. No penetrations.';
+	public static final String INTAKE_DESIGN_PREFERENCE_HYBRID = 'Hybrid - Mix of anchors and ballast to resist active forces. Usually to meet load limits or seismic forces.';
+	public static final String INTAKE_DESIGN_PREFERENCE_ATTACHED = 'Attached - Fully anchored to resist active forces. No ballast blocks.';
+	public static final String INTAKE_DISTRIBUTOR_INDIRECT = 'Indirect';
+
+	public static final String INTAKE_ERR_GENERIC = 'We could not submit your project right now. Please try again or email commercial@pegasussolar.com.';
+	public static final String INTAKE_ERR_INVALID_SUBMISSION = 'Invalid submission.';
+	public static final String INTAKE_ERR_SESSION = 'Your upload session is not valid. Please reload the page and try again.';
+	public static final String INTAKE_ERR_PAST_DATE = 'Planned Install Date cannot be in the past.';
+	public static final String INTAKE_ERR_FILE_NOT_FOUND = 'File was not found or does not belong to this upload.';
+	public static final String INTAKE_ERR_FILE_TOO_LARGE = 'File is larger than {0}.';
+	public static final String INTAKE_ERR_FILE_TYPE = 'File type .{0} is not allowed.';
+	public static final String INTAKE_ERR_FILE_COUNT = 'Only {0} allowed.';
+	public static final String INTAKE_ERR_FILE_IN_USE = 'File is already in use.';
+	public static final String INTAKE_ERR_FILE_EXPIRED = 'File upload has expired. Please upload it again.';
+	public static final String INTAKE_ERR_FILE_REMOVE = 'This file cannot be removed.';
+	public static final String INTAKE_ERR_UPLOAD_FAILED = 'The file could not be uploaded. Please try again.';
+	public static final String INTAKE_ERR_FILE_REQUIRED = 'Please upload {0}.';
+	public static final String INTAKE_ERR_FILE_DUPLICATE = 'The same file was selected more than once.';
 }

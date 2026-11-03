@@ -31,8 +31,8 @@
     "ApexClass:Constants": {
       "tests": ["AccountTodoControllerTest"],
       "coveragePercent": 100,
-      "coveredLines": 29,
-      "totalLines": 29
+      "coveredLines": 50,
+      "totalLines": 50
     },
     "ApexClass:ContactSelector": {
       "tests": ["QuotePDFControllerTest"],
@@ -45,6 +45,12 @@
       "coveragePercent": 100,
       "coveredLines": 6,
       "totalLines": 6
+    },
+    "ApexClass:ContentVersionTriggerHandler": {
+      "tests": ["ContentVersionTriggerHandlerTest"],
+      "coveragePercent": 100,
+      "coveredLines": 4,
+      "totalLines": 4
     },
     "ApexClass:CreateDesignRevisionInvocable": {
       "tests": ["DesignRevisionTriggerTest"],
@@ -263,6 +269,36 @@
       "coveredLines": 55,
       "totalLines": 55
     },
+    "ApexClass:ProjectIntakeController": {
+      "tests": ["ProjectIntakeControllerTest"],
+      "coveragePercent": 89,
+      "coveredLines": 34,
+      "totalLines": 38
+    },
+    "ApexClass:ProjectIntakeFileService": {
+      "tests": ["ProjectIntakeFileServiceTest"],
+      "coveragePercent": 95,
+      "coveredLines": 249,
+      "totalLines": 262
+    },
+    "ApexClass:ProjectIntakeOptions": {
+      "tests": ["ProjectIntakeControllerTest"],
+      "coveragePercent": 100,
+      "coveredLines": 6,
+      "totalLines": 6
+    },
+    "ApexClass:ProjectIntakeService": {
+      "tests": ["ProjectIntakeServiceTest"],
+      "coveragePercent": 98,
+      "coveredLines": 363,
+      "totalLines": 369
+    },
+    "ApexClass:ProjectIntakeUploadSelector": {
+      "tests": ["ProjectIntakeUploadSelectorTest"],
+      "coveragePercent": 100,
+      "coveredLines": 6,
+      "totalLines": 6
+    },
     "ApexClass:QuoteDocumentSelector": {
       "tests": ["QuoteSendControllerTest"],
       "coveragePercent": 100,
@@ -387,6 +423,12 @@
       "coveragePercent": 100,
       "coveredLines": 3,
       "totalLines": 3
+    },
+    "ApexTrigger:ContentVersionTrigger": {
+      "tests": ["ContentDocumentLinkSelectorTest"],
+      "coveragePercent": 100,
+      "coveredLines": 1,
+      "totalLines": 1
     },
     "ApexTrigger:DesignRevisionTrigger": {
       "tests": ["DesignRevisionTriggerTest"],

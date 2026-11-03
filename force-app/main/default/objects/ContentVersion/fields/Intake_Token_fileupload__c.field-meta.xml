@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Intake_Token_fileupload__c</fullName>
+    <description>Correlates files uploaded by the public Project Intake form (guest user, lightning-file-upload without a record Id) with one form session and file category. Value format: [32 hex chars token]|LAYOUT or [token]|SPEC. The API name must end with fileupload__c, which lightning-file-upload requires for guest uploads.</description>
+    <externalId>false</externalId>
+    <label>Intake Upload Token</label>
+    <length>80</length>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

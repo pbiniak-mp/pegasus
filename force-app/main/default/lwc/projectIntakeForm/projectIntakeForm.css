@@ -1,0 +1,127 @@
+@import 'c/projectIntakeStyles';
+
+:host {
+	display: block;
+	--slds-c-button-brand-color-background: var(--intake-brand);
+	--slds-c-button-brand-color-border: var(--intake-brand);
+	--slds-c-button-brand-color-background-hover: var(--intake-brand-dark);
+	--slds-c-button-brand-color-border-hover: var(--intake-brand-dark);
+	--slds-c-button-brand-color-background-active: var(--intake-brand-dark);
+	--slds-c-button-brand-color-border-active: var(--intake-brand-dark);
+	--slds-c-button-radius-border: 8px;
+	--slds-c-button-text-color: var(--intake-brand);
+	--slds-c-button-text-color-hover: var(--intake-brand-dark);
+	--slds-c-checkbox-color-background-checked: var(--intake-brand);
+	--slds-c-checkbox-color-border-checked: var(--intake-brand);
+}
+
+.intake-page {
+	padding: 1rem;
+	color: var(--intake-text);
+}
+
+.intake-card {
+	max-width: 880px;
+	margin: 0 auto;
+	background: #ffffff;
+	border: 1px solid var(--intake-border);
+	border-radius: 12px;
+	box-shadow:
+		0 1px 2px rgba(16, 24, 40, 0.04),
+		0 8px 24px rgba(16, 24, 40, 0.08);
+	padding: 1.5rem 1.25rem;
+	scroll-margin-top: 1rem;
+}
+
+.intake-header {
+	text-align: center;
+	margin-bottom: 2rem;
+}
+
+.intake-logo {
+	display: block;
+	height: 2.5rem;
+	width: auto;
+	max-width: 12rem;
+	margin: 0 auto 1.25rem;
+	object-fit: contain;
+}
+
+.intake-title {
+	margin: 0;
+	font-size: 1.5rem;
+	font-weight: 700;
+	line-height: 1.25;
+	color: var(--intake-text);
+}
+
+.intake-subtitle {
+	margin: 0.5rem auto 0;
+	max-width: 32rem;
+	font-size: 0.9375rem;
+	color: var(--intake-muted);
+}
+
+.intake-state {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 1rem;
+	min-height: 12rem;
+	text-align: center;
+}
+
+.intake-state-message {
+	margin: 0;
+	max-width: 28rem;
+	color: var(--intake-muted);
+}
+
+.intake-body {
+	position: relative;
+	min-height: 8rem;
+}
+
+.intake-error {
+	display: flex;
+	align-items: flex-start;
+	gap: 0.625rem;
+	margin-top: 1.5rem;
+	padding: 0.75rem 1rem;
+	border: 1px solid #f3c1bd;
+	border-left: 4px solid #ba0517;
+	border-radius: 6px;
+	background: #fef1ee;
+	color: #8c0c18;
+}
+
+.intake-error-message {
+	margin: 0;
+	line-height: 1.4;
+}
+
+.intake-actions {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 1rem;
+	margin-top: 2rem;
+	padding-top: 1.25rem;
+	border-top: 1px solid var(--intake-border);
+}
+
+@media (min-width: 768px) {
+	.intake-page {
+		padding: 2.5rem 1.5rem;
+	}
+
+	.intake-card {
+		padding: 2.5rem 3rem;
+	}
+
+	.intake-title {
+		font-size: 1.75rem;
+	}
+}
