@@ -79,7 +79,7 @@ private class ProjectIntakeControllerTest {
 		Profile platformProfile = [
 			SELECT Id
 			FROM Profile
-			WHERE Name = 'Standard Platform User'
+			WHERE Name = 'Minimum Access - Salesforce'
 			LIMIT 1
 		];
 		String uniqueName = 'intake' + String.valueOf(Crypto.getRandomInteger()).replace('-', 'x');
@@ -96,14 +96,14 @@ private class ProjectIntakeControllerTest {
 		);
 		insert noLeadAccess;
 
-		String token = ProjectIntakeController.createUploadToken();
-		ContentVersion layout = ProjectIntakeTestData.createLayout(token);
-		ContentVersion spec = ProjectIntakeTestData.createSpec(token);
-		String json = JSON.serialize(ProjectIntakeTestData.validRequest(token, layout, spec));
-
 		System.runAs(noLeadAccess) {
+			// Files are created by the running user so the file checks pass and the Lead insert fails.
+			String token = ProjectIntakeController.createUploadToken();
+			ContentVersion layout = ProjectIntakeTestData.createLayout(token);
+			ContentVersion spec = ProjectIntakeTestData.createSpec(token);
+			String requestJson = JSON.serialize(ProjectIntakeTestData.validRequest(token, layout, spec));
 			try {
-				ProjectIntakeController.submitIntake(json);
+				ProjectIntakeController.submitIntake(requestJson);
 				Assert.fail('Expected AuraHandledException');
 			} catch (AuraHandledException e) {
 				Assert.areEqual(Constants.INTAKE_ERR_GENERIC, e.getMessage());

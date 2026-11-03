@@ -205,7 +205,11 @@ public inherited sharing class ProjectIntakeService {
 		List<String> errors = validate(request, getFormOptions());
 		if (!errors.isEmpty()) {
 			if (errors.size() > MAX_REPORTED_ERRORS) {
-				errors = errors.subList(0, MAX_REPORTED_ERRORS);
+				List<String> reported = new List<String>();
+				for (Integer i = 0; i < MAX_REPORTED_ERRORS; i++) {
+					reported.add(errors[i]);
+				}
+				errors = reported;
 			}
 			throw new IntakeValidationException(String.join(errors, ' '));
 		}

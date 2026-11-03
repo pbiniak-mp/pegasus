@@ -26,9 +26,9 @@ private class ProjectIntakeServiceTest {
 		return submitJsonExpectingError(JSON.serialize(request));
 	}
 
-	private static String submitJsonExpectingError(String json) {
+	private static String submitJsonExpectingError(String requestJson) {
 		try {
-			ProjectIntakeService.submitIntake(json);
+			ProjectIntakeService.submitIntake(requestJson);
 		} catch (ProjectIntakeService.IntakeValidationException e) {
 			return e.getMessage();
 		}
