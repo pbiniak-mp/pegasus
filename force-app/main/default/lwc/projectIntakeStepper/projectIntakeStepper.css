@@ -101,6 +101,17 @@
 	color: #ffffff;
 }
 
+/* Inline SVG instead of lightning-icon: on LWR the icon fill comes from --dxp-g-neutral-3 */
+.stepper-check {
+	width: 0.875rem;
+	height: 0.875rem;
+	fill: none;
+	stroke: #ffffff;
+	stroke-width: 2.25;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+}
+
 .stepper-item_visited .stepper-marker {
 	border-color: var(--intake-brand);
 	color: var(--intake-brand);

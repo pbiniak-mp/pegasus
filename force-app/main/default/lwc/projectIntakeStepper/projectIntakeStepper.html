@@ -25,11 +25,13 @@
 						>
 							<span class="stepper-marker" aria-hidden="true">
 								<template lwc:if={item.showCheck}>
-									<lightning-icon
-										icon-name="utility:check"
-										size="xx-small"
-										variant="inverse"
-									></lightning-icon>
+									<svg
+										class="stepper-check"
+										viewBox="0 0 16 16"
+										focusable="false"
+									>
+										<path d="M3.5 8.5l3 3 6-7"></path>
+									</svg>
 								</template>
 								<template lwc:else>{item.number}</template>
 							</span>
