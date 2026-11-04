@@ -1,0 +1,86 @@
+<template>
+	<div class={containerClass}>
+		<div class="file-upload__label">
+			<template lwc:if={required}>
+				<abbr class="slds-required" title="required">*</abbr>
+			</template>
+			{label}
+		</div>
+
+		<div class="file-upload__body">
+			<template lwc:if={isBusy}>
+				<lightning-spinner
+					alternative-text="Processing files"
+					size="small"
+				></lightning-spinner>
+			</template>
+
+			<template lwc:if={showUploader}>
+				<lightning-file-upload
+					label={uploadLabel}
+					accept={accept}
+					multiple={isMultiple}
+					disabled={uploadDisabled}
+					file-field-name="Intake_Token_fileupload__c"
+					file-field-value={fileFieldValue}
+					onuploadfinished={handleUploadFinished}
+				></lightning-file-upload>
+				<p class="intake-help file-upload__hint">{helperText}</p>
+			</template>
+			<template lwc:else>
+				<p class="intake-help file-upload__hint file-upload__full">
+					Maximum number of files uploaded.
+				</p>
+			</template>
+
+			<template lwc:if={hasFiles}>
+				<ul class="file-upload__list" aria-label={label}>
+					<template for:each={fileRows} for:item="file">
+						<li key={file.key} class="file-upload__item">
+							<lightning-icon
+								icon-name={file.icon}
+								size="small"
+								alternative-text=""
+								class="file-upload__icon"
+							></lightning-icon>
+							<span class="file-upload__name" title={file.name}
+								>{file.name}</span
+							>
+							<span class="file-upload__size">{file.size}</span>
+							<lightning-button-icon
+								icon-name="utility:close"
+								variant="bare"
+								size="small"
+								alternative-text={file.removeLabel}
+								title={file.removeLabel}
+								data-id={file.contentVersionId}
+								disabled={file.removeDisabled}
+								onclick={handleRemove}
+								class="file-upload__remove"
+							></lightning-button-icon>
+						</li>
+					</template>
+				</ul>
+			</template>
+
+			<template lwc:if={hasErrors}>
+				<ul class="file-upload__errors" role="alert">
+					<template for:each={errors} for:item="error">
+						<li key={error.key} class="file-upload__error">
+							{error.message}
+						</li>
+					</template>
+				</ul>
+			</template>
+
+			<template lwc:if={requiredErrorVisible}>
+				<p
+					class="file-upload__error file-upload__required"
+					role="alert"
+				>
+					{requiredMessage}
+				</p>
+			</template>
+		</div>
+	</div>
+</template>

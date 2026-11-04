@@ -1,0 +1,68 @@
+<template>
+	<section class="intake-section">
+		<h2 class="intake-section-title">Project Size</h2>
+		<div class="intake-grid">
+			<lightning-input
+				type="number"
+				label="Project Wattage (kW)"
+				data-name="projectWattageKw"
+				value={v.projectWattageKw}
+				min="0.01"
+				step="0.01"
+				message-when-range-underflow="Must be greater than 0."
+				field-level-help="Total DC system size in kilowatts."
+				required
+				onchange={handleChange}
+			></lightning-input>
+		</div>
+	</section>
+
+	<section class="intake-section">
+		<h2 class="intake-section-title">Module Information</h2>
+		<div class="intake-grid">
+			<lightning-combobox
+				label="Module Manufacturer"
+				data-name="moduleManufacturer"
+				value={v.moduleManufacturer}
+				options={manufacturerOptions}
+				placeholder="Select a manufacturer"
+				onchange={handleChange}
+			></lightning-combobox>
+
+			<lightning-combobox
+				label="Module Wattage (W)"
+				data-name="moduleWattage"
+				value={v.moduleWattage}
+				options={wattageOptions}
+				placeholder="Select a wattage"
+				required
+				onchange={handleChange}
+			></lightning-combobox>
+
+			<lightning-input
+				label="Module Model Number"
+				data-name="moduleModelNumber"
+				value={v.moduleModelNumber}
+				placeholder="MNUxxx-10XS-BF"
+				max-length="25"
+				required
+				onchange={handleChange}
+			></lightning-input>
+		</div>
+	</section>
+
+	<section class="intake-section">
+		<h2 class="intake-section-title">Module Spec Sheet</h2>
+		<c-project-intake-file-upload
+			category={specCategory}
+			label={specLimits.label}
+			accept={specLimits.accept}
+			max-files={specLimits.maxFiles}
+			max-size-bytes={specLimits.maxSizeBytes}
+			token={uploadToken}
+			files={specFiles}
+			required
+			onfileschange={handleFilesChange}
+		></c-project-intake-file-upload>
+	</section>
+</template>

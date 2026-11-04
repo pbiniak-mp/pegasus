@@ -11,6 +11,11 @@
         <label>5°</label>
     </customValue>
     <customValue>
+        <fullName>7°</fullName>
+        <default>false</default>
+        <label>7°</label>
+    </customValue>
+    <customValue>
         <fullName>10°</fullName>
         <default>false</default>
         <label>10°</label>

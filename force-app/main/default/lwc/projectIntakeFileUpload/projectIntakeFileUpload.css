@@ -1,0 +1,89 @@
+@import 'c/projectIntakeStyles';
+
+.file-upload__label {
+	font-size: 0.75rem;
+	color: #3e4b5e;
+	margin-bottom: 0.375rem;
+}
+
+.file-upload__body {
+	position: relative;
+	padding: 1rem;
+	border: 1px dashed #c9d3e3;
+	border-radius: 8px;
+	background: #fbfcfe;
+}
+
+.file-upload_invalid .file-upload__body {
+	border-color: #ba0517;
+}
+
+.file-upload__hint {
+	margin-top: 0.5rem;
+}
+
+.file-upload__full {
+	margin-top: 0;
+}
+
+.file-upload__list {
+	list-style: none;
+	margin: 0.75rem 0 0;
+	padding: 0;
+}
+
+.file-upload__item {
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+	padding: 0.5rem 0.75rem;
+	background: #ffffff;
+	border: 1px solid #e5e9f2;
+	border-radius: 6px;
+}
+
+.file-upload__item + .file-upload__item {
+	margin-top: 0.5rem;
+}
+
+.file-upload__icon {
+	flex-shrink: 0;
+}
+
+.file-upload__name {
+	flex: 1 1 auto;
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	color: #181818;
+}
+
+.file-upload__size {
+	flex-shrink: 0;
+	font-size: 0.8125rem;
+	color: #5c6b80;
+}
+
+.file-upload__remove {
+	flex-shrink: 0;
+}
+
+.file-upload__errors {
+	list-style: none;
+	margin: 0.75rem 0 0;
+	padding: 0;
+}
+
+.file-upload__error {
+	font-size: 0.8125rem;
+	color: #ba0517;
+}
+
+.file-upload__error + .file-upload__error {
+	margin-top: 0.25rem;
+}
+
+.file-upload__required {
+	margin-top: 0.5rem;
+}
